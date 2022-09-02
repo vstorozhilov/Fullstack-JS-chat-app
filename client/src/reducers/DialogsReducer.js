@@ -17,6 +17,10 @@ export default function DialogsReducer(state = defaultState, action) {
             return {...state, selectedDialog : action.value}
         case 'SET_UNREADEDMESSAGESCOUNT':
             return {...state, Dialogs : {...state.Dialogs, [action.value[1]] : {...state.Dialogs[action.value[1]], unreadedMessagesCount : action.value[0]}}}
+        case 'SET_LASTMESSAGEWASREADED':
+            let updatedDialog = _.cloneDeep(state.Dialogs[action.value[0]]);
+            updatedDialog.lastMessage.isReaded = action.value[1];
+            return {...state, Dialogs : {...state.Dialogs, [action.value[0]] : updatedDialog}};
         default:
             return state
     }

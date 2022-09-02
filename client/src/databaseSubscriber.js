@@ -27,8 +27,14 @@ export default function databaseSubscriber(login) {
     })
 
     socket.on('unreaded messages count was changed', data=>{
+        console.log(data[0])
         store.dispatch({type : "SET_UNREADEDMESSAGESCOUNT", value : data})
     })
+
+    socket.on('last message was readed', data=>{
+        store.dispatch({type : "SET_LASTMESSAGEWASREADED", value : data})
+    })
+
     // socket.on('message sended', data=>{
     //     store.dispatch({type: 'ADD_MESSAGE', value: data});
     //     console.log(data);

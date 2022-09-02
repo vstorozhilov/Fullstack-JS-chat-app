@@ -27,6 +27,7 @@ import { StyledBlueButton, CustomButton } from './BigBlueButton';
 import { useSelector } from 'react-redux'
 import { authentificationContext } from './Routes';
 import { useContext } from 'react';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 function handleAvatarChange(event){
 
@@ -57,6 +58,7 @@ export default function Profile(props) {
     const birthdate = useRef(null);
     const about = useRef(null);
     const button = useRef(null);
+    const maxheightMatch = useMediaQuery('(max-height: 700px)');
 
     function changeProfile() {
 
@@ -89,7 +91,6 @@ export default function Profile(props) {
             /* TO DO */
           }
         });
-
     }
 
     return(
@@ -105,14 +106,15 @@ export default function Profile(props) {
                 alignItems='center'
                 spacing='2vh'>
             <Grid item sx={{position: 'relative',
-                            width: '22vh',
-                            height: '22vh'}}>
+                            width: `${maxheightMatch ? "15vh" : '22vh'}`,
+                            height: `${maxheightMatch ? "15vh" : '22vh'}`,
+                            marginBottom: '2vh'}}>
                       <div style={{height: '100%',
                                     width: '100%',
                                     borderRadius: '50%',
                                     overflow: 'hidden',
                                     position: 'absolute'}}>
-                        <img src={profile.avatar} ref={avatar} style={{height: '22vh', width: '22vh'}} id='ava'/>
+                        <img src={profile.avatar} ref={avatar} style={maxheightMatch ? {height: '15vh', width: '15vh'} : {height: '22vh', width: '22vh'}} id='ava'/>
                       </div>
                       <label htmlFor="icon-button-file" style={{
                         position: 'absolute',

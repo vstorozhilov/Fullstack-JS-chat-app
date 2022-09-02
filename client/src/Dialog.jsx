@@ -242,7 +242,7 @@ const MessagesContainer = React.forwardRef((props, ref)=>{
 
     const correctMessages = useSelector(state=>state.messagesReducer.Messages);
 
-    //console.log(correctMessages);
+    // console.log(isDialogFullyScrolled);
 
     const transitions = useTransition(Object.values(correctMessages), 
         {
@@ -252,14 +252,15 @@ const MessagesContainer = React.forwardRef((props, ref)=>{
         })
     
     useEffect(()=>{
-        if (ref.current.offsetHeight + ref.current.scrollTop >=
-            ref.current.scrollHeight - 2){
-            setisDialogFullyScrolled(true);
-            //return ;
+        if (Object.keys(correctMessages).length) {
+            if (ref.current.offsetHeight + ref.current.scrollTop >=
+                ref.current.scrollHeight - 2){
+                setisDialogFullyScrolled(true);
+            }
+            if (isDialogFullyScrolled){
+                ref.current.scrollTo(0, ref.current.scrollHeight);
+            }
         }
-        // if (isDialogFullyScrolled){
-        //     ref.current.scrollTo(0, ref.current.scrollHeight);
-        // }
     })
 
     const NotReadedMessagesCount = useSelector(state=>(
@@ -460,6 +461,10 @@ export function Dialog(props){
 
     const peerAvatar = useSelector(state=>state.contactsReducer.Contacts[peerLogin].profile.avatar);
 
+    const isPeerOnline = useSelector(state=>state.contactsReducer.Contacts[peerLogin].isOnline);
+
+    console.log(isPeerOnline);
+
     const messageField = useRef(null);
 
     const dispatch = useDispatch();
@@ -596,20 +601,33 @@ export function Dialog(props){
                                 </Link>
                             </Grid>
                             <Grid item sx={{
-                                paddingRight: '2vw'
+                                paddingRight: '2vw',
+                                position: "relative"
                             }}>
                                 <Avatar
                                 src={peerAvatar}
                                 sx={{
                                 bgcolor: 'red',
                                 width: '7vh',
-                                height: '7vh' }}>OP</Avatar>
+                                height: '7vh' }}></Avatar>
+                                <div hidden={!isPeerOnline}
+                                    style={{
+                                    width: "2vh",
+                                    heigth: "2vh",
+                                    position: "absolute",
+                                    backgroundColor : "#00ff00",
+                                    borderRadius: "50%",
+                                    width: "2vh",
+                                    height: "2vh",
+                                    bottom: "0",
+                                    left: "5vh"
+                                }}>
+                                </div>
                             </Grid>
                             <Grid item
                             sx={{fontWeight: '600',
                                 fontSize: '2.5vh'}}>
                                 {peerLogin}
-                                khiknki
                             </Grid>
                         </Grid>
                         <Grid container

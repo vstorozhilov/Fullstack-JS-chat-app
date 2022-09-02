@@ -46,18 +46,34 @@ function ChatItem(props) {
 
     const unreadedMessagesCount = useSelector(state=>state.dialogsReducer.Dialogs[props.dialogId].unreadedMessagesCount);
 
+    const isPeerOnline = useSelector(state=>state.contactsReducer.Contacts[props.Login].isOnline);
+
     return (
         <Grid container
             direction='row'
             justifyContent='flex-start'
             wrap='nowrap'>
-                <Grid item>
+                <Grid item
+                sx={{position : "relative"}}>
                     <Avatar
                     src={props.src}
                     sx={{
                     bgcolor: 'red',
                     width: '7vh',
                     height: '7vh' }}>OP</Avatar>
+                    <div hidden={!isPeerOnline}
+                        style={{
+                        width: "2vh",
+                        heigth: "2vh",
+                        position: "absolute",
+                        backgroundColor : "#00ff00",
+                        borderRadius: "50%",
+                        width: "2vh",
+                        height: "2vh",
+                        bottom: "0",
+                        left: "5vh"
+                    }}>
+                    </div>
                 </Grid>
                 <Grid container
                     direction='row'
@@ -107,12 +123,6 @@ function ChatItem(props) {
                                 }}>
                                     {unreadedMessagesCount}
                             </div>
-                            {/* <Avatar sx={{
-                                bgcolor: theme.palette.primary.main,
-                                width: '3vh',
-                                height: '3vh',
-                                fontSize: '2vh'
-                                }}>{unreadedMessagesCount}</Avatar> */}
                         </Grid>
                         <Grid sx={{color: '#616161'}} item>Time</Grid>
                     </Grid>
@@ -182,6 +192,7 @@ export function ChatItems(props) {
                     style={styles}
                     onClick={handleClick}
                     Nickname={user.login === item[0].peerOne ? item[0].peerTwo : item[0].peerOne}
+                    Login={user.login === item[0].peerOne ? item[0].peerTwo : item[0].peerOne}
                     />}) :
                     transitions((styles, item)=>{
                         return <ChatItemContainer
@@ -189,6 +200,7 @@ export function ChatItems(props) {
                         src={item[1]}
                         onClick={handleClick}
                         Nickname={user.login === item[0].peerOne ? item[0].peerTwo : item[0].peerOne}
+                        Login={user.login === item[0].peerOne ? item[0].peerTwo : item[0].peerOne}
                         />})
                 }
             </Grid>                                       

@@ -42,13 +42,28 @@ function ContactItem(props) {
             direction='row'
             justifyContent='flex-start'
             wrap='nowrap'>
-                <Grid item>
+                <Grid item
+                sx={{
+                    position : "relative"
+                }}>
                     <Avatar
                     src={props.contact.profile.avatar}
                     sx={{
                     bgcolor: 'red',
                     width: '7vh',
                     height: '7vh' }}>OP</Avatar>
+                    <div hidden={!props.contact.isOnline}
+                        style={{
+                        width: "2vh",
+                        heigth: "2vh",
+                        position: "absolute",
+                        backgroundColor : "#00ff00",
+                        borderRadius: "50%",
+                        width: "2vh",
+                        height: "2vh",
+                        bottom: "0",
+                        left: "5vh"
+                    }}></div>
                 </Grid>
                 <Grid container
                     direction='row'

@@ -249,6 +249,10 @@ async function run() {
 
             console.log("connected to socketio");
 
+            let currentUser = await userModel.findOne({login : socket.handshake.auth.login});
+            currentUser.isOnline = true;
+            await currentUser.save();
+
             let dialogs = (await dialogModel.find({
                 $match :
                     {$or :
@@ -264,18 +268,19 @@ async function run() {
             }], {'fullDocument' : "updateLookup"});
 
             wholeRelatedMessageChangeStream.on('change', async data=>{
-                //console.log(data);
+                let dialog = await dialogModel.findOne({_id : data.fullDocument.dialog});
+                if (data.operationType === "update" &&
+                dialog.lastMessage.equals(data.documentKey._id) &&
+                data.fullDocument.author === socket.handshake.auth.login) {
+                    socket.emit("last message was readed", [data.fullDocument.dialog, data.fullDocument.isReaded]);
+                }
                 let unreadedMessagesCount = (await messageModel.find({'author' : {$ne : socket.handshake.auth.login},
                                 'isReaded' : false,
                                 'dialog' : data.fullDocument.dialog})).length;
 
-                //console.log(unreadedMessagesCount);
-
                 socket.emit("unreaded messages count was changed",
                 [unreadedMessagesCount, data.fullDocument.dialog]);
             });
-
-            //console.log(dialogs);
 
             socket.on("dialog has selected", dialogId=>{
 
@@ -298,6 +303,7 @@ async function run() {
                     {'fullDocument' : "updateLookup"});
                 
                 messageSendedChangeStream.on("change", data=>{
+                    console.log("message sended");
                     socket.emit("message sended", data.fullDocument);
                 });
 
@@ -318,12 +324,6 @@ async function run() {
                                                     {'fullDocument' : "updateLookup"});
 
             let contactsChangeStream = userModel.watch([
-                {
-                    $match: {
-                        $or: [{ operationType: 'delete' },
-                        { operationType: 'insert' }]
-                    }
-                }
             ], {'fullDocument' : "updateLookup"});
 
             userChangeStream.on('change', data=>{
@@ -367,8 +367,13 @@ async function run() {
 
                 socket.emit("dialogs changed", actualDialogs);
             });
-            socket.on('disconnect', ()=>{
+            socket.on('disconnect', async ()=>{
                 userChangeStream.close();
+                dialogsChangeStream.close();
+                wholeRelatedMessageChangeStream.close();
+                contactsChangeStream.close();
+                currentUser.isOnline = false;
+                currentUser.save();
                 console.log('connection closed');
             })
         })
