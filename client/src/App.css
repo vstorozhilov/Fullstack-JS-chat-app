@@ -1,0 +1,21 @@
+* {
+  box-sizing: border-box;
+  font-family: 'Urbanist';
+}
+
+.AppActionButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90vw;
+  height: 8vh;
+  border-radius: 40px;
+  background-color: blue;
+  color: white;
+  font-weight: 400;
+}
+
+a, a:hover, a:focus, a:active {
+  text-decoration: none;
+  color: transparent;
+}

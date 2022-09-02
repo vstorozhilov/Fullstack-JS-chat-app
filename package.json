@@ -1,0 +1,22 @@
+{
+  "name": "fullstackchatapp",
+  "version": "1.0.0",
+  "description": "A web chat app for mobile devices based on a node.js server with an interface created by react.js.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"npm start --prefix client\" \"nodemon server/app.js\""
+  },
+  "author": "Vladimir Storozhilov",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^7.3.0",
+    "nodemon": "^2.0.19"
+  },
+  "dependencies": {
+    "mongodb": "^4.8.1",
+    "mongoose": "^6.5.2",
+    "mongoose-dbref": "^0.0.4",
+    "run-rs": "^0.7.7"
+  }
+}
