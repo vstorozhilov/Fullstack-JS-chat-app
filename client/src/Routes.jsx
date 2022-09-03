@@ -12,7 +12,8 @@ function MainContainer(props){
 
     const navigate = useNavigate();
     const location = useLocation();
-    const user = JSON.parse(localStorage.getItem('user')) || {};
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || {})
+    const contextUser = {user, setUser}
 
     const [reverseAnimation, setReverseAnimation] = useState(false);
     const transitions = useTransition(location, { enter: ()=>{return { opacity: 1, transform: 'translateX(0%)' }},
@@ -26,7 +27,7 @@ function MainContainer(props){
 
     return transitions((props, item) => {
             return <animated.div style={Object.assign(props, {position: 'absolute', width: 'inherit', height: 'inherit', overflowX: 'hidden'})}>
-                <authentificationContext.Provider value={user}>
+                <authentificationContext.Provider value={contextUser}>
                     <Routes location={item}>
                         <Route path="/login" element={<AppActionButton setReverseAnim={setReverseAnimation}/>} />
                         <Route path="/home" element={<AppActionButton_2 text="Click me now"/>} />

@@ -176,7 +176,7 @@ const ObservedComponent = (MessageComponent, props) => {
 
     const {messageId, ...forwardedProps} = props;
 
-    const user = useContext(authentificationContext);
+    const {user} = useContext(authentificationContext);
     //console.log(props.root);
     
     //console.log(props.ref.current);
@@ -237,7 +237,7 @@ const MessagesContainer = React.forwardRef((props, ref)=>{
 
     const theme = useTheme();
 
-    const user = useContext(authentificationContext);
+    const {user} = useContext(authentificationContext);
     const [isDialogFullyScrolled, setisDialogFullyScrolled] = useState(false);
 
     const correctMessages = useSelector(state=>state.messagesReducer.Messages);

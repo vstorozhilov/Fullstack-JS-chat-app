@@ -94,15 +94,18 @@ function ContactItem(props) {
 export function Contacts(props) {
 
     const contacts = useSelector(state => Object.values(state.contactsReducer.Contacts));
+    const {user : {login}} = useContext(authentificationContext);
+
     return (
             <Grid container
             direction='column'
             justifyContent='flex-start'
             rowSpacing={3}>
-                {contacts.map((value, index)=>(
-                <Grid item key={index}>
-                    <ContactItem contact={value}/>
-                </Grid>))}
+                {contacts.map((value, index)=>{
+                if (value.login !== login)
+                    return <Grid item key={index}>
+                        <ContactItem contact={value}/>
+                    </Grid>})}
             </Grid>                                       
     )
 }

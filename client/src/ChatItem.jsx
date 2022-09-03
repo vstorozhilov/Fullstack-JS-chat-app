@@ -33,6 +33,8 @@ import { useTransition } from '@react-spring/web'
 import {useSelector, useDispatch} from 'react-redux';
 import { authentificationContext } from './Routes';
 import { dialogIsSelected } from './databaseSubscriber';
+import NotDialogsYetImage from './images/NotDialogsYet.png'
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 var zip = require('zip-array').zip;
 
@@ -40,7 +42,7 @@ function ChatItem(props) {
 
     const theme = useTheme();
 
-    const {login} = useContext(authentificationContext);
+    const {user : {login}} = useContext(authentificationContext);
 
     const {isReaded, author, content} = useSelector(state=>state.dialogsReducer.Dialogs[props.dialogId].lastMessage);
 
@@ -132,6 +134,32 @@ function ChatItem(props) {
 
 }
 
+function NoDialogsYet(props){
+
+    const IsWidthMatch = useMediaQuery('(max-width: 585px)')
+
+    return (<Grid container
+    direction="column"
+    alignItems="center"
+    sx={{
+        paddingTop: "5vh"
+    }}>
+        <Grid item
+        sx={{
+            fontSize : "3vh"
+        }}>
+            <img src={NotDialogsYetImage} width={IsWidthMatch ? "100%" : "585px"}/>
+        </Grid>
+        <Grid item sx={{
+            marginTop : "1vh",
+            fontSize : "3vh",
+            fontWeight: "700"
+        }}>
+            No dialogs yet...
+        </Grid>
+    </Grid>)
+}
+
 function ChatItemContainer({style, id, onClick, ...props}){
 
     return (<Grid item onClick={onClick} id={id} sx={style}>
@@ -177,6 +205,7 @@ export function ChatItems(props) {
         dispatch({type: 'SET_SELECTED_DIALOG', value: e.currentTarget.id});
         dialogIsSelected(e.currentTarget.id);
       };
+    
 
 
     return (
@@ -184,7 +213,7 @@ export function ChatItems(props) {
             direction='column'
             justifyContent='flex-start'
             rowSpacing={3}>
-                {props.isOnceRendered === false ?
+                {dialogs.length ? (props.isOnceRendered === false ?
                 transitions((styles, item)=>{
                     return <AnimatedChatItemContainer
                     id={item[0]._id}
@@ -201,7 +230,7 @@ export function ChatItems(props) {
                         onClick={handleClick}
                         Nickname={user.login === item[0].peerOne ? item[0].peerTwo : item[0].peerOne}
                         Login={user.login === item[0].peerOne ? item[0].peerTwo : item[0].peerOne}
-                        />})
+                        />})) : <NoDialogsYet/>
                 }
             </Grid>                                       
     )

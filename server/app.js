@@ -249,6 +249,15 @@ async function run() {
 
             console.log("connected to socketio");
 
+            let contactsChangeStream = userModel.watch([
+            ], {'fullDocument' : "updateLookup"});
+
+            contactsChangeStream.on('change', async __ => {
+                console.log("contacts changed");
+                const actualContacts = await userModel.find();
+                socket.emit("contacts changed", actualContacts);
+            });
+
             let currentUser = await userModel.findOne({login : socket.handshake.auth.login});
             currentUser.isOnline = true;
             await currentUser.save();
@@ -323,16 +332,8 @@ async function run() {
                                                     {"$project" : {"fullDocument" : 1}}],
                                                     {'fullDocument' : "updateLookup"});
 
-            let contactsChangeStream = userModel.watch([
-            ], {'fullDocument' : "updateLookup"});
-
             userChangeStream.on('change', data=>{
                 socket.emit('user changed', data.fullDocument);
-            });
-
-            contactsChangeStream.on('change', async __ => {
-                const actualContacts = await userModel.find();
-                socket.emit("contacts changed", actualContacts);
             });
 
             let dialogsChangeStream = dialogModel.watch([

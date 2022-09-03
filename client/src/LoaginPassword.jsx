@@ -26,7 +26,7 @@ import Box from '@mui/material/Box';
 import LoginPasswordImage from './images/loginpassword.png'
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useContext } from 'react';
-import { authentificationContext } from './Routes';
+import authentificationContext from './contexts/authentificationContext.js';
 
 export function LoginPassword(props) {
 
@@ -51,6 +51,8 @@ export function LoginPassword(props) {
     const passwordsMatchingHandler = (password, repeatPassword)=>{
       setArePasswordsMatched(password===repeatPassword);
     };
+
+    console.log(setUser);
 
     function sendAuthorizationForm(){
 

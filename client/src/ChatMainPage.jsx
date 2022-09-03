@@ -35,7 +35,10 @@ import Profile from './Profile';
 import { authentificationContext } from './Routes';
 import { useContext } from 'react';
 import databaseSubscriber from './databaseSubscriber';
+import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import { useFetch } from "react-async";
+import {BsFillChatDotsFill} from "react-icons/bs"
+import CloseIcon from '@mui/icons-material/Close';
 
 function TabPanel(props) {
     const { children, value, index, style, ...other } = props;
@@ -72,10 +75,12 @@ function TabPanel(props) {
 
   export default function BasicTabs(props) {
 
+    const [isStartMessagingActive, setIsStartMessagingActive] = useState(false);
+
     const [value, setValue] = React.useState(0);
     const [prevValue, setPrevValue] = React.useState(-1);
     const theme = useTheme();
-    const user = useContext(authentificationContext);
+    const {user} = useContext(authentificationContext);
     const navigate = useNavigate();
 
     const isOnceRendered = useSelector(state => state.dialogsReducer.IsOnceRendered);
@@ -107,8 +112,6 @@ function TabPanel(props) {
 
     }
 
-    //if (!isOnceRendered) updateCredentials();
-
     useEffect(()=>{
       if (!Object.keys(user).length) {
         navigate('/login');
@@ -117,7 +120,6 @@ function TabPanel(props) {
         dispatch({type : 'SET_IS_DIALOG_PAGE_ONCE_RENDERED'});
         updateCredentials();
       }
-      //updateCredentials();
   }, [])
 
     const handleChange = (event, newValue) => {
@@ -139,6 +141,70 @@ function TabPanel(props) {
 
     return (Object.keys(user).length &&
         <Fragment>
+            <div
+              hidden={!isStartMessagingActive}
+              style={{
+              zIndex : "1",
+              position : "absolute",
+              width: `${!isStartMessagingActive ? "0" : "100%"}`,
+              height: `${!isStartMessagingActive ? "0" : "100%"}`,
+              backgroundColor: "#a7a7a7",
+              opacity: "0.8"
+
+            }}>
+            </div>
+            <Grid container
+            hidden={!isStartMessagingActive}
+            justifyContent="center"
+            alignItems="center"
+            sx={{
+              zIndex: "2",
+              position : "absolute",
+              width: `${!isStartMessagingActive ? "0" : "100%"}`,
+              height: `${!isStartMessagingActive ? "0" : "100%"}`,
+            }}>
+              <Grid item
+                hidden={!isStartMessagingActive}
+                sx={{
+                  paddingLeft : "3vw",
+                  opacity: "1",
+                  backgroundColor : "#ffffff",
+                  height: "90vh",
+                  width: "90vw",
+                  borderRadius: "5vw",
+                  overflowY: "scroll"
+                }}>
+                    <Grid container
+                    direction="row"
+                    justifyContent='flex-start'
+                    alignItems="center"
+                    columnSpacing={3}
+                    sx={{
+                      background : `linear-gradient(to right, #4f89ff, #2d71fd)`,
+                      paddingTop : "1vh",
+                      paddingBottom : "1vh",
+                      paddingLeft :'3vw',
+                      marginBottom : "3vh"
+                    }}>
+                        <Grid item>
+                          <CloseIcon
+                          onClick={()=>setIsStartMessagingActive(false)}
+                          fontSize='large'
+                          sx={{
+                              color: '#ffffff'
+                          }} />
+                        </Grid>
+                        <Grid item sx={{
+                          fontSize: "3vh",
+                          fontWeight: theme.typography.fontWeightBold,
+                          color: theme.palette.secondary.text
+                        }}>
+                          Choose your contact
+                        </Grid>
+                    </Grid>
+                  <Contacts/>
+              </Grid>
+            </Grid>
             <header style={{
               background: `linear-gradient(to right, #4f89ff, #2d71fd)`,
               color: theme.palette.secondary.text
@@ -206,9 +272,44 @@ function TabPanel(props) {
                 const Page = TabPages[item];
                 return <Page styles={styles}
                 value={value}
-                {...props} 
+                {...props}
                 /> 
               })}
+                {/* <IconButton>
+                  <ChatOutlinedIcon
+                  sx={{
+                    color : "#ffffff",
+                    transform: "scale(-1, 0.9)",
+                    width: "5vh",
+                    height: "5vh"
+                  }}/>
+                </IconButton> */}
+                <IconButton
+                onClick={()=>setIsStartMessagingActive(true)}
+                sx={{
+                  display: "flex",
+                  justifyContent : "center",
+                  alignItems: "center",
+                  position: "absolute",
+                  right : "5vw",
+                  bottom : "5vw",
+                  backgroundColor: "#4f89ff",
+                  borderRadius: "50%",
+                  width: "7vh",
+                  height: "7vh",
+                  ":hover": {
+                    backgroundColor : "#4f89ff"
+                  },
+                  "@media (hover : none)" : {
+                    ":hover": {
+                      backgroundColor : "#4f89ff"
+                    }
+                  },
+                }}>
+                  <BsFillChatDotsFill
+                  size="4vh"
+                  color="#ffffff"/>
+                </IconButton>
         </Fragment>
     );
   }

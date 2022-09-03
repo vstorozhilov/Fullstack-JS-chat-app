@@ -46,7 +46,7 @@ export default function Profile(props) {
     //const theme = useTheme()
 
     const [isEditable, setEditibility] = useState(false);
-    const user = useContext(authentificationContext);
+    const {user} = useContext(authentificationContext);
 
     console.log(isEditable);
 
@@ -73,8 +73,6 @@ export default function Profile(props) {
         email : email.current.querySelector('.MuiOutlinedInput-input').value,
         about : about.current.querySelector('.MuiOutlinedInput-input').value
       }
-
-      console.log(newprofile.avatar);
 
       fetch("http://localhost:8090/main", {
         mode: "cors",
@@ -157,7 +155,7 @@ export default function Profile(props) {
               <AppTextField disabled={!isEditable} ref={nickname} defaultValue={profile.nickname} label='Nickname' width='90vw' height='3vh'/>
             </Grid>
             <Grid item>
-              <BirthdayPicker disabled={!isEditable} ref={birthdate} value={profile.birthdate} label='Birth Date' width='90vw' height='3vh'/>
+              <BirthdayPicker disabled={!isEditable} ref={birthdate} initValue={profile.birthdate} label='Birth Date' width='90vw' height='3vh'/>
             </Grid>
             <Grid item>
               <AppTextField disabled={!isEditable} ref={email} defaultValue={profile.email} label='Email' width='90vw' height='3vh'/>

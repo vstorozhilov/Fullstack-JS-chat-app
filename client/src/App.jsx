@@ -28,6 +28,7 @@ import { authentificationContext } from './Routes'
 import { io } from "socket.io-client";
 import databaseSubscriber from './databaseSubscriber';
 import {useSelector, useDispatch} from "react-redux";
+import { useRef } from "react";
 // import WorkerBuilder from './workerBuilder';
 // import worker from './databaseSubscriber';
 
@@ -35,6 +36,7 @@ import {useSelector, useDispatch} from "react-redux";
 
 function AppActionButton(props) {
 
+  const {user, setUser} = useContext(authentificationContext);
   const [login, setLogin] = useState();
   const [password, setPassword] = useState();
   const [isAuthDataCorrect, setIsAuthDataCorrect] = useState(true);
@@ -46,6 +48,8 @@ function AppActionButton(props) {
   const handlePassword = () => setShowPassword(!showPassword);
 
   const dispatch = useDispatch();
+
+  console.log(setUser);
 
   const maxheightMatch = useMediaQuery('(max-height: 700px)');
 
@@ -66,6 +70,7 @@ function AppActionButton(props) {
                   login,
                   password
                 }));
+                setUser({login, password});
               //databaseSubscriber(login);
               navigate("/main");
             });
@@ -168,15 +173,16 @@ function AppActionButton(props) {
 function  AppActionButtonCreateAccount(props) {
 
   const theme = useTheme()
-  const [avatar, setAvatar] = useState('');
-  const [nickname, setNickname] = useState();
-  const [fullname, setFullName] = useState();
-  const [birthdate, setBirthDate] = useState(new Date());
-  const [email, setEmail] = useState();
-  const [about, setAbout] = useState();
   const {user, setUser} = useContext(authentificationContext);
   const navigate = useNavigate();
   const [loading, setIsLoading] = useState(false);
+
+  const nickname = useRef(null);
+  const fullname = useRef(null);
+  const avatar = useRef(null);
+  const email = useRef(null);
+  const birthdate = useRef(null);
+  const about = useRef(null);
 
   function handleAvatarChange(event){
 
@@ -187,9 +193,7 @@ function  AppActionButtonCreateAccount(props) {
 
     reader.onload = ()=>
       {
-        console.log(reader.result.length);
-        document.querySelector('#ava').src = reader.result;
-        setAvatar(reader.result);
+        avatar.current.src = reader.result;
       }
   }
 
@@ -202,25 +206,17 @@ function  AppActionButtonCreateAccount(props) {
       method : "POST",
       headers : {"Authorization" : user.login + ":" + user.password},
       body : JSON.stringify({
-        avatar,
-        fullname,
-        nickname,
-        "birthdate" : birthdate.toDateString(),
-        email,
-        about
+        avatar : avatar.current.src,
+        fullname : fullname.current.querySelector('.MuiOutlinedInput-input').value,
+        nickname : nickname.current.querySelector('.MuiOutlinedInput-input').value,
+        birthdate : birthdate.current.querySelector('.MuiOutlinedInput-input').value,
+        email : email.current.querySelector('.MuiOutlinedInput-input').value,
+        about : about.current.querySelector('.MuiOutlinedInput-input').value
       })
     }).then((response)=>{
         if (response.status === 200) {
           setUser({
-            ...user,
-            profile : {
-              avatar,
-              fullname,
-              nickname,
-              "birthdate" : birthdate.toDateString(),
-              email,
-              about
-            }
+            ...user
           });
           navigate("/main");
         }
@@ -277,7 +273,7 @@ function  AppActionButtonCreateAccount(props) {
                                     borderRadius: '50%',
                                     overflow: 'hidden',
                                     position: 'absolute'}}>
-                        <img src={avatarImage} style={{height: '22vh', width: '22vh'}} id='ava'/>
+                        <img src={avatarImage} ref={avatar} style={{height: '22vh', width: '22vh'}} id='ava'/>
                       </div>
                       <label htmlFor="icon-button-file" style={{
                         position: 'absolute',
@@ -302,19 +298,19 @@ function  AppActionButtonCreateAccount(props) {
                       </label>
             </Grid>
             <Grid item>
-              <AppTextField label='Full Name' width='90vw' height='4vh' onChange={(e)=>{setFullName(e.target.value)}}/>
+              <AppTextField label='Full Name' width='90vw' height='4vh' ref={fullname}/>
             </Grid>
             <Grid item>
-              <AppTextField label='Nickname' width='90vw' height='4vh' onChange={(e)=>{setNickname(e.target.value)}}/>
+              <AppTextField label='Nickname' width='90vw' height='4vh' ref={nickname}/>
             </Grid>
             <Grid item>
-              <BirthdayPicker label='Birth Date' width='90vw' height='4vh' setBirthDate={setBirthDate}/>
+              <BirthdayPicker initValue={new Date()} label='Birth Date' width='90vw' height='4vh' ref={birthdate}/>
             </Grid>
             <Grid item>
-              <AppTextField label='Email' width='90vw' height='4vh' onChange={(e)=>{setEmail(e.target.value)}}/>
+              <AppTextField label='Email' width='90vw' height='4vh' ref={email}/>
             </Grid>
             <Grid item>
-              <AppTextField label='About' width='90vw' height='4vh' onChange={(e)=>{setAbout(e.target.value)}}/>
+              <AppTextField label='About' width='90vw' height='4vh' ref={about}/>
             </Grid>
           </Grid>
           <Grid item
