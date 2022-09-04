@@ -92,9 +92,9 @@ function TabPanel(props) {
 
       fetch("http://localhost:8090/main", {
         mode: "cors",
-        method : "GET",
-        headers : {"Authorization" : user.login + ":" + user.password,
-                    "Tab" : "main"}
+        method : "POST",
+        headers : {"Authorization" : user.login + ":" + user.password},
+        body : JSON.stringify({action : "updateAll"})
       }).then((response)=>{
           if (response.status === 200){
             response.json().then(([contacts, dialogs, user])=>{
@@ -128,7 +128,7 @@ function TabPanel(props) {
 
     const TabPages = [
       ({ styles, value }) => <TabPanel style={styles} value={value} index={0}><ChatItems isOnceRendered={isOnceRendered}/></TabPanel>,
-      ({ styles, value, ...props }) => <TabPanel style={styles} value={value} index={1}><Contacts {...props}/></TabPanel>,
+      ({ styles, value, ...props }) => <TabPanel style={styles} value={value} index={1}><Contacts isStartingNewDialogWindow={false} {...props}/></TabPanel>,
       ({ styles, value, ...props }) => <TabPanel style={styles} value={value} index={2}><Profile/></TabPanel>,
     ]
 
@@ -162,6 +162,20 @@ function TabPanel(props) {
               position : "absolute",
               width: `${!isStartMessagingActive ? "0" : "100%"}`,
               height: `${!isStartMessagingActive ? "0" : "100%"}`,
+              animationDuration : "3s",
+              animationName: "slidein",
+              // animationIterationCount: "infinite",
+              // "@keyframes slidein" : {
+              //   'from' : {
+              //     marginLeft: '100%',
+              //     width: '300%'
+              //   },
+              
+              //   'to' : {
+              //     marginLeft: '0%',
+              //     width: '100%'
+              //   }
+              // }
             }}>
               <Grid item
                 hidden={!isStartMessagingActive}
@@ -202,7 +216,7 @@ function TabPanel(props) {
                           Choose your contact
                         </Grid>
                     </Grid>
-                  <Contacts/>
+                  <Contacts isStartingNewDialogWindow/>
               </Grid>
             </Grid>
             <header style={{
@@ -275,40 +289,33 @@ function TabPanel(props) {
                 {...props}
                 /> 
               })}
-                {/* <IconButton>
-                  <ChatOutlinedIcon
-                  sx={{
-                    color : "#ffffff",
-                    transform: "scale(-1, 0.9)",
-                    width: "5vh",
-                    height: "5vh"
-                  }}/>
-                </IconButton> */}
                 <IconButton
                 onClick={()=>setIsStartMessagingActive(true)}
                 sx={{
-                  display: "flex",
+                  display: `${value === 0 ? "flex" : "none"}`,
                   justifyContent : "center",
                   alignItems: "center",
                   position: "absolute",
                   right : "5vw",
                   bottom : "5vw",
-                  backgroundColor: "#4f89ff",
+                  backgroundColor: "#ffffff",
                   borderRadius: "50%",
                   width: "7vh",
                   height: "7vh",
+                  boxShadow : "#aca7a7 0px 0px 14px 0px",
                   ":hover": {
-                    backgroundColor : "#4f89ff"
+                    backgroundColor : "#ffffff"
                   },
                   "@media (hover : none)" : {
                     ":hover": {
-                      backgroundColor : "#4f89ff"
+                      backgroundColor : "#ffffff"
                     }
                   },
                 }}>
                   <BsFillChatDotsFill
                   size="4vh"
-                  color="#ffffff"/>
+                  color={theme.palette.primary.dark}
+                  />
                 </IconButton>
         </Fragment>
     );

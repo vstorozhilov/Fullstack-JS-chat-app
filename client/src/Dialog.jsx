@@ -444,13 +444,13 @@ export function Dialog(props){
     const dialogContainerRef = useRef(null);
 
     //const [isDialogFullyScrolled, setDialogFullyScrolled] = useState(false);
-    const user = useContext(authentificationContext);
+    const {user : {login}, user : {password}} = useContext(authentificationContext);
 
     const dialogId = useSelector(state=>state.dialogsReducer.selectedDialog);
 
     const peerLogin = useSelector(state=>{
         let currentDialog = state.dialogsReducer.Dialogs[dialogId];
-        return user.login === currentDialog.peerOne ? currentDialog.peerTwo : currentDialog.peerOne;
+        return login === currentDialog.peerOne ? currentDialog.peerTwo : currentDialog.peerOne;
     });
 
     // const NotReadedMessagesCount = useSelector(state=>(
@@ -474,7 +474,7 @@ export function Dialog(props){
         fetch("http://localhost:8090/dialog", {
         mode: "cors",
         method : "GET",
-        headers : {"Authorization" : user.login + ":" + user.password,
+        headers : {"Authorization" : login + ":" + password,
                     "Dialogid" : dialogId},
       }).then((response)=>{
           if (response.status === 200){
@@ -499,13 +499,11 @@ export function Dialog(props){
         fetch("http://localhost:8090/dialog", {
         mode: "cors",
         method : "POST",
-        headers : {"Authorization" : user.login + ":" + user.password,
-                    // "Peer" : peerLogin,
+        headers : {"Authorization" : login + ":" + password,
                     "Dialogid" : dialogId},
         body : messageField.current.querySelector('.MuiOutlinedInput-input').value
       }).then((response)=>{
           if (response.status === 200){
-            //console.log("Success");
             console.log(dialogContainerRef.current);
             dialogContainerRef.current.scrollTo(0, dialogContainerRef.current.scrollHeight);
           }

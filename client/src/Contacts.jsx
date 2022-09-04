@@ -32,15 +32,53 @@ import Avatar from '@mui/material/Avatar';
 import { useTransition } from '@react-spring/web'
 import authentificationContext from './contexts/authentificationContext'
 import {useSelector, useDispatch} from 'react-redux';
+import { dialogIsSelected } from './databaseSubscriber';
+import {useNavigate} from "react-router-dom";
 
 function ContactItem(props) {
 
+    console.log(props.isStartingNewDialogWindow);
+
+    const {user : {login}, user : {password}} = useContext(authentificationContext);
+
+    const navigate = useNavigate();
+
+    const dispatch = useDispatch();
+
     const theme = useTheme();
+
+    const handleClick = (e) => {
+
+        console.log("Contacted");
+
+        fetch("http://localhost:8090/main", {
+            mode : "cors",
+            method : "POST",
+            headers : {"Authorization" : login + ":" + password},
+            body : JSON.stringify({
+                action : "startNewDialog",
+                peerLogin : props.contact.login
+            })}).then(response=>{
+                if (response.status === 200){
+                    response.json().then(dialogId=>{
+                        console.log(dialogId);
+                        console.log(dialogId);
+                        dispatch({type: 'SET_SELECTED_DIALOG', value: dialogId});
+                        dialogIsSelected(dialogId);
+                        navigate("/dialog");
+                    })
+                }
+                else {
+                    /* TO DO */
+                }
+            });
+        }
 
     return (
         <Grid container
             direction='row'
             justifyContent='flex-start'
+            onClick={props.isStartingNewDialogWindow ? handleClick : ()=>{}}
             wrap='nowrap'>
                 <Grid item
                 sx={{
@@ -104,7 +142,7 @@ export function Contacts(props) {
                 {contacts.map((value, index)=>{
                 if (value.login !== login)
                     return <Grid item key={index}>
-                        <ContactItem contact={value}/>
+                        <ContactItem isStartingNewDialogWindow={props.isStartingNewDialogWindow} contact={value}/>
                     </Grid>})}
             </Grid>                                       
     )

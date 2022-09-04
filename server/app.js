@@ -15,62 +15,110 @@ async function mainTabHandler(request, response) {
 
     const [login, password] = request.headers['authorization'].split(":");
 
-    const tab = request.headers['tab'];
+    const decoder = new TextDecoder();
 
-    let user = await userModel.findOne({login});
+    let body = "";
 
-    switch (tab){
-        case('main'):
-            let contacts = await userModel.find();
+    request.on('data', data=>{
+        body += decoder.decode(data);
+    })
 
-            let dialogs = await dialogModel.find({$or : [
-                {"peerOne" : login},
-                {"peerTwo" : login}
-            ]});
+    request.on('end', async ()=>{
 
-            let populatingPromises = dialogs.map(async item=>{
-                await item.populate("lastMessage");
-            });
+        let {action, ...responsePayment} = JSON.parse(body);
 
-            await Promise.all(populatingPromises);
+        switch (action){
 
-            let unreadedMessagesCountingPromises = dialogs.map(async item=>{
-                item.unreadedMessagesCount = (await messageModel.find({'author' : {$ne : login},
-                                                                    'isReaded' : false,
-                                                                    'dialog' : item._id})).length;
-                }
-            )
-            
-            // console.log(correctDialogs);
-            await Promise.all(unreadedMessagesCountingPromises);
-            // let unreadedMessagesCount = (await messageModel.find({'author' : {$ne : login},
-            //                     'isReaded' : false,
-            //                     'dialog' : {$in : dialogs.map(item=>mongoose.Types.ObjectId(item._id))}})).length;
-            //await dialogs[0].populate("messages").exec((story, err)=>{console.log(story)});
-            //console.log(mess);
+            case('updateAll'):
+            {
+                let user = await userModel.findOne({login});
 
-            //await Promise.all(populatingPromises);
-            response.writeHead(200, headers={
-                "Access-Control-Allow-Origin" : "*"
-            });
-            response.write(JSON.stringify([contacts, dialogs, user]));
-            response.end();
-            break;
-        case('profile'):
-            let profile =''
-            request.on('data', data=>{
-                profile += data;
-            })
-            request.on('end', async ()=>{
-                user.profile = JSON.parse(profile);
-                await user.save();
+                let contacts = await userModel.find();
+
+                let dialogs = await dialogModel.find({$or : [
+                    {"peerOne" : login},
+                    {"peerTwo" : login}
+                ]});
+
+                let populatingPromises = dialogs.map(async item=>{
+                    await item.populate("lastMessage");
+                });
+
+                await Promise.all(populatingPromises);
+
+                let unreadedMessagesCountingPromises = dialogs.map(async item=>{
+                    item.unreadedMessagesCount = (await messageModel.find({'author' : {$ne : login},
+                                                                        'isReaded' : false,
+                                                                        'dialog' : item._id})).length;
+                    }
+                )
+                
+                await Promise.all(unreadedMessagesCountingPromises);
                 response.writeHead(200, headers={
                     "Access-Control-Allow-Origin" : "*"
                 });
+                response.write(JSON.stringify([contacts, dialogs, user]));
                 response.end();
-            })
-            break;
-    }
+                break;
+            }
+            case("changeMyProfile"):
+            {
+                let user = await userModel.findOne({login});
+
+                user.profile = responsePayment;
+
+                await user.save();
+
+                response.writeHead(200, headers={
+                    "Access-Control-Allow-Origin" : "*"
+                });
+
+                response.end();
+
+                break;
+            }
+            case("startNewDialog"):
+            {
+                let existentDialog = await dialogModel.findOne({
+                       $or :[
+                        {peerOne : login, peerTwo : responsePayment.peerLogin},
+                        {peerOne : responsePayment.peerLogin, peerTwo : login}
+                       ]
+                    }
+                )
+
+                if (existentDialog) {
+
+                    response.writeHead(200, headers={
+                        "Access-Control-Allow-Origin" : "*"
+                    });
+
+                    response.write(JSON.stringify(existentDialog._id));
+
+                    response.end();
+                }
+                else {
+
+                    let newDialog = new dialogModel({
+                        peerOne : login,
+                        peerTwo : responsePayment.peerLogin
+                    })
+
+                    await newDialog.save();
+
+                    response.writeHead(200, headers={
+                        "Access-Control-Allow-Origin" : "*"
+                    });
+
+                    response.write(JSON.stringify(newDialog._id));
+
+                    response.end();
+                }
+            }
+        }
+
+    })
+
 }
 
 async function accountCreationHandler(request, response){
@@ -294,13 +342,16 @@ async function run() {
             socket.on("dialog has selected", dialogId=>{
 
                 console.log("selected");
-                
+
+                console.log(typeof dialogId)
+            
                 let messageSendedChangeStream = messageModel.watch([
                     {$match : { $and : [{ "operationType": 'insert' }, {"fullDocument.dialog" : mongoose.Types.ObjectId(dialogId)}]}},
                     {"$project" : {"fullDocument" : 1}}
                 ], 
                     {'fullDocument' : "updateLookup"});
-                
+
+
                 let messageReadedChangeStream = messageModel.watch([
                     {$match : {"fullDocument.dialog" : mongoose.Types.ObjectId(dialogId)}},
                     {$addFields: {
@@ -320,9 +371,12 @@ async function run() {
                     socket.emit("message was readed", data.documentKey._id);
                 });
 
-                socket.on('exit from dialog', ()=>{
+                socket.on('exit from dialog', async ()=>{
                     messageReadedChangeStream.close();
                     messageSendedChangeStream.close();
+                    if (await dialogModel.exists({_id : dialogId, lastMessage : null})){
+                        await dialogModel.deleteOne({_id : dialogId});
+                    }
                     socket.removeAllListeners("exit from dialog");
                 })
 
@@ -350,15 +404,18 @@ async function run() {
 
             dialogsChangeStream.on('change', async data=>{
 
+                console.log('dialogs changed');
+
                 const actualDialogs = await dialogModel.find({
                     $or : [{"peerOne" : socket.handshake.auth.login},
                             {"peerTwo" : socket.handshake.auth.login}]
                 });
 
-                let promises = actualDialogs.map(async item=>{await item.populate("lastMessage");
+                let promises = actualDialogs.filter(item=>(item.lastMessage !== null)).map(async item=>{await item.populate("lastMessage");
                 item.unreadedMessagesCount = (await messageModel.find({'author' : {$ne : socket.handshake.auth.login},
                                                                     'isReaded' : false,
                                                                     'dialog' : item._id})).length;});
+                console.log()
                 await Promise.all(promises);
                 // let populatingPromises = actualDialogs.map(async item=>{
                 //     item.messages = item.messages.slice(item.messages.length - 1,);

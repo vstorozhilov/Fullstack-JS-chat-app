@@ -35,6 +35,7 @@ import { authentificationContext } from './Routes';
 import { dialogIsSelected } from './databaseSubscriber';
 import NotDialogsYetImage from './images/NotDialogsYet.png'
 import useMediaQuery from '@mui/material/useMediaQuery';
+import {BsFillChatDotsFill} from "react-icons/bs";
 
 var zip = require('zip-array').zip;
 
@@ -171,66 +172,42 @@ function ChatItemContainer({style, id, onClick, ...props}){
 
 export function ChatItems(props) {
 
-    const [selectedItem, setSelectedItem] = useState(-1);
-
     const dispatch = useDispatch();
     console.log('rendered');
 
-    const dialogs = useSelector(state => Object.values(state.dialogsReducer.Dialogs));
+    const dialogs = useSelector(state => Object.values(state.dialogsReducer.Dialogs).filter(item=>(item.lastMessage !== null)));
     const contacts = useSelector(state => state.contactsReducer.Contacts);
 
-    console.log(dialogs);
-
-    const user = useContext(authentificationContext);
+    const {user : {login}} = useContext(authentificationContext);
 
     let avatars = dialogs.map(item=>{
-        let peerLogin = (user.login === item.peerOne ? item.peerTwo : item.peerOne);
+        let peerLogin = (login === item.peerOne ? item.peerTwo : item.peerOne);
         return contacts[peerLogin].profile.avatar;
     })
 
-    const AnimatedChatItemContainer = animated(ChatItemContainer);
-
-    const transitions = useTransition(zip(dialogs, avatars),
-        {
-            // initial: {transform: 'translateY(0%)',  opacity: 1},
-            from: {transform: 'translateY(500%)', opacity: 0},
-            enter: {transform: 'translateY(0%)',  opacity: 1},
-            // leave: {transform: 'translateY(-100%)'},
-            delay: key => (100 * key),
-            config: { duration: 300 },
-        }
-    )
+    let dialogAvaPair = zip(dialogs, avatars)
 
     const handleClick = (e) => {
         dispatch({type: 'SET_SELECTED_DIALOG', value: e.currentTarget.id});
         dialogIsSelected(e.currentTarget.id);
       };
-    
-
 
     return (
             <Grid container
             direction='column'
             justifyContent='flex-start'
-            rowSpacing={3}>
-                {dialogs.length ? (props.isOnceRendered === false ?
-                transitions((styles, item)=>{
-                    return <AnimatedChatItemContainer
-                    id={item[0]._id}
-                    src={item[1]}
-                    style={styles}
-                    onClick={handleClick}
-                    Nickname={user.login === item[0].peerOne ? item[0].peerTwo : item[0].peerOne}
-                    Login={user.login === item[0].peerOne ? item[0].peerTwo : item[0].peerOne}
-                    />}) :
-                    transitions((styles, item)=>{
+            rowSpacing={3}
+            height="100%">
+                {dialogs.length ? 
+                    dialogAvaPair.filter(item=>(item[0].lastMessage !== null)).map((item, index)=>{
                         return <ChatItemContainer
+                        key={index}
                         id={item[0]._id}
                         src={item[1]}
                         onClick={handleClick}
-                        Nickname={user.login === item[0].peerOne ? item[0].peerTwo : item[0].peerOne}
-                        Login={user.login === item[0].peerOne ? item[0].peerTwo : item[0].peerOne}
-                        />})) : <NoDialogsYet/>
+                        Nickname={login === item[0].peerOne ? item[0].peerTwo : item[0].peerOne}
+                        Login={login === item[0].peerOne ? item[0].peerTwo : item[0].peerOne}
+                        />}) : <NoDialogsYet/>
                 }
             </Grid>                                       
     )

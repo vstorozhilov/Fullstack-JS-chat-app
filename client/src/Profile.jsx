@@ -43,8 +43,6 @@ function handleAvatarChange(event){
 
 export default function Profile(props) {
 
-    //const theme = useTheme()
-
     const [isEditable, setEditibility] = useState(false);
     const {user} = useContext(authentificationContext);
 
@@ -66,6 +64,7 @@ export default function Profile(props) {
       button.current.innerHTML = 'uploading...';
 
       let newprofile = {
+        action : "changeMyProfile",
         avatar : avatar.current.src,
         fullname : fullname.current.querySelector('.MuiOutlinedInput-input').value,
         nickname : nickname.current.querySelector('.MuiOutlinedInput-input').value,
@@ -77,11 +76,10 @@ export default function Profile(props) {
       fetch("http://localhost:8090/main", {
         mode: "cors",
         method : "POST",
-        headers : {"Authorization" : user.login + ":" + user.password,
-                    "Tab" : "profile"},
+        headers : {"Authorization" : user.login + ":" + user.password},
         body : JSON.stringify(newprofile)
       }).then((response)=>{
-          if (response.status === 200){
+          if (response.status === 200) {
             button.current.disabled = false;
             button.current.innerHTML = 'Edit';
           }
