@@ -261,6 +261,9 @@ const MessagesContainer = React.forwardRef((props, ref)=>{
                 ref.current.scrollTo(0, ref.current.scrollHeight);
             }
         }
+        else {
+            setisDialogFullyScrolled(true);
+        }
     })
 
     const NotReadedMessagesCount = useSelector(state=>(

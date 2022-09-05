@@ -10,7 +10,10 @@ export default function DialogsReducer(state = defaultState, action) {
     switch (action.type) {
         case 'SET_DIALOGS':
             let object = Object.fromEntries(action.value.map((item)=>([item._id, item])));
-            return {...state, Dialogs : object}
+            return {...state, Dialogs : object};
+        case "INSERT_DIALOG":
+            const {_id, ...dialog} = action.value;
+            return {...state, Dialogs : {...state.Dialogs, [_id] : dialog}}
         case 'SET_IS_DIALOG_PAGE_ONCE_RENDERED':
             return {...state, IsOnceRendered: true}
         case 'SET_SELECTED_DIALOG':

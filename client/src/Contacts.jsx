@@ -37,8 +37,6 @@ import {useNavigate} from "react-router-dom";
 
 function ContactItem(props) {
 
-    console.log(props.isStartingNewDialogWindow);
-
     const {user : {login}, user : {password}} = useContext(authentificationContext);
 
     const navigate = useNavigate();
@@ -49,8 +47,6 @@ function ContactItem(props) {
 
     const handleClick = (e) => {
 
-        console.log("Contacted");
-
         fetch("http://localhost:8090/main", {
             mode : "cors",
             method : "POST",
@@ -60,11 +56,10 @@ function ContactItem(props) {
                 peerLogin : props.contact.login
             })}).then(response=>{
                 if (response.status === 200){
-                    response.json().then(dialogId=>{
-                        console.log(dialogId);
-                        console.log(dialogId);
-                        dispatch({type: 'SET_SELECTED_DIALOG', value: dialogId});
-                        dialogIsSelected(dialogId);
+                    response.json().then(([doesExist, dialog])=>{
+                        if (!doesExist) dispatch({type: 'INSERT_DIALOG', value: dialog});
+                        dispatch({type: 'SET_SELECTED_DIALOG', value: dialog._id});
+                        dialogIsSelected(dialog._id);
                         navigate("/dialog");
                     })
                 }
@@ -74,11 +69,22 @@ function ContactItem(props) {
             });
         }
 
+    const itemPointDownAnimation = `animation-name : chatItemAnimationDown;
+    animation-duration : 0.3s;
+    background-color : #00dfff`;
+    const itemPointUpAnimation = `animation-name : chatItemAnimationUp;
+    animation-duration : 0.3s;
+    background-color : #ffffff`;
+
     return (
         <Grid container
             direction='row'
             justifyContent='flex-start'
             onClick={props.isStartingNewDialogWindow ? handleClick : ()=>{}}
+            onTouchStart={e=>{e.currentTarget.style = itemPointDownAnimation}}
+            onMouseDown={e=>{e.currentTarget.style = itemPointDownAnimation}}
+            onTouchEnd={e=>{e.currentTarget.style = itemPointUpAnimation}}
+            onMouseUp={e=>{e.currentTarget.style = itemPointUpAnimation}}
             wrap='nowrap'>
                 <Grid item
                 sx={{
@@ -138,7 +144,12 @@ export function Contacts(props) {
             <Grid container
             direction='column'
             justifyContent='flex-start'
-            rowSpacing={3}>
+            rowSpacing={2}
+            flexGrow="1"
+            sx={{
+                paddingLeft : `${props.isStartingNewDialogWindow ? "3vw" : "0"}`
+            }}
+            overflowY="scroll">
                 {contacts.map((value, index)=>{
                 if (value.login !== login)
                     return <Grid item key={index}>

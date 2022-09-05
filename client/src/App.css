@@ -17,5 +17,60 @@
 
 a, a:hover, a:focus, a:active {
   text-decoration: none;
-  color: transparent;
+  /* color: transparent; */
+  background-color: transparent;
+}
+
+@keyframes chatIconAnimationDown {
+  from {
+    color: #3062c8
+  }
+  to {
+    color : #ffffff
+  }
+}
+
+@keyframes chatIconAnimationUp {
+  from {
+    color: #ffffff
+  }
+  to {
+    color : #3062c8
+  }
+}
+
+@keyframes chatIconButtonAnimationDown {
+  from {
+    background-color: #ffffff
+  }
+  to {
+    background-color : #3062c8
+  }
+}
+
+@keyframes chatIconButtonAnimationUp {
+  from {
+    background-color: #3062c8
+  }
+  to {
+    background-color : #ffffff
+  }
+}
+
+@keyframes chatItemAnimationDown {
+  from {
+    background-color : #ffffff
+  }
+  to {
+    background-color: #00dfff
+  }
+}
+
+@keyframes chatItemAnimationUp {
+  from {
+    background-color: #00dfff
+  }
+  to {
+    background-color: #ffffff
+  }
 }

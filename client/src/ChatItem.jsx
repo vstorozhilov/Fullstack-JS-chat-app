@@ -36,6 +36,7 @@ import { dialogIsSelected } from './databaseSubscriber';
 import NotDialogsYetImage from './images/NotDialogsYet.png'
 import useMediaQuery from '@mui/material/useMediaQuery';
 import {BsFillChatDotsFill} from "react-icons/bs";
+import { useNavigate } from 'react-router-dom';
 
 var zip = require('zip-array').zip;
 
@@ -163,17 +164,29 @@ function NoDialogsYet(props){
 
 function ChatItemContainer({style, id, onClick, ...props}){
 
-    return (<Grid item onClick={onClick} id={id} sx={style}>
-                <Link to='/dialog'>
-                    <ChatItem {...props} dialogId={id}/>
-                </Link>
-            </Grid>);
+    const itemPointDownAnimation = `animation-name : chatItemAnimationDown;
+    animation-duration : 0.3s;
+    background-color : #00dfff;`;
+    const itemPointUpAnimation = `animation-name : chatItemAnimationUp;
+    animation-duration : 0.3s;
+    background-color : #ffffff;`;
+
+    return (<Grid item onClick={onClick} id={id} sx={style}
+        onTouchStart={e=>{e.currentTarget.style = itemPointDownAnimation}}
+        onMouseDown={e=>{e.currentTarget.style = itemPointDownAnimation}}
+        onTouchEnd={e=>{e.currentTarget.style = itemPointUpAnimation}}
+        onMouseUp={e=>{e.currentTarget.style = itemPointUpAnimation}}
+        >
+            <ChatItem {...props} dialogId={id}/>
+        </Grid>);
 }
 
 export function ChatItems(props) {
 
     const dispatch = useDispatch();
     console.log('rendered');
+
+    const navigate = useNavigate();
 
     const dialogs = useSelector(state => Object.values(state.dialogsReducer.Dialogs).filter(item=>(item.lastMessage !== null)));
     const contacts = useSelector(state => state.contactsReducer.Contacts);
@@ -190,6 +203,7 @@ export function ChatItems(props) {
     const handleClick = (e) => {
         dispatch({type: 'SET_SELECTED_DIALOG', value: e.currentTarget.id});
         dialogIsSelected(e.currentTarget.id);
+        navigate('/dialog')
       };
 
     return (

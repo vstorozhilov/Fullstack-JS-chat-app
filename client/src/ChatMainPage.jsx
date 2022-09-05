@@ -40,6 +40,8 @@ import { useFetch } from "react-async";
 import {BsFillChatDotsFill} from "react-icons/bs"
 import CloseIcon from '@mui/icons-material/Close';
 
+
+
 function TabPanel(props) {
     const { children, value, index, style, ...other } = props;
 
@@ -139,54 +141,55 @@ function TabPanel(props) {
         leave: prevValue < value ? {transform: 'translateX(-100%)'} : {transform: 'translateX(100%)'},
       });
 
+    const chatIconAnimationDown = "animation-name : chatIconAnimationDown; animation-duration: 0.25s; color : #ffffff;";
+    const chatIconAnimationUp = `animation-name : chatIconAnimationUp; animation-duration: 0.25s; color : ${theme.palette.primary.dark};`;
+    const chatIconButtonAnimationDown = `animation-name : chatIconButtonAnimationDown; animation-duration: 0.25s; background-color : ${theme.palette.primary.dark};`;
+    const chatIconButtonAnimationUp = `animation-name : chatIconButtonAnimationUp; animation-duration: 0.25s; background-color : #ffffff;`;
+
     return (Object.keys(user).length &&
         <Fragment>
             <div
               hidden={!isStartMessagingActive}
               style={{
-              zIndex : "1",
+              zIndex : `${isStartMessagingActive ? "1" : "-1"}`,
               position : "absolute",
-              width: `${!isStartMessagingActive ? "0" : "100%"}`,
-              height: `${!isStartMessagingActive ? "0" : "100%"}`,
+              width: "100%",
+              height: "100%",
               backgroundColor: "#a7a7a7",
               opacity: "0.8"
 
             }}>
             </div>
             <Grid container
-            hidden={!isStartMessagingActive}
             justifyContent="center"
             alignItems="center"
-            sx={{
+            sx={isStartMessagingActive ? {
+              height : "100%",
               zIndex: "2",
               position : "absolute",
-              width: `${!isStartMessagingActive ? "0" : "100%"}`,
-              height: `${!isStartMessagingActive ? "0" : "100%"}`,
-              animationDuration : "3s",
+              width : "100%",
+              animationDuration : "0.3s",
               animationName: "slidein",
-              // animationIterationCount: "infinite",
-              // "@keyframes slidein" : {
-              //   'from' : {
-              //     marginLeft: '100%',
-              //     width: '300%'
-              //   },
-              
-              //   'to' : {
-              //     marginLeft: '0%',
-              //     width: '100%'
-              //   }
-              // }
-            }}>
+              animationTimingFunction : "cubic-bezier(0, 1.05, 0.94, 1.02)",
+              "@keyframes slidein" : {
+                'from' : {
+                  opacity : "0",
+                  marginTop : '100%'
+                },
+                'to' : {
+                  opacity : "1",
+                  marginTop : '0%'
+                }
+              }
+            } : {}}>
               <Grid item
                 hidden={!isStartMessagingActive}
                 sx={{
-                  paddingLeft : "3vw",
                   opacity: "1",
                   backgroundColor : "#ffffff",
                   height: "90vh",
                   width: "90vw",
-                  borderRadius: "5vw",
-                  overflowY: "scroll"
+                  borderRadius: "3vw"
                 }}>
                     <Grid container
                     direction="row"
@@ -197,8 +200,9 @@ function TabPanel(props) {
                       background : `linear-gradient(to right, #4f89ff, #2d71fd)`,
                       paddingTop : "1vh",
                       paddingBottom : "1vh",
-                      paddingLeft :'3vw',
-                      marginBottom : "3vh"
+                      marginBottom : "3vh",
+                      marginLeft: "0",
+                      width: "100%"
                     }}>
                         <Grid item>
                           <CloseIcon
@@ -290,6 +294,30 @@ function TabPanel(props) {
                 /> 
               })}
                 <IconButton
+                onTouchStart={(e)=>{
+                  e.currentTarget.style = chatIconButtonAnimationDown;
+                  if (e.currentTarget === e.target) {
+                    e.currentTarget.querySelector('svg').style = chatIconAnimationDown;
+                  }
+                }}
+                onMouseDown={(e)=>{
+                  e.currentTarget.style = chatIconButtonAnimationDown;
+                  if (e.currentTarget === e.target) {
+                    e.currentTarget.querySelector('svg').style = chatIconAnimationDown;
+                  }
+                }}
+                onTouchEnd={(e)=>{
+                  e.currentTarget.style = chatIconButtonAnimationUp;
+                  if (e.currentTarget === e.target) {
+                    e.currentTarget.querySelector('svg').style = chatIconAnimationUp;
+                  }
+                }}
+                onMouseUp={(e)=>{
+                  e.currentTarget.style = chatIconButtonAnimationUp;
+                  if (e.currentTarget === e.target) {
+                    e.currentTarget.querySelector('svg').style = chatIconAnimationUp;
+                  }
+                }}
                 onClick={()=>setIsStartMessagingActive(true)}
                 sx={{
                   display: `${value === 0 ? "flex" : "none"}`,
@@ -313,8 +341,14 @@ function TabPanel(props) {
                   },
                 }}>
                   <BsFillChatDotsFill
+                  onTouchStart={(e)=>{e.currentTarget.style = chatIconAnimationDown}}
+                  onMouseDown={(e)=>{e.currentTarget.style = chatIconAnimationDown}}
+                  onTouchEnd={(e)=>{e.currentTarget.style = chatIconAnimationUp}}
+                  onMouseUp={(e)=>{e.currentTarget.style = chatIconAnimationUp}}
                   size="4vh"
-                  color={theme.palette.primary.dark}
+                  style={{
+                    color : `${theme.palette.primary.dark}`,
+                  }}
                   />
                 </IconButton>
         </Fragment>
