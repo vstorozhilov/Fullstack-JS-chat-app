@@ -137,7 +137,7 @@ async function accountCreationHandler(request, response){
 
     request.on('end', async ()=>{
 
-        if (userModel.findOne({login})) {
+        if ((await userModel.findOne({login})) === null) {
             response.writeHead(401, headers={
                 "Access-Control-Allow-Origin" : "*"
             });
@@ -204,7 +204,7 @@ async function messageHandler(request, response) {
 
     request.on("end", async ()=>{
 
-        if (userModel.findOne({login, password}) === null) {
+        if ((await userModel.findOne({login, password})) === null) {
             response.writeHead(401, headers={
                 "Access-Control-Allow-Origin" : "*"
             });
@@ -305,6 +305,12 @@ async function run() {
 
             console.log("connected to socketio");
 
+            if ((await userModel.exists({login : socket.handshake.auth.login,
+                                        password : socket.handshake.auth.password})) === null) {
+                socket.disconnect();
+                return ;
+            }
+
             let contactsChangeStream = userModel.watch([
             ], {'fullDocument' : "updateLookup"});
 
@@ -370,7 +376,7 @@ async function run() {
                     {"$match" : {"tmpfields.k" : {"$eq" : "isReaded"}}},
                     {"$project" : {"documentKey" : 1}}],
                     {'fullDocument' : "updateLookup"});
-                
+
                 messageSendedChangeStream.on("change", data=>{
                     console.log("message sended");
                     socket.emit("message sended", data.fullDocument);

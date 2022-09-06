@@ -29,8 +29,8 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import zIndex from '@mui/material/styles/zIndex';
 import Avatar from '@mui/material/Avatar';
-import { useTransition } from '@react-spring/web'
-import authentificationContext from './contexts/authentificationContext'
+import { useTransition } from '@react-spring/web';
+import authentificationContext from './contexts/authentificationContext';
 import {useSelector, useDispatch} from 'react-redux';
 import { dialogIsSelected } from './databaseSubscriber';
 import {useNavigate} from "react-router-dom";

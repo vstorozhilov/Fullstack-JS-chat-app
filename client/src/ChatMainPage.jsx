@@ -40,8 +40,6 @@ import { useFetch } from "react-async";
 import {BsFillChatDotsFill} from "react-icons/bs"
 import CloseIcon from '@mui/icons-material/Close';
 
-
-
 function TabPanel(props) {
     const { children, value, index, style, ...other } = props;
 
@@ -82,7 +80,7 @@ function TabPanel(props) {
     const [value, setValue] = React.useState(0);
     const [prevValue, setPrevValue] = React.useState(-1);
     const theme = useTheme();
-    const {user} = useContext(authentificationContext);
+    const {user : {login}, user : {password}} = useContext(authentificationContext);
     const navigate = useNavigate();
 
     const isOnceRendered = useSelector(state => state.dialogsReducer.IsOnceRendered);
@@ -95,7 +93,7 @@ function TabPanel(props) {
       fetch("http://localhost:8090/main", {
         mode: "cors",
         method : "POST",
-        headers : {"Authorization" : user.login + ":" + user.password},
+        headers : {"Authorization" : login + ":" + password},
         body : JSON.stringify({action : "updateAll"})
       }).then((response)=>{
           if (response.status === 200){
@@ -104,7 +102,7 @@ function TabPanel(props) {
               dispatch({type : "SET_CONTACTS", value : contacts});
               dispatch({type : "SET_DIALOGS", value : dialogs});
               dispatch({type : "SET_USER", value : user});
-              databaseSubscriber(user.login);
+              databaseSubscriber(login, password);
             });
           }
         });
@@ -112,7 +110,7 @@ function TabPanel(props) {
     }
 
     useEffect(()=>{
-      if (!Object.keys(user).length) {
+      if (!login && !password) {
         navigate('/login');
       }
       if (isOnceRendered === false) {
@@ -143,7 +141,7 @@ function TabPanel(props) {
     const chatIconButtonAnimationDown = `animation-name : chatIconButtonAnimationDown; animation-duration: 0.25s; background-color : ${theme.palette.primary.dark};`;
     const chatIconButtonAnimationUp = `animation-name : chatIconButtonAnimationUp; animation-duration: 0.25s; background-color : #ffffff;`;
 
-    return (Object.keys(user).length &&
+    return (login && password &&
         <Fragment>
             {isStartMessagingActive ?
             <Fragment>
