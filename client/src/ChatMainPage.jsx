@@ -107,9 +107,6 @@ function TabPanel(props) {
               databaseSubscriber(user.login);
             });
           }
-          else {
-            /* TO DO */
-          }
         });
 
     }
@@ -148,81 +145,83 @@ function TabPanel(props) {
 
     return (Object.keys(user).length &&
         <Fragment>
-            <div
-              hidden={!isStartMessagingActive}
-              style={{
-              zIndex : `${isStartMessagingActive ? "1" : "-1"}`,
-              position : "absolute",
-              width: "100%",
-              height: "100%",
-              backgroundColor: "#a7a7a7",
-              opacity: "0.8"
+            {isStartMessagingActive ?
+            <Fragment>
+              <div
+                style={{
+                zIndex : "1",
+                position : "absolute",
+                width: "100%",
+                height: "100%",
+                backgroundColor: "#a7a7a7",
+                opacity: "0.8"
 
-            }}>
-            </div>
-            <Grid container
-            justifyContent="center"
-            alignItems="center"
-            sx={isStartMessagingActive ? {
-              height : "100%",
-              zIndex: "2",
-              position : "absolute",
-              width : "100%",
-              animationDuration : "0.3s",
-              animationName: "slidein",
-              animationTimingFunction : "cubic-bezier(0, 1.05, 0.94, 1.02)",
-              "@keyframes slidein" : {
-                'from' : {
-                  opacity : "0",
-                  marginTop : '100%'
-                },
-                'to' : {
-                  opacity : "1",
-                  marginTop : '0%'
-                }
-              }
-            } : {}}>
-              <Grid item
-                hidden={!isStartMessagingActive}
-                sx={{
-                  opacity: "1",
-                  backgroundColor : "#ffffff",
-                  height: "90vh",
-                  width: "90vw",
-                  borderRadius: "3vw"
+              }}>
+              </div>
+              <Grid container
+              justifyContent="center"
+              alignItems="center"
+              sx={{
+                height : "100%",
+                zIndex: "2",
+                position : "absolute",
+                width : "100%",
+                animationDuration : "0.3s",
+                animationName: "slidein",
+                animationTimingFunction : "cubic-bezier(0, 1.05, 0.94, 1.02)",
+                "@keyframes slidein" : {
+                  'from' : {
+                    opacity : "0",
+                    marginTop : '100%'
+                  },
+                  'to' : {
+                    opacity : "1",
+                    marginTop : '0%'
+                  }}
                 }}>
-                    <Grid container
-                    direction="row"
-                    justifyContent='flex-start'
-                    alignItems="center"
-                    columnSpacing={3}
-                    sx={{
-                      background : `linear-gradient(to right, #4f89ff, #2d71fd)`,
-                      paddingTop : "1vh",
-                      paddingBottom : "1vh",
-                      marginBottom : "3vh",
-                      marginLeft: "0",
-                      width: "100%"
-                    }}>
-                        <Grid item>
-                          <CloseIcon
-                          onClick={()=>setIsStartMessagingActive(false)}
-                          fontSize='large'
-                          sx={{
-                              color: '#ffffff'
-                          }} />
-                        </Grid>
-                        <Grid item sx={{
-                          fontSize: "3vh",
-                          fontWeight: theme.typography.fontWeightBold,
-                          color: theme.palette.secondary.text
-                        }}>
-                          Choose your contact
-                        </Grid>
-                    </Grid>
-                  <Contacts isStartingNewDialogWindow/>
+                <Grid item
+                  hidden={!isStartMessagingActive}
+                  sx={{
+                    opacity: "1",
+                    backgroundColor : "#ffffff",
+                    height: "90vh",
+                    width: "90vw",
+                    borderRadius: "3vw"
+                  }}>
+                      <Grid container
+                      direction="row"
+                      justifyContent='flex-start'
+                      alignItems="center"
+                      columnSpacing={3}
+                      sx={{
+                        background : `linear-gradient(to right, #4f89ff, #2d71fd)`,
+                        paddingTop : "1vh",
+                        paddingBottom : "1vh",
+                        marginBottom : "3vh",
+                        marginLeft: "0",
+                        width: "100%"
+                      }}>
+                          <Grid item>
+                            <CloseIcon
+                            onClick={()=>setIsStartMessagingActive(false)}
+                            fontSize='large'
+                            sx={{
+                                color: '#ffffff'
+                            }} />
+                          </Grid>
+                          <Grid item sx={{
+                            fontSize: "3vh",
+                            fontWeight: theme.typography.fontWeightBold,
+                            color: theme.palette.secondary.text
+                          }}>
+                            Choose your contact
+                          </Grid>
+                      </Grid>
+                    <Contacts isStartingNewDialogWindow/>
+                </Grid>
               </Grid>
-            </Grid>
+            </Fragment> : null
+            }
             <header style={{
               background: `linear-gradient(to right, #4f89ff, #2d71fd)`,
               color: theme.palette.secondary.text
@@ -268,12 +267,12 @@ function TabPanel(props) {
                   textColor="inherit"
                   aria-label="basic tabs example"
                   sx={{
-                    '& .MuiTabs-indicator' :{
+                    '& .MuiTabs-indicator' : {
                       height: '0.65vh',
                       backgroundColor: theme.palette.secondary.text,
                       borderRadius: '1vh'
                     },
-                    '& .MuiButtonBase-root' :{
+                    '& .MuiButtonBase-root' : {
                       textTransform: 'none',
                       width: '30vw',
                       fontSize: '2vh'
@@ -293,6 +292,7 @@ function TabPanel(props) {
                 {...props}
                 /> 
               })}
+              {value === 0 ?
                 <IconButton
                 onTouchStart={(e)=>{
                   e.currentTarget.style = chatIconButtonAnimationDown;
@@ -320,7 +320,6 @@ function TabPanel(props) {
                 }}
                 onClick={()=>setIsStartMessagingActive(true)}
                 sx={{
-                  display: `${value === 0 ? "flex" : "none"}`,
                   justifyContent : "center",
                   alignItems: "center",
                   position: "absolute",
@@ -350,7 +349,8 @@ function TabPanel(props) {
                     color : `${theme.palette.primary.dark}`,
                   }}
                   />
-                </IconButton>
+                </IconButton> : null
+              }
         </Fragment>
     );
   }

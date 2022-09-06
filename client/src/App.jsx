@@ -36,7 +36,7 @@ import { useRef } from "react";
 
 function AppActionButton(props) {
 
-  const {user, setUser} = useContext(authentificationContext);
+  const {setUser} = useContext(authentificationContext);
   const [login, setLogin] = useState();
   const [password, setPassword] = useState();
   const [isAuthDataCorrect, setIsAuthDataCorrect] = useState(true);
@@ -44,7 +44,6 @@ function AppActionButton(props) {
   const navigate = useNavigate();
   const theme = useTheme();
   const [showPassword, setShowPassword] = useState(false);
-  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
   const handlePassword = () => setShowPassword(!showPassword);
 
   const dispatch = useDispatch();
@@ -71,11 +70,10 @@ function AppActionButton(props) {
                   password
                 }));
                 setUser({login, password});
-              //databaseSubscriber(login);
               navigate("/main");
             });
           }
-          else {
+          else if (response.status === 401) {
             setIsAuthDataCorrect(false);
             setIsLoading(false);
           }
@@ -173,7 +171,7 @@ function AppActionButton(props) {
 function  AppActionButtonCreateAccount(props) {
 
   const theme = useTheme()
-  const {user, setUser} = useContext(authentificationContext);
+  const {user : {login}, user : {password}, setUser} = useContext(authentificationContext);
   const navigate = useNavigate();
   const [loading, setIsLoading] = useState(false);
 
@@ -204,7 +202,7 @@ function  AppActionButtonCreateAccount(props) {
     fetch("http://localhost:8090/signup", {
       mode: "cors",
       method : "POST",
-      headers : {"Authorization" : user.login + ":" + user.password},
+      headers : {"Authorization" : login + ":" + password},
       body : JSON.stringify({
         avatar : avatar.current.src,
         fullname : fullname.current.querySelector('.MuiOutlinedInput-input').value,
@@ -215,13 +213,13 @@ function  AppActionButtonCreateAccount(props) {
       })
     }).then((response)=>{
         if (response.status === 200) {
-          setUser({
-            ...user
-          });
           navigate("/main");
         }
-        else {
-          setIsLoading(false);
+        else if (response.status === 401) {
+          response.json().then(responsePayment=>{
+            alert(responsePayment);
+            setTimeout(()=>navigate("/loginpassword"), 3000);
+          });
         }
       });
   }

@@ -44,6 +44,7 @@ function handleAvatarChange(event){
 export default function Profile(props) {
 
     const [isEditable, setEditibility] = useState(false);
+    const [buttonText, setButtonText] = useState("Edit");
     const {user} = useContext(authentificationContext);
 
     console.log(isEditable);
@@ -61,7 +62,7 @@ export default function Profile(props) {
     function changeProfile() {
 
       button.current.disabled = true;
-      button.current.innerHTML = 'uploading...';
+      setButtonText("uploading...");
 
       let newprofile = {
         action : "changeMyProfile",
@@ -81,10 +82,8 @@ export default function Profile(props) {
       }).then((response)=>{
           if (response.status === 200) {
             button.current.disabled = false;
-            button.current.innerHTML = 'Edit';
-          }
-          else {
-            /* TO DO */
+            setEditibility(false);
+            setButtonText("Edit");
           }
         });
     }
@@ -165,13 +164,17 @@ export default function Profile(props) {
                 <CustomButton
                 variant="contained"
                 ref={button}
-                onClick={()=>{
-                  if (isEditable) changeProfile();
-                  setEditibility(!isEditable);
+                onClick={(e)=>{
+                  if (isEditable) changeProfile(e);
+                  else {
+                    setEditibility(!isEditable);
+                    setButtonText("Save");
+                    //button.current.innerHTML = "save";
+                  }
                   }
                 }
                 >
-                  {isEditable === false ? 'Edit' :  'Save'}
+                  {buttonText}
                 </CustomButton>
             </Grid>
           </Grid>

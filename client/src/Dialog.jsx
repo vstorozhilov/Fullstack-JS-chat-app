@@ -72,7 +72,6 @@ function MyMessage(props) {
         <Grid item
         alignSelf='end'
         paddingRight='3vw'
-        //bgcolor={props.isReaded ? "transparent" : "gray"}
         >
             <animated.div style={props.styles}>
                 <Grid container
@@ -117,7 +116,6 @@ const RefPeerMessage = React.forwardRef((props, ref)=>{
         ref={ref}
         alignSelf='start'
         marginLeft='3vw'
-        //bgcolor="red"
         >
             <animated.div style={props.styles}>
             <Grid container
@@ -141,16 +139,11 @@ const RefPeerMessage = React.forwardRef((props, ref)=>{
 
 const RefMyMessage = React.forwardRef((props, ref)=>{
 
-    // useEffect(()=>{
-    //     ref.current.scrollTo(0, ref.current.scrollHeight);
-    // }, [])
-
     return (
         <Grid item
         ref={ref}
         alignSelf='end'
         paddingRight='3vw'
-        //bgcolor={props.inView ? "red" : "green"}
         >
             <animated.div style={props.styles}>
             <Grid container
@@ -176,32 +169,17 @@ const ObservedComponent = (MessageComponent, props) => {
 
     const {messageId, ...forwardedProps} = props;
 
-    const {user} = useContext(authentificationContext);
-    //console.log(props.root);
-    
-    //console.log(props.ref.current);
+    const {user : {login}, user : {password}} = useContext(authentificationContext);
 
     function isReadedNotification(inView) {
-        //if (IsJustMounted) {setIsJustMounted(false); return;};
-        //if (inView) console.log('notification called');
         if (inView) {
         console.log("notified");
         fetch("http://localhost:8090/dialog", {
         mode: "cors",
         method : "POST",
-        headers : {"Authorization" : user.login + ":" + user.password,
-                    "messageid" : messageId},
-        //body : props.messageId
-        }).then((response)=>{
-            if (response.status === 200){
-            // response.json().then(data=>{
-            //     console.log(data);
-            //     //dispatch({type : "SET_MESSAGES", value : data});
-            // })
-            }
-            else {
-            /* TO DO */
-            }
+        headers : {"Authorization" : login + ":" + password},
+        body : JSON.stringify({action : "message was readed",
+                messageId}),
         });
     }
         
@@ -288,6 +266,7 @@ const MessagesContainer = React.forwardRef((props, ref)=>{
         scrollBehavior : "smooth",
         minHeight : "0px"
     }}>
+        {NotReadedMessagesCount !== 0 || !isDialogFullyScrolled ?
         <Grid container
         direction="row"
         justifyContent="center"
@@ -300,8 +279,8 @@ const MessagesContainer = React.forwardRef((props, ref)=>{
             bottom : "15vh",
             right : "7vw",
         }}        >
-            <Grid item
-            hidden={NotReadedMessagesCount === 0}>
+            {NotReadedMessagesCount !== 0 ?
+            <Grid item>
                 <div style={{
                     backgroundColor : "blue",
                     borderRadius : "50%",
@@ -313,9 +292,9 @@ const MessagesContainer = React.forwardRef((props, ref)=>{
                 }}>
                     {NotReadedMessagesCount}
                 </div>
-            </Grid>
-            <Grid item
-            hidden={isDialogFullyScrolled}>
+            </Grid> : null}
+            {!isDialogFullyScrolled ?
+            <Grid item>
                 <IconButton
                 onClick={(e)=>{
                     ref.current.scrollTo(0, ref.current.scrollHeight);
@@ -329,8 +308,8 @@ const MessagesContainer = React.forwardRef((props, ref)=>{
                 }}>
                     <KeyboardDoubleArrowDownIcon/>
                 </IconButton>
-            </Grid>
-        </Grid>
+            </Grid> : null}
+        </Grid> : null}
     <Grid container
     id="messagesContainer"
     spacing={2}
@@ -456,12 +435,6 @@ export function Dialog(props){
         return login === currentDialog.peerOne ? currentDialog.peerTwo : currentDialog.peerOne;
     });
 
-    // const NotReadedMessagesCount = useSelector(state=>(
-    //     Object.values(state.messagesReducer.Messages).filter(item=>(item.isReaded === false && item.author === peerLogin))).length
-    //     )
-
-    // console.log(NotReadedMessagesCount);
-
     const peerAvatar = useSelector(state=>state.contactsReducer.Contacts[peerLogin].profile.avatar);
 
     const isPeerOnline = useSelector(state=>state.contactsReducer.Contacts[peerLogin].isOnline);
@@ -473,12 +446,12 @@ export function Dialog(props){
     const dispatch = useDispatch();
 
     function getMessages() {
-        console.log('called');
         fetch("http://localhost:8090/dialog", {
         mode: "cors",
-        method : "GET",
-        headers : {"Authorization" : login + ":" + password,
-                    "Dialogid" : dialogId},
+        method : "POST",
+        headers : {"Authorization" : login + ":" + password},
+        body : JSON.stringify({action : "fetch messages",
+                dialogId})
       }).then((response)=>{
           if (response.status === 200){
             response.json().then(data=>{
@@ -486,32 +459,22 @@ export function Dialog(props){
                 dispatch({type : "SET_MESSAGES", value : data});
             })
           }
-          else {
-            /* TO DO */
-          }
         });
     }
 
-    // if (!isMessagesRequested) getMessages();
-
     function sendMessage() {
-
-        //console.log(user.login);
-        //console.log(messageField.current.querySelector('.MuiOutlinedInput-input').value);
 
         fetch("http://localhost:8090/dialog", {
         mode: "cors",
         method : "POST",
-        headers : {"Authorization" : login + ":" + password,
-                    "Dialogid" : dialogId},
-        body : messageField.current.querySelector('.MuiOutlinedInput-input').value
+        headers : {"Authorization" : login + ":" + password},
+        body : JSON.stringify({action : "message was sended",
+        content : messageField.current.querySelector('.MuiOutlinedInput-input').value,
+        dialogId})
       }).then((response)=>{
           if (response.status === 200){
             console.log(dialogContainerRef.current);
             dialogContainerRef.current.scrollTo(0, dialogContainerRef.current.scrollHeight);
-          }
-          else {
-            /* TO DO */
           }
         });
         // let messagesContainer = document.querySelector('#messagesContainer');

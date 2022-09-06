@@ -60,7 +60,7 @@ export function LoginPassword(props) {
             login === '' ||
               password === '' ||
                 repeatPassword === '') return;
-      
+
       setIsLoading(true);
 
       fetch("http://localhost:8090/loginpassword", {
@@ -72,7 +72,7 @@ export function LoginPassword(props) {
             setUser({login, password});
             navigate("/signup");
           }
-          else {
+          if (response.status === 401) {
             setIsAuthDataCorrect(false);
             setIsLoading(false);
           }
