@@ -1,19 +1,21 @@
 import React from 'react';
 import { AppActionButton, AppActionButton_2, AppActionButtonCreateAccount } from './App';
-import { Route, Routes, Link, BrowserRouter, useLocation, Switch, useNavigate } from 'react-router-dom'
+import { Route, Routes, Link, BrowserRouter, useLocation, Switch, useNavigate, Navigate } from 'react-router-dom'
 import { useSpring, animated, useTransition } from 'react-spring' 
 import { useState, useMemo, useEffect } from 'react';
 import { LoginPassword } from './LoaginPassword';
 import BasicTabs from './ChatMainPage';
 import { Dialog } from './Dialog'
 import authentificationContext from './contexts/authentificationContext';
+import { useSelector } from "react-redux"
 
 function MainContainer(props){
 
-    const navigate = useNavigate();
     const location = useLocation();
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || {})
     const contextUser = {user, setUser}
+
+    const selectedDialog = useSelector(state=>state.dialogsReducer.selectedDialog);
 
     const [reverseAnimation, setReverseAnimation] = useState(false);
     const transitions = useTransition(location, { enter: ()=>{return { opacity: 1, transform: 'translateX(0%)' }},
@@ -34,7 +36,7 @@ function MainContainer(props){
                         <Route path="/loginpassword" element={<LoginPassword setReverseAnim={setReverseAnimation}/>} />
                         <Route path="/signup" element={<AppActionButtonCreateAccount setReverseAnim={setReverseAnimation}/>} />
                         <Route path="/main" element={<BasicTabs/>} />
-                        <Route path="/dialog" element={<Dialog setReverseAnim={setReverseAnimation}/>} />
+                        <Route path="/dialog" element={selectedDialog === undefined ? <Navigate to="/main"/> : <Dialog setReverseAnim={setReverseAnimation}/>} />
                     </Routes>
                 </authentificationContext.Provider>
             </animated.div>

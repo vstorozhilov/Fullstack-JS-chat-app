@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import React, { Component, Fragment, useState, useEffect, componentDidMount, useMemo } from 'react';
-import { Routes, Route, Link, BrowserRouter } from "react-router-dom";
+import { Routes, Route, Link, BrowserRouter, useNavigate } from "react-router-dom";
 import { useSpring, animated, useTransition} from '@react-spring/web'
 import greetImage from './images/1.jpg';
 import loginImage from './images/2.png'
@@ -41,8 +41,8 @@ import { authentificationContext } from './Routes';
 import { useContext, useRef } from "react";
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import { InView } from 'react-intersection-observer';
-
 import { exitFromDialog } from './databaseSubscriber';
+import Moment from "react-moment"
 
 const MyMessageStyled = styled(SnackbarContent)(({theme})=>`
     background-color : ${theme.palette.primary.light};
@@ -51,6 +51,9 @@ const MyMessageStyled = styled(SnackbarContent)(({theme})=>`
     min-width: fit-content;
     box-shadow: none;
     word-break: break-all;
+    font-size : 2vh;
+    flex-direction: column;
+    flex-wrap: nowrap;
 `)
 
 const PeerMessageStyled = styled(SnackbarContent)(({theme})=>`
@@ -61,8 +64,19 @@ const PeerMessageStyled = styled(SnackbarContent)(({theme})=>`
     min-width: fit-content;
     box-shadow: none;
     word-break: break-all;
+    font-size : 2vh;
+    flex-direction: column;
+    flex-wrap: nowrap;
 `)
 
+function TimeLabel(props) {
+
+    return <Box sx={{
+        fontSize : "1.4vh"
+    }}
+    ><Moment format="D MMM HH:mm">{props.date}</Moment>
+    </Box>
+}
 
 function MyMessage(props) {
 
@@ -78,15 +92,22 @@ function MyMessage(props) {
                 flexDirection="row"
                 justifyContent="center"
                 alignItems="center"
+                flexWrap="nowrap"
                 gap="2vw">
-                <div hidden={props.isReaded} style={{
-                    backgroundColor : "blue",
-                    borderRadius : "50%",
-                    width : "1vh",
-                    height : "1vh"
-                    }}>
-                </div>
-                <MyMessageStyled message={props.message}/>
+                <Grid item>
+                    <div hidden={props.isReaded} style={{
+                        backgroundColor : "blue",
+                        borderRadius : "50%",
+                        width : "1vh",
+                        height : "1vh"
+                        }}>
+                    </div>
+                </Grid>
+                <Grid item>
+                    <MyMessageStyled
+                    message={props.message}
+                    action={<TimeLabel date={props.date}/>}/>
+                </Grid>
                 </Grid>
             </animated.div>
         </Grid>
@@ -103,7 +124,9 @@ function PeerMessage(props) {
         marginLeft='3vw'
         >
             <animated.div style={props.styles}>
-                <PeerMessageStyled  message={props.message}/>
+                <PeerMessageStyled  
+                message={props.message}
+                action={<TimeLabel date={props.date}/>}/>
             </animated.div>
         </Grid>
     )
@@ -119,46 +142,24 @@ const RefPeerMessage = React.forwardRef((props, ref)=>{
         >
             <animated.div style={props.styles}>
             <Grid container
-                flexDirection="row"
+                flexDirection="row" 
                 justifyContent="center"
                 alignItems="center"
                 gap="2vw">
-                <PeerMessageStyled  message={props.message}/>
-                <div style={{
-                    backgroundColor : "blue",
-                    borderRadius : "50%",
-                    width : "1vh",
-                    height : "1vh"
-                    }}>
-                </div>
-            </Grid>
-            </animated.div>
-        </Grid>
-    )
-})
-
-const RefMyMessage = React.forwardRef((props, ref)=>{
-
-    return (
-        <Grid item
-        ref={ref}
-        alignSelf='end'
-        paddingRight='3vw'
-        >
-            <animated.div style={props.styles}>
-            <Grid container
-                flexDirection="row"
-                justifyContent="center"
-                alignItems="center"
-                gap="2vw">
-                    <div hidden={props.isReaded} style={{
+                <Grid item>
+                    <PeerMessageStyled
+                    message={props.message}
+                    action={<TimeLabel date={props.date}/>}/>
+                </Grid>
+                <Grid item>
+                    <div style={{
                         backgroundColor : "blue",
                         borderRadius : "50%",
                         width : "1vh",
                         height : "1vh"
                         }}>
                     </div>
-                    <MyMessageStyled  message={props.message}/>
+                </Grid>
             </Grid>
             </animated.div>
         </Grid>
@@ -219,8 +220,6 @@ const MessagesContainer = React.forwardRef((props, ref)=>{
     const [isDialogFullyScrolled, setisDialogFullyScrolled] = useState(false);
 
     const correctMessages = useSelector(state=>state.messagesReducer.Messages);
-
-    // console.log(isDialogFullyScrolled);
 
     const transitions = useTransition(Object.values(correctMessages), 
         {
@@ -320,39 +319,25 @@ const MessagesContainer = React.forwardRef((props, ref)=>{
         marginTop: '0',
         scrollBehavior: 'smooth'
     }}>
-        {transitions((styles, item, t, i)=>{
+        {transitions((styles, item)=>{
             return (user.login === item.author ?
                 <MyMessage
                 styles={item.isReaded ? {} : styles}
                 message={item.content}
-                isReaded={item.isReaded}/>
+                isReaded={item.isReaded}
+                date={item.date}/>
             : item.isReaded?
                 <PeerMessage
-                //styles={styles}
-                message={item.content}/> :
+                message={item.content}
+                date={item.date}/> :
             ObservedComponent(RefPeerMessage, {
                 root : ref.current,
                 styles : styles,
                 message : item.content,
-                messageId : item._id
+                messageId : item._id,
+                date : item.date
             }));
-            // <PeerMessage
-            // styles={styles}
-            // message={item.content}
-            // />);
         })}
-        
-        {/* {correctMessages.map((item, index)=>{
-            return (user.login === item.author ? <MyMessage
-                key={index}
-                //styles={styles}
-                message={item.content}
-                /> : <PeerMessage
-                //styles={styles}
-                key={index}
-                message={item.content}
-                />);
-        })} */}
     </Grid>
     </div>
 })
@@ -421,30 +406,12 @@ export function Dialog(props){
 
     const theme = useTheme();
 
-    const [isDialogFullyScrolled, setIsDialogFullyScrolled] = useState(false);
-
     const dialogContainerRef = useRef(null);
 
-    //const [isDialogFullyScrolled, setDialogFullyScrolled] = useState(false);
     const {user : {login}, user : {password}} = useContext(authentificationContext);
 
     const dialogId = useSelector(state=>state.dialogsReducer.selectedDialog);
-
-    const peerLogin = useSelector(state=>{
-        let currentDialog = state.dialogsReducer.Dialogs[dialogId];
-        return login === currentDialog.peerOne ? currentDialog.peerTwo : currentDialog.peerOne;
-    });
-
-    const peerAvatar = useSelector(state=>state.contactsReducer.Contacts[peerLogin].profile.avatar);
-
-    const isPeerOnline = useSelector(state=>state.contactsReducer.Contacts[peerLogin].isOnline);
-
-    console.log(isPeerOnline);
-
-    const messageField = useRef(null);
-
-    const dispatch = useDispatch();
-
+    
     function getMessages() {
         fetch("http://localhost:8090/dialog", {
         mode: "cors",
@@ -452,13 +419,13 @@ export function Dialog(props){
         headers : {"Authorization" : login + ":" + password},
         body : JSON.stringify({action : "fetch messages",
                 dialogId})
-      }).then((response)=>{
-          if (response.status === 200){
+    }).then((response)=>{
+        if (response.status === 200){
             response.json().then(data=>{
                 console.log(data);
                 dispatch({type : "SET_MESSAGES", value : data});
             })
-          }
+        }
         });
     }
 
@@ -471,22 +438,12 @@ export function Dialog(props){
         body : JSON.stringify({action : "message was sended",
         content : messageField.current.querySelector('.MuiOutlinedInput-input').value,
         dialogId})
-      }).then((response)=>{
-          if (response.status === 200){
+    }).then((response)=>{
+        if (response.status === 200){
             console.log(dialogContainerRef.current);
             dialogContainerRef.current.scrollTo(0, dialogContainerRef.current.scrollHeight);
-          }
+        }
         });
-        // let messagesContainer = document.querySelector('#messagesContainer');
-        // if (messagesContainer.scrollHeight === (Math.round(messagesContainer.scrollTop, 0) + messagesContainer.offsetHeight)) {
-        //     setDialogFullyScrolled(true);
-        // }
-        // let textfield = document.querySelector('#input-with-text-message');
-        // let message = textfield.value;
-        // textfield.value = '';
-        // if (message === '')
-        //     return ;
-        // dispatch({type : 'SET_MESSAGES', value : message});
     }
 
     function keydownHandler(event) {
@@ -501,28 +458,18 @@ export function Dialog(props){
         return (exitFromDialog);
     }, []);
 
-    //getMessages();
+    const messageField = useRef(null);
 
-    // const messages = useSelector(state => state.messagesReducer.Messages);
-    // const selectedDialog = useSelector(state => state.dialogsReducer.selectedDialog);
+    const dispatch = useDispatch();
 
-    // console.log(selectedDialog);
+    const peerLogin = useSelector(state=>{
+        let currentDialog = state.dialogsReducer.Dialogs[dialogId];
+        return login === currentDialog.peerOne ? currentDialog.peerTwo : currentDialog.peerOne;
+    });
 
-    // const transitions = useTransition(correctMessages, 
-    //     {
-    //         onStart: ()=>{
-    //             if (isDialogFullyScrolled === true) {
-    //                 let messagesContainer = document.querySelector('#messagesContainer');
-    //                 messagesContainer.scrollTo(0, messagesContainer.scrollHeight);
-    //                 setDialogFullyScrolled(false);
-    //             }
-    //         },
-    //         from : {transform: 'translateY(50%)', opacity: 0},
-    //         enter : {transform: 'translateY(0%)', opacity: 1},
-    //         config: {duration: 300}
-    //     })
+    const peerAvatar = useSelector(state=>state.contactsReducer.Contacts[peerLogin].profile.avatar);
 
-    console.log('RRRRRRRRRRRRRRRRRRendered');
+    const isPeerOnline = useSelector(state=>state.contactsReducer.Contacts[peerLogin].isOnline);
 
     return (
     <Fragment>
@@ -532,10 +479,10 @@ export function Dialog(props){
         height='inherit'
         flexWrap="nowrap">
             <Grid container
-             direction='column'
-             flexGrow={1}
-             flexWrap="nowrap"
-             minHeight="0px">
+            direction='column'
+            flexGrow={1}
+            flexWrap="nowrap"
+            minHeight="0px">
                 <header style={{
                 background: `linear-gradient(to right, #4f89ff, #2d71fd)`,
                 color: theme.palette.secondary.text,
@@ -628,15 +575,15 @@ export function Dialog(props){
                 minHeight: '15vh'
             }}>
                 <AppTextField
-                 ref={messageField}
-                 id="input-with-text-message"
-                 width='80vw'
-                 height='8vh'
-                 multiline
-                 maxRows={4}
-                 minRows={2}
-                 onKeyDown={(event)=>{keydownHandler(event)}}
-                 sx={{
+                ref={messageField}
+                id="input-with-text-message"
+                width='80vw'
+                height='8vh'
+                multiline
+                maxRows={4}
+                minRows={2}
+                onKeyDown={(event)=>{keydownHandler(event)}}
+                sx={{
                     '& .MuiOutlinedInput-input' : {
                         paddingLeft: '3vw',
                         paddingRight: '3vw',
@@ -647,8 +594,8 @@ export function Dialog(props){
                     '& .MuiOutlinedInput-input::-webkit-scrollbar' : {
                         backgroundColor: 'transparent'
                     }
-                 }}
-                 InputProps={{
+                }}
+                InputProps={{
                     endAdornment: (
                     <InputAdornment position="end">
                         <IconButton>

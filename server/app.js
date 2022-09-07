@@ -240,7 +240,8 @@ async function messageHandler(request, response) {
                 let message = new messageModel({
                     author: login,
                     content : requestPayment.content,
-                    dialog : requestPayment.dialogId
+                    dialog : requestPayment.dialogId,
+                    date : new Date()
                 });
                 await message.save();
                 let dialog = await dialogModel.findOne({_id : requestPayment.dialogId});
@@ -305,8 +306,9 @@ async function run() {
 
             console.log("connected to socketio");
 
-            if ((await userModel.exists({login : socket.handshake.auth.login,
-                                        password : socket.handshake.auth.password})) === null) {
+            const {login, password} = socket.handshake.auth;
+
+            if ((await userModel.exists({login, password})) === null) {
                 socket.disconnect();
                 return ;
             }
@@ -320,39 +322,45 @@ async function run() {
                 socket.emit("contacts changed", actualContacts);
             });
 
-            let currentUser = await userModel.findOne({login : socket.handshake.auth.login});
+            let currentUser = await userModel.findOne({login});
             currentUser.isOnline = true;
             await currentUser.save();
 
             let dialogs = (await dialogModel.find({
                 $match :
                     {$or :
-                    [{"peerOne" : socket.handshake.auth.login},
-                    {"peerTwo" : socket.handshake.auth.login}]
+                    [{"peerOne" : login},
+                    {"peerTwo" : login}]
                 }
             }, {"_id" : 1})).map(item=>item._id);
 
-            let wholeRelatedMessageChangeStream = messageModel.watch([{
-                $match : {$or :
-                    dialogs.map(item=>({'fullDocument.dialog' : item}))
-                }
-            }], {'fullDocument' : "updateLookup"});
+            let wholeRelatedMessageChangeStream = null;
 
-            wholeRelatedMessageChangeStream.on('change', async data=>{
-                console.log("Changggged");
-                let dialog = await dialogModel.findOne({_id : data.fullDocument.dialog});
-                if (data.operationType === "update" &&
-                dialog.lastMessage.equals(data.documentKey._id) &&
-                data.fullDocument.author === socket.handshake.auth.login) {
-                    socket.emit("last message was readed", [data.fullDocument.dialog, data.fullDocument.isReaded]);
-                }
-                let unreadedMessagesCount = (await messageModel.find({'author' : {$ne : socket.handshake.auth.login},
-                                'isReaded' : false,
-                                'dialog' : data.fullDocument.dialog})).length;
+            if (dialogs.length !== 0) {
 
-                socket.emit("unreaded messages count was changed",
-                [unreadedMessagesCount, data.fullDocument.dialog]);
-            });
+                wholeRelatedMessageChangeStream = messageModel.watch([{
+                    $match : {$or :
+                        dialogs.map(item=>({'fullDocument.dialog' : item}))
+                    }
+                }], {'fullDocument' : "updateLookup"});
+
+                wholeRelatedMessageChangeStream.on('change', async data=>{
+                    console.log("Changggged");
+                    let dialog = await dialogModel.findOne({_id : data.fullDocument.dialog});
+                    if (data.operationType === "update" &&
+                    dialog.lastMessage.equals(data.documentKey._id) &&
+                    data.fullDocument.author === login) {
+                        socket.emit("last message was readed", [data.fullDocument.dialog, data.fullDocument.isReaded]);
+                    }
+                    let unreadedMessagesCount = (await messageModel.find({'author' : {$ne : login},
+                                    'isReaded' : false,
+                                    'dialog' : data.fullDocument.dialog})).length;
+
+                    socket.emit("unreaded messages count was changed",
+                    [unreadedMessagesCount, data.fullDocument.dialog]);
+                });
+
+            }
 
             socket.on("dialog has selected", dialogId=>{
 
@@ -397,7 +405,7 @@ async function run() {
 
             });
 
-            let userChangeStream = userModel.watch([{ $match: { 'fullDocument.login': socket.handshake.auth.login}},
+            let userChangeStream = userModel.watch([{ $match: { 'fullDocument.login': login}},
                                                     {"$project" : {"fullDocument" : 1}}],
                                                     {'fullDocument' : "updateLookup"});
 
@@ -408,8 +416,8 @@ async function run() {
             let dialogsChangeStream = dialogModel.watch([
             {$match :
                 {$or : [
-                        {"fullDocument.peerOne" : socket.handshake.auth.login},
-                        {"fullDocument.peerTwo" : socket.handshake.auth.login},
+                        {"fullDocument.peerOne" : login},
+                        {"fullDocument.peerTwo" : login},
                         {"operationType" : "delete"}
                     ]
                 }
@@ -421,12 +429,12 @@ async function run() {
             dialogsChangeStream.on('change', async data=>{
 
                 const actualDialogs = await dialogModel.find({
-                    $or : [{"peerOne" : socket.handshake.auth.login},
-                            {"peerTwo" : socket.handshake.auth.login}]
+                    $or : [{"peerOne" : login},
+                            {"peerTwo" : login}]
                 });
 
                 let promises = actualDialogs.filter(item=>(item.lastMessage !== null)).map(async item=>{await item.populate("lastMessage");
-                item.unreadedMessagesCount = (await messageModel.find({'author' : {$ne : socket.handshake.auth.login},
+                item.unreadedMessagesCount = (await messageModel.find({'author' : {$ne : login},
                                                                   'isReaded' : false,
                                                                   'dialog' : item._id})).length;});
                 console.log('dialog changed')
@@ -434,19 +442,19 @@ async function run() {
 
                 if (data.operationType !== "insert" ||
                     (data.operationType === "insert" &&
-                    data.fullDocument.peerOne !== socket.handshake.auth.login)){
+                    data.fullDocument.peerOne !== login)){
                         socket.emit("dialogs changed", actualDialogs);
                     }
                 
                 if (data.operationType === "insert"){
 
-                    wholeRelatedMessageChangeStream.close();
+                    if (wholeRelatedMessageChangeStream !== null) wholeRelatedMessageChangeStream.close();
     
                     dialogs = (await dialogModel.find({
                         $match :
                             {$or :
-                            [{"peerOne" : socket.handshake.auth.login},
-                            {"peerTwo" : socket.handshake.auth.login}]
+                            [{"peerOne" : login},
+                            {"peerTwo" : login}]
                         }
                     }, {"_id" : 1})).map(item=>item._id);
     
@@ -462,10 +470,10 @@ async function run() {
                         let dialog = await dialogModel.findOne({_id : data.fullDocument.dialog});
                         if (data.operationType === "update" &&
                         dialog.lastMessage.equals(data.documentKey._id) &&
-                        data.fullDocument.author === socket.handshake.auth.login) {
+                        data.fullDocument.author === login) {
                             socket.emit("last message was readed", [data.fullDocument.dialog, data.fullDocument.isReaded]);
                         }
-                        let unreadedMessagesCount = (await messageModel.find({'author' : {$ne : socket.handshake.auth.login},
+                        let unreadedMessagesCount = (await messageModel.find({'author' : {$ne : login},
                         'isReaded' : false,
                         'dialog' : data.fullDocument.dialog})).length;
                         
@@ -479,7 +487,7 @@ async function run() {
             socket.on('disconnect', async ()=>{
                 userChangeStream.close();
                 dialogsChangeStream.close();
-                wholeRelatedMessageChangeStream.close();
+                if (dialogs.length !== 0) wholeRelatedMessageChangeStream.close();
                 contactsChangeStream.close();
                 currentUser.isOnline = false;
                 currentUser.save();

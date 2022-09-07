@@ -10,7 +10,7 @@ import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
 import {TextField, Button, IconButton, Checkbox, Input} from '@mui/material'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {ArrowBack, PhotoCamera, Mode, Search, DensityMedium} from '@mui/icons-material'
+import {ArrowBack, PhotoCamera, Mode, Search, DensityMedium, ControlPointDuplicateRounded} from '@mui/icons-material'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import {Event} from '@mui/icons-material';
@@ -37,6 +37,7 @@ import NotDialogsYetImage from './images/NotDialogsYet.png'
 import useMediaQuery from '@mui/material/useMediaQuery';
 import {BsFillChatDotsFill} from "react-icons/bs";
 import { useNavigate } from 'react-router-dom';
+import Moment from 'react-moment';
 
 var zip = require('zip-array').zip;
 
@@ -46,7 +47,7 @@ function ChatItem(props) {
 
     const {user : {login}} = useContext(authentificationContext);
 
-    const {isReaded, author, content} = useSelector(state=>state.dialogsReducer.Dialogs[props.dialogId].lastMessage);
+    const {isReaded, author, content, date} = useSelector(state=>state.dialogsReducer.Dialogs[props.dialogId].lastMessage);
 
     const unreadedMessagesCount = useSelector(state=>state.dialogsReducer.Dialogs[props.dialogId].unreadedMessagesCount);
 
@@ -128,7 +129,10 @@ function ChatItem(props) {
                                     {unreadedMessagesCount}
                             </div>
                         </Grid>
-                        <Grid sx={{color: '#616161'}} item>Time</Grid>
+                        <Grid item
+                        sx={{color: '#616161'}}>
+                            <Moment format="D MMM HH:mm">{date}</Moment>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>
@@ -206,6 +210,13 @@ export function ChatItems(props) {
         navigate('/dialog')
       };
 
+    const compareDatesFunction = (dateOne, dateTwo) => {
+        let DateOne = new Date(dateOne);
+        let DateTwo = new Date(dateTwo);
+
+        return -1 * (DateOne - DateTwo);
+    }
+
     return (
             <Grid container
             direction='column'
@@ -213,7 +224,10 @@ export function ChatItems(props) {
             rowSpacing={3}
             height="100%">
                 {dialogs.length ? 
-                    dialogAvaPair.filter(item=>(item[0].lastMessage !== null)).map((item, index)=>{
+                    dialogAvaPair.filter(item=>(item[0].lastMessage !== null))
+                        .sort((itemOne, itemTwo)=>
+                        compareDatesFunction(itemOne[0].lastMessage.date, itemTwo[0].lastMessage.date))
+                        .map((item, index)=>{
                         return <ChatItemContainer
                         key={index}
                         id={item[0]._id}

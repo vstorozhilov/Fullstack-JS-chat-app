@@ -5,7 +5,8 @@ const messageSchema = mongoose.Schema(
     author : String,
     content :  String,
     isReaded : {type : Boolean, default : false},
-    dialog : {type : mongoose.Schema.Types.ObjectId, ref : "Dialogs"}
+    dialog : {type : mongoose.Schema.Types.ObjectId, ref : "Dialogs"},
+    date : Date
   },
   { collection: "Messages" }
 );
