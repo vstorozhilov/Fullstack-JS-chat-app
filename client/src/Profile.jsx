@@ -45,7 +45,7 @@ export default function Profile(props) {
 
     const [isEditable, setEditibility] = useState(false);
     const [buttonText, setButtonText] = useState("Edit");
-    const {user} = useContext(authentificationContext);
+    const {user : {token}} = useContext(authentificationContext);
 
     console.log(isEditable);
 
@@ -77,7 +77,7 @@ export default function Profile(props) {
       fetch("http://localhost:8090/main", {
         mode: "cors",
         method : "POST",
-        headers : {"Authorization" : user.login + ":" + user.password},
+        headers : {"Authorization" : token},
         body : JSON.stringify(newprofile)
       }).then((response)=>{
           if (response.status === 200) {

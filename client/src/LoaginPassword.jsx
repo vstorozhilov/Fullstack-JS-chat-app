@@ -66,7 +66,7 @@ export function LoginPassword(props) {
       fetch("http://localhost:8090/loginpassword", {
         mode: "cors",
         method : "POST",
-        headers : {"Authorization" : login + ":" + password}
+        headers : {"Authorization" : login}
       }).then((response)=>{
           if (response.status === 200) {
             setUser({login, password});

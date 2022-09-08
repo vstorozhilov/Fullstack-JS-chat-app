@@ -5,7 +5,8 @@ const defaultState = {
 export default function UserReducer(state = defaultState, action) {
     switch (action.type) {
         case 'SET_USER':
-            return {User : action.value}
+            const {login, profile} = action.value;
+            return {User : {login, profile}}
         default:
             return state
     }

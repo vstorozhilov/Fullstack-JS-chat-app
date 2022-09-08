@@ -15,6 +15,8 @@ function MainContainer(props){
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || {})
     const contextUser = {user, setUser}
 
+    console.log(user);
+
     const selectedDialog = useSelector(state=>state.dialogsReducer.selectedDialog);
 
     const [reverseAnimation, setReverseAnimation] = useState(false);

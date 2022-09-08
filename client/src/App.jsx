@@ -10,7 +10,7 @@ import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
 import {TextField, Button, IconButton, Checkbox, Input} from '@mui/material'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {ArrowBack, PhotoCamera, Mode} from '@mui/icons-material'
+import {ArrowBack, PhotoCamera, Mode, ContactSupportOutlined} from '@mui/icons-material'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import {Event} from '@mui/icons-material';
@@ -62,14 +62,10 @@ function AppActionButton(props) {
         headers : {"Authorization" : login + ":" + password}
       }).then((response)=>{
           if (response.status === 200){
-            response.json().then((profile)=>{
-              dispatch({type : "SET_USER", value : {login, password, profile}});
-              localStorage.setItem('user',
-                JSON.stringify({
-                  login,
-                  password
-                }));
-                setUser({login, password});
+            response.json().then(([profile, token])=>{
+              dispatch({type : "SET_USER", value : {login, profile}});
+              localStorage.setItem('user', JSON.stringify({login, token}));
+              setUser({login, token});
               navigate("/main");
             });
           }
@@ -196,7 +192,7 @@ function  AppActionButtonCreateAccount(props) {
   }
 
   function sendAuthorizationForm(){
-    
+
     setIsLoading(true);
 
     fetch("http://localhost:8090/signup", {
@@ -213,7 +209,11 @@ function  AppActionButtonCreateAccount(props) {
       })
     }).then((response)=>{
         if (response.status === 200) {
-          navigate("/main");
+          response.json().then(token=>{
+            localStorage.setItem('user', JSON.stringify({login, token}));
+            setUser({login, token});
+            navigate("/main");
+          })
         }
         else if (response.status === 401) {
           response.json().then(responsePayment=>{

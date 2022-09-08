@@ -7,9 +7,9 @@ import { expose } from "comlink";
 
 export var socket;
 
-export default function databaseSubscriber(login, password) {
+export default function databaseSubscriber(token) {
 
-    socket = io("http://localhost:8090", {auth : {login, password}});
+    socket = io("http://localhost:8090", {auth : {token}});
 
     socket.on('user changed', data=>{
         console.log(data);

@@ -170,7 +170,7 @@ const ObservedComponent = (MessageComponent, props) => {
 
     const {messageId, ...forwardedProps} = props;
 
-    const {user : {login}, user : {password}} = useContext(authentificationContext);
+    const {user : {token}} = useContext(authentificationContext);
 
     function isReadedNotification(inView) {
         if (inView) {
@@ -178,7 +178,7 @@ const ObservedComponent = (MessageComponent, props) => {
         fetch("http://localhost:8090/dialog", {
         mode: "cors",
         method : "POST",
-        headers : {"Authorization" : login + ":" + password},
+        headers : {"Authorization" : token},
         body : JSON.stringify({action : "message was readed",
                 messageId}),
         });
@@ -216,7 +216,7 @@ const MessagesContainer = React.forwardRef((props, ref)=>{
 
     const theme = useTheme();
 
-    const {user} = useContext(authentificationContext);
+    const {user : {login}} = useContext(authentificationContext);
     const [isDialogFullyScrolled, setisDialogFullyScrolled] = useState(false);
 
     const correctMessages = useSelector(state=>state.messagesReducer.Messages);
@@ -320,7 +320,7 @@ const MessagesContainer = React.forwardRef((props, ref)=>{
         scrollBehavior: 'smooth'
     }}>
         {transitions((styles, item)=>{
-            return (user.login === item.author ?
+            return (login === item.author ?
                 <MyMessage
                 styles={item.isReaded ? {} : styles}
                 message={item.content}
@@ -408,7 +408,7 @@ export function Dialog(props){
 
     const dialogContainerRef = useRef(null);
 
-    const {user : {login}, user : {password}} = useContext(authentificationContext);
+    const {user : {login}, user : {token}} = useContext(authentificationContext);
 
     const dialogId = useSelector(state=>state.dialogsReducer.selectedDialog);
     
@@ -416,7 +416,7 @@ export function Dialog(props){
         fetch("http://localhost:8090/dialog", {
         mode: "cors",
         method : "POST",
-        headers : {"Authorization" : login + ":" + password},
+        headers : {"Authorization" : token},
         body : JSON.stringify({action : "fetch messages",
                 dialogId})
     }).then((response)=>{
@@ -434,7 +434,7 @@ export function Dialog(props){
         fetch("http://localhost:8090/dialog", {
         mode: "cors",
         method : "POST",
-        headers : {"Authorization" : login + ":" + password},
+        headers : {"Authorization" : token},
         body : JSON.stringify({action : "message was sended",
         content : messageField.current.querySelector('.MuiOutlinedInput-input').value,
         dialogId})

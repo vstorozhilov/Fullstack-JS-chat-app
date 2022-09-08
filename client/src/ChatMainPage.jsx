@@ -80,8 +80,10 @@ function TabPanel(props) {
     const [value, setValue] = React.useState(0);
     const [prevValue, setPrevValue] = React.useState(-1);
     const theme = useTheme();
-    const {user : {login}, user : {password}} = useContext(authentificationContext);
+    const {user : {token}} = useContext(authentificationContext);
     const navigate = useNavigate();
+
+    console.log(token);
 
     const isOnceRendered = useSelector(state => state.dialogsReducer.IsOnceRendered);
     const dispatch = useDispatch();
@@ -93,7 +95,7 @@ function TabPanel(props) {
       fetch("http://localhost:8090/main", {
         mode: "cors",
         method : "POST",
-        headers : {"Authorization" : login + ":" + password},
+        headers : {"Authorization" : token},
         body : JSON.stringify({action : "updateAll"})
       }).then((response)=>{
           if (response.status === 200){
@@ -102,7 +104,7 @@ function TabPanel(props) {
               dispatch({type : "SET_CONTACTS", value : contacts});
               dispatch({type : "SET_DIALOGS", value : dialogs});
               dispatch({type : "SET_USER", value : user});
-              databaseSubscriber(login, password);
+              databaseSubscriber(token);
             });
           }
         });
@@ -110,7 +112,7 @@ function TabPanel(props) {
     }
 
     useEffect(()=>{
-      if (!login && !password) {
+      if (!token) {
         navigate('/login');
       }
       if (isOnceRendered === false) {
@@ -141,7 +143,7 @@ function TabPanel(props) {
     const chatIconButtonAnimationDown = `animation-name : chatIconButtonAnimationDown; animation-duration: 0.25s; background-color : ${theme.palette.primary.dark};`;
     const chatIconButtonAnimationUp = `animation-name : chatIconButtonAnimationUp; animation-duration: 0.25s; background-color : #ffffff;`;
 
-    return (login && password &&
+    return (token &&
         <Fragment>
             {isStartMessagingActive ?
             <Fragment>

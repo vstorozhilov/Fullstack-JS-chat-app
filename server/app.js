@@ -7,10 +7,12 @@ const { runInContext } = require('vm');
 const userModel = require("./models/userModel");
 const dialogModel = require("./models/dialogModel");
 const messageModel = require("./models/messageModel");
+const generateToken = require("./Configs/generateToken");
+const authentificationControl = require("./Middlewares/authentificationControl");
 
 async function mainTabHandler(request, response) {
 
-    const [login, password] = request.headers['authorization'].split(":");
+    const token = request.headers['authorization'];
 
     let requestBody = "";
 
@@ -20,7 +22,9 @@ async function mainTabHandler(request, response) {
 
     request.on('end', async ()=>{
 
-        if (userModel.findOne({login, password}) === null) {
+        const login = await authentificationControl(token);
+
+        if (login === null){
             response.writeHead(401, headers={
                 "Access-Control-Allow-Origin" : "*"
             });
@@ -138,13 +142,6 @@ async function accountCreationHandler(request, response){
     request.on('end', async ()=>{
 
         if ((await userModel.findOne({login})) === null) {
-            response.writeHead(401, headers={
-                "Access-Control-Allow-Origin" : "*"
-            });
-            response.write("Current login was already assigned recently");
-            response.end();
-        }
-        else {
             let user = new userModel({
                 login,
                 password,
@@ -154,14 +151,24 @@ async function accountCreationHandler(request, response){
             response.writeHead(200, headers={
                 "Access-Control-Allow-Origin" : "*"
             });
+            response.write(JSON.stringify(generateToken(user._id)));
             response.end();
         }
+
+        else {
+            response.writeHead(401, headers={
+                "Access-Control-Allow-Origin" : "*"
+            });
+            response.write("Current login was already assigned recently");
+            response.end();
+        }
+
     })
 }
 
 async function signupHandler(request, response){
 
-    let [login, password] = request.headers['authorization'].split(":");
+    let login = request.headers['authorization'];
     if (await userModel.findOne({login}) === null) {
         response.writeHead(200, headers={
             "Access-Control-Allow-Origin" : "*"
@@ -182,7 +189,10 @@ async function authenticationHandler(request, response) {
         response.writeHead(200, headers={
             "Access-Control-Allow-Origin" : "*"
         });
-        response.write(JSON.stringify(user.profile));
+        response.write(JSON.stringify([
+            user.profile,
+            generateToken(user._id)
+        ]));
     }
     else {
         response.writeHead(401, headers={
@@ -194,7 +204,9 @@ async function authenticationHandler(request, response) {
 
 async function messageHandler(request, response) {
 
-    const [login, password] = request.headers['authorization'].split(":");
+    //const [login, password] = request.headers['authorization'].split(":");
+
+    const token = request.headers['authorization'];
 
     let requestBody = ""
 
@@ -204,7 +216,9 @@ async function messageHandler(request, response) {
 
     request.on("end", async ()=>{
 
-        if ((await userModel.findOne({login, password})) === null) {
+        let login = await authentificationControl(token);
+
+        if (login === null) {
             response.writeHead(401, headers={
                 "Access-Control-Allow-Origin" : "*"
             });
@@ -306,9 +320,11 @@ async function run() {
 
             console.log("connected to socketio");
 
-            const {login, password} = socket.handshake.auth;
+            const {token} = socket.handshake.auth;
 
-            if ((await userModel.exists({login, password})) === null) {
+            const login = await authentificationControl(token);
+
+            if (login === null){
                 socket.disconnect();
                 return ;
             }
@@ -494,9 +510,6 @@ async function run() {
                 console.log('connection closed');
             })
         })
-        // let dialogs = await dialogModel.find();
-        // await dialogs[0].populate({path : "messages",  $slice: [2, 3] }); 
-        // console.log(dialogs[0].messages);
         console.log('Server has been started');
     } 
     catch (connectionError) {

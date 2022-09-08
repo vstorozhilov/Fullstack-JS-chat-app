@@ -37,7 +37,7 @@ import {useNavigate} from "react-router-dom";
 
 function ContactItem(props) {
 
-    const {user : {login}, user : {password}} = useContext(authentificationContext);
+    const {user : {token}} = useContext(authentificationContext);
 
     const navigate = useNavigate();
 
@@ -50,7 +50,7 @@ function ContactItem(props) {
         fetch("http://localhost:8090/main", {
             mode : "cors",
             method : "POST",
-            headers : {"Authorization" : login + ":" + password},
+            headers : {"Authorization" : token},
             body : JSON.stringify({
                 action : "startNewDialog",
                 peerLogin : props.contact.login
