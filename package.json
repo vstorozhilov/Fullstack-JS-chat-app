@@ -11,7 +11,8 @@
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^7.3.0",
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.19",
+    "semistandard": "^16.0.1"
   },
   "dependencies": {
     "jsonwebtoken": "^8.5.1",
@@ -19,6 +20,7 @@
     "mongoose": "^6.5.2",
     "mongoose-dbref": "^0.0.4",
     "run-rs": "^0.7.7",
-    "socket.io": "^4.5.1"
+    "socket.io": "^4.5.1",
+    "standard": "^17.0.0"
   }
 }

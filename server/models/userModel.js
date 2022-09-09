@@ -1,21 +1,21 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema(
   {
-    login : String,
+    login: String,
     password: String,
-    isOnline : {type : Boolean, default : false},
-    profile : {
-        avatar: String,
-        fullname: String,
-        nickname: String,
-        birthdate: Date,
-        email: String,
-        about: String
-    },
+    isOnline: { type: Boolean, default: false },
+    profile: {
+      avatar: String,
+      fullname: String,
+      nickname: String,
+      birthdate: Date,
+      email: String,
+      about: String
+    }
   },
-  { collection: "Users" }
+  { collection: 'Users' }
 );
 
-const userModel = mongoose.model("User", userSchema);
-module.exports = userModel;
+const UserModel = mongoose.models.User || mongoose.model('User', userSchema);
+module.exports = UserModel;

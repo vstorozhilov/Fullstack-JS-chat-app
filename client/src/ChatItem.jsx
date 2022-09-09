@@ -53,6 +53,8 @@ function ChatItem(props) {
 
     const isPeerOnline = useSelector(state=>state.contactsReducer.Contacts[props.Login].isOnline);
 
+    const nickname = useSelector(state=>state.contactsReducer.Contacts[props.Login].profile.nickname);
+
     return (
         <Grid container
             direction='row'
@@ -93,11 +95,12 @@ function ChatItem(props) {
                             paddingLeft: '10px',
                             fontWeight: theme.typography.fontWeightExtraBold,
                             fontSize: '2.5vh'
-                            }}>{props.Nickname}</Grid>
+                            }}>{nickname}</Grid>
                         <Grid item
                         sx={{
-                            paddingLeft: '3vw',
-                            paddingRight: '2vw',
+                            paddingLeft: '5px',
+                            paddingRight: '5px',
+                            marginLeft: "10px",
                             fontWeight: theme.typography.fontWeightRegular,
                             bgcolor : `${!isReaded ? login === author ? theme.palette.secondary.contrastText : "transparent" : "transparent"}`,
                             borderRadius : '2vw',
@@ -233,8 +236,7 @@ export function ChatItems(props) {
                         id={item[0]._id}
                         src={item[1]}
                         onClick={handleClick}
-                        Nickname={login === item[0].peerOne ? item[0].peerTwo : item[0].peerOne}
-                        Login={login === item[0].peerOne ? item[0].peerTwo : item[0].peerOne}
+                        Login={login === item[0].peerOne ?  item[0].peerTwo : item[0].peerOne}
                         />}) : <NoDialogsYet/>
                 }
             </Grid>                                       

@@ -46,7 +46,7 @@ import Moment from "react-moment"
 
 const MyMessageStyled = styled(SnackbarContent)(({theme})=>`
     background-color : ${theme.palette.primary.light};
-    border-radius : 5vw;
+    border-radius : 3vmin;
     max-width: 60vw;
     min-width: fit-content;
     box-shadow: none;
@@ -58,7 +58,7 @@ const MyMessageStyled = styled(SnackbarContent)(({theme})=>`
 
 const PeerMessageStyled = styled(SnackbarContent)(({theme})=>`
     background-color : ${theme.palette.secondary.contrastText};
-    border-radius : 5vw;
+    border-radius : 3vmin;
     color: black;
     max-width: 60vw;
     min-width: fit-content;
@@ -471,6 +471,8 @@ export function Dialog(props){
 
     const isPeerOnline = useSelector(state=>state.contactsReducer.Contacts[peerLogin].isOnline);
 
+    const peerNickname = useSelector(state=>state.contactsReducer.Contacts[peerLogin].profile.nickname);
+
     return (
     <Fragment>
         <Grid container
@@ -538,7 +540,7 @@ export function Dialog(props){
                             <Grid item
                             sx={{fontWeight: '600',
                                 fontSize: '2.5vh'}}>
-                                {peerLogin}
+                                {peerNickname}
                             </Grid>
                         </Grid>
                         <Grid container

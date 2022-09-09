@@ -36,7 +36,6 @@ import { authentificationContext } from './Routes';
 import { useContext } from 'react';
 import databaseSubscriber from './databaseSubscriber';
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
-import { useFetch } from "react-async";
 import {BsFillChatDotsFill} from "react-icons/bs"
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -81,6 +80,8 @@ function TabPanel(props) {
     const [prevValue, setPrevValue] = React.useState(-1);
     const theme = useTheme();
     const {user : {token}} = useContext(authentificationContext);
+
+    const nickname = useSelector(state=>state.userReducer.User.profile.nickname);
     const navigate = useNavigate();
 
     console.log(token);
@@ -179,7 +180,9 @@ function TabPanel(props) {
                     marginTop : '0%'
                   }}
                 }}>
-                <Grid item
+                <Grid container
+                  direction="column"
+                  flexWrap="nowrap"
                   hidden={!isStartMessagingActive}
                   sx={{
                     opacity: "1",
@@ -217,7 +220,13 @@ function TabPanel(props) {
                             Choose your contact
                           </Grid>
                       </Grid>
-                    <Contacts isStartingNewDialogWindow/>
+                    <Grid item
+                    sx={{
+                      overflowY : 'scroll',
+                      flexGrow : "1"
+                    }}>
+                      <Contacts isStartingNewDialogWindow/>
+                    </Grid>
                 </Grid>
               </Grid>
             </Fragment> : null
@@ -236,7 +245,7 @@ function TabPanel(props) {
                             fontSize: '2.5vh',
                             marginTop: '2vh',
                             marginLeft: '5vw'}}>
-                            HiChat
+                            {nickname}
                         </Grid>
                     </Grid>
                     <Grid container width='fit-content'>
