@@ -30,7 +30,7 @@ function MainContainer(props){
                                             })
 
     return transitions((props, item) => {
-            return <animated.div style={Object.assign(props, {position: 'absolute', width: 'inherit', height: 'inherit', overflowX: 'hidden'})}>
+            return <animated.div style={Object.assign(props, {position: 'absolute', width: 'inherit', height: 'inherit', overflowX: 'hidden', overflowY: 'hidden'})}>
                 <authentificationContext.Provider value={contextUser}>
                     <Routes location={item}>
                         <Route path="/login" element={<AppActionButton setReverseAnim={setReverseAnimation}/>} />

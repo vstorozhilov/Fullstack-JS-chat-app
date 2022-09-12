@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import React, { Component, Fragment, useState, useEffect, componentDidMount, useMemo } from 'react';
+import React, { Component, Fragment, useState, useEffect, componentDidMount, useMemo , useContext } from 'react';
 import { Routes, Route, Link, BrowserRouter, useNavigate } from "react-router-dom";
 import { useSpring, animated, useTransition} from '@react-spring/web'
 import greetImage from './images/1.jpg';
@@ -33,119 +33,120 @@ import { Contacts } from './Contacts';
 import {useSelector, useDispatch} from 'react-redux';
 import Profile from './Profile';
 import { authentificationContext } from './Routes';
-import { useContext } from 'react';
+
 import databaseSubscriber from './databaseSubscriber';
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
-import {BsFillChatDotsFill} from "react-icons/bs"
+import { BsFillChatDotsFill } from 'react-icons/bs';
 import CloseIcon from '@mui/icons-material/Close';
 
-function TabPanel(props) {
-    const { children, value, index, style, ...other } = props;
+function TabPanel (props) {
+  const { children, value, index, style, ...other } = props;
 
-    return (
+  return (
       <animated.div
-        role="tabpanel"
+        role='tabpanel'
         id={`simple-tabpanel-${index}`}
         aria-labelledby={`simple-tab-${index}`}
-        style={Object.assign(style, {position: 'absolute', width: 'inherit'})}
+        style={Object.assign(style, {
+          position: 'absolute',
+          width: 'inherit',
+          overflowY: 'scroll',
+          height: 'inherit'
+        })}
         {...other}
       >
-        {  
-          <Box sx={{p : 3, width: '100%'}}>        
+        <Box sx={{p : 3,
+                  width: 'inherit'}}>        
             {children}
           </Box>
-        }
       </animated.div>
-    );
-  }
-  
-  TabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.number.isRequired,
-    value: PropTypes.number.isRequired,
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired
+};
+
+function a11yProps (index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`
   };
-  
-  function a11yProps(index) {
-    return {
-      id: `simple-tab-${index}`,
-      'aria-controls': `simple-tabpanel-${index}`,
-    };
+}
+
+export default function BasicTabs (props) {
+  const [isStartMessagingActive, setIsStartMessagingActive] = useState(false);
+
+  const [value, setValue] = React.useState(0);
+  const [prevValue, setPrevValue] = React.useState(-1);
+  const theme = useTheme();
+  const { user: { token } } = useContext(authentificationContext);
+
+  const nickname = useSelector(state => state.userReducer.User.profile.nickname);
+  const navigate = useNavigate();
+
+  console.log(token);
+
+  const isOnceRendered = useSelector(state => state.dialogsReducer.IsOnceRendered);
+  const dispatch = useDispatch();
+
+  function updateCredentials () {
+    console.log('Called');
+
+    fetch('http://localhost:8090/main', {
+      mode: 'cors',
+      method: 'POST',
+      headers: { Authorization: token },
+      body: JSON.stringify({ action: 'updateAll' })
+    }).then((response) => {
+      if (response.status === 200) {
+        response.json().then(([contacts, dialogs, user]) => {
+          console.log(dialogs);
+          dispatch({ type: 'SET_CONTACTS', value: contacts });
+          dispatch({ type: 'SET_DIALOGS', value: dialogs });
+          dispatch({ type: 'SET_USER', value: user });
+          databaseSubscriber(token);
+        });
+      }
+    });
   }
 
-  export default function BasicTabs(props) {
-
-    const [isStartMessagingActive, setIsStartMessagingActive] = useState(false);
-
-    const [value, setValue] = React.useState(0);
-    const [prevValue, setPrevValue] = React.useState(-1);
-    const theme = useTheme();
-    const {user : {token}} = useContext(authentificationContext);
-
-    const nickname = useSelector(state=>state.userReducer.User.profile.nickname);
-    const navigate = useNavigate();
-
-    console.log(token);
-
-    const isOnceRendered = useSelector(state => state.dialogsReducer.IsOnceRendered);
-    const dispatch = useDispatch();
-
-    function updateCredentials(){
-
-      console.log("Called");
-
-      fetch("http://localhost:8090/main", {
-        mode: "cors",
-        method : "POST",
-        headers : {"Authorization" : token},
-        body : JSON.stringify({action : "updateAll"})
-      }).then((response)=>{
-          if (response.status === 200){
-            response.json().then(([contacts, dialogs, user])=>{
-              console.log(dialogs);
-              dispatch({type : "SET_CONTACTS", value : contacts});
-              dispatch({type : "SET_DIALOGS", value : dialogs});
-              dispatch({type : "SET_USER", value : user});
-              databaseSubscriber(token);
-            });
-          }
-        });
-
+  useEffect(() => {
+    if (!token) {
+      navigate('/login');
     }
+    if (isOnceRendered === false) {
+      dispatch({ type: 'SET_IS_DIALOG_PAGE_ONCE_RENDERED' });
+      updateCredentials();
+    }
+  }, []);
 
-    useEffect(()=>{
-      if (!token) {
-        navigate('/login');
-      }
-      if (isOnceRendered === false) {
-        dispatch({type : 'SET_IS_DIALOG_PAGE_ONCE_RENDERED'});
-        updateCredentials();
-      }
-  }, [])
+  const handleChange = (event, newValue) => {
+    setValue((prev) => { setPrevValue(prev); return newValue; });
+  };
 
-    const handleChange = (event, newValue) => {
-      setValue((prev)=>{setPrevValue(prev); return newValue;});
-    };
+  const TabPages = [
+    ({ styles, value }) => <TabPanel style={styles} value={value} index={0}><ChatItems isOnceRendered={isOnceRendered} /></TabPanel>,
+    ({ styles, value, ...props }) => <TabPanel style={styles} value={value} index={1}><Contacts isStartingNewDialogWindow={false} {...props} /></TabPanel>,
+    ({ styles, value, ...props }) => <TabPanel style={styles} value={value} index={2}><Profile /></TabPanel>
+  ];
 
-    const TabPages = [
-      ({ styles, value }) => <TabPanel style={styles} value={value} index={0}><ChatItems isOnceRendered={isOnceRendered}/></TabPanel>,
-      ({ styles, value, ...props }) => <TabPanel style={styles} value={value} index={1}><Contacts isStartingNewDialogWindow={false} {...props}/></TabPanel>,
-      ({ styles, value, ...props }) => <TabPanel style={styles} value={value} index={2}><Profile/></TabPanel>,
-    ]
+  const transitions = useTransition(value,
+    {
+      from: prevValue < value ? { transform: 'translateX(100%)' } : { transform: 'translateX(-100%)' },
+      enter: { transform: 'translateX(0%)' },
+      leave: prevValue < value ? { transform: 'translateX(-100%)' } : { transform: 'translateX(100%)' }
+    });
 
-    const transitions = useTransition(value, 
-      {
-        from: prevValue < value ? {transform: 'translateX(100%)'} : {transform: 'translateX(-100%)'},
-        enter: {transform: 'translateX(0%)'},
-        leave: prevValue < value ? {transform: 'translateX(-100%)'} : {transform: 'translateX(100%)'},
-      });
+  const chatIconAnimationDown = 'animation-name : chatIconAnimationDown; animation-duration: 0.25s; color : #ffffff;';
+  const chatIconAnimationUp = `animation-name : chatIconAnimationUp; animation-duration: 0.25s; color : ${theme.palette.primary.dark};`;
+  const chatIconButtonAnimationDown = `animation-name : chatIconButtonAnimationDown; animation-duration: 0.25s; background-color : ${theme.palette.primary.dark};`;
+  const chatIconButtonAnimationUp = 'animation-name : chatIconButtonAnimationUp; animation-duration: 0.25s; background-color : #ffffff;';
 
-    const chatIconAnimationDown = "animation-name : chatIconAnimationDown; animation-duration: 0.25s; color : #ffffff;";
-    const chatIconAnimationUp = `animation-name : chatIconAnimationUp; animation-duration: 0.25s; color : ${theme.palette.primary.dark};`;
-    const chatIconButtonAnimationDown = `animation-name : chatIconButtonAnimationDown; animation-duration: 0.25s; background-color : ${theme.palette.primary.dark};`;
-    const chatIconButtonAnimationUp = `animation-name : chatIconButtonAnimationUp; animation-duration: 0.25s; background-color : #ffffff;`;
-
-    return (token &&
-        <Fragment>
+  return (token &&
+      <>
             {isStartMessagingActive ?
             <Fragment>
               <div
@@ -360,6 +361,6 @@ function TabPanel(props) {
                   />
                 </IconButton> : null
               }
-        </Fragment>
-    );
-  }
+        </>
+  );
+}
