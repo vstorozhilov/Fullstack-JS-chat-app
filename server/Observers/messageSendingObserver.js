@@ -1,4 +1,4 @@
-const MessageModel = require('../models/messageModel');
+const MessageModel = require('../Models/MessageModel');
 const mongoose = require('mongoose');
 
 function messageSendingObserverCreator (socket, dialogId) {

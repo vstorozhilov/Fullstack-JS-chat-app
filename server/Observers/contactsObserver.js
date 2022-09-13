@@ -1,4 +1,4 @@
-const UserModel = require('../models/userModel');
+const UserModel = require('../Models/UserModel');
 
 function contactsObserverCreator (socket) {
   const contactsObserver = UserModel.watch([

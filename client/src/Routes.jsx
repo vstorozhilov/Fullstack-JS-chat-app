@@ -5,7 +5,7 @@ import { useSpring, animated, useTransition } from 'react-spring'
 import { useState, useMemo, useEffect } from 'react';
 import { LoginPassword } from './LoaginPassword';
 import BasicTabs from './ChatMainPage';
-import { Dialog } from './Dialog'
+import { Dialog } from './pages/Dialog'
 import authentificationContext from './contexts/authentificationContext';
 import { useSelector } from "react-redux"
 

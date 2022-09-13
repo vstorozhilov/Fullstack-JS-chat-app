@@ -1,4 +1,4 @@
-const UserModel = require('../models/userModel');
+const UserModel = require('../Models/UserModel');
 
 function userObserverCreator (socket, login) {
   const userObserver = UserModel.watch([{ $match: { 'fullDocument.login': login } },

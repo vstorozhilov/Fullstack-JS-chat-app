@@ -1,13 +1,13 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from '../logo.svg';
+import '../App.css';
 import React, { Component, Fragment, useState, useEffect, componentDidMount, useMemo } from 'react';
 import { Routes, Route, Link, BrowserRouter, useNavigate } from "react-router-dom";
 import { useSpring, animated, useTransition} from '@react-spring/web'
-import greetImage from './images/1.jpg';
-import loginImage from './images/2.png'
-import avatarImage from './images/avatar.png'
-import 'react-phone-number-input/style.css'
-import PhoneInput from 'react-phone-number-input'
+import greetImage from '../images/1.jpg';
+import loginImage from '../images/2.png';
+import avatarImage from '../images/avatar.png';
+import 'react-phone-number-input/style.css';
+import PhoneInput from 'react-phone-number-input';
 import {TextField, Button, IconButton, Checkbox, Input} from '@mui/material'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {ArrowBack, PhotoCamera, Mode, Search, DensityMedium, ForkRight} from '@mui/icons-material'
@@ -15,10 +15,10 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import {Event} from '@mui/icons-material';
 import InputAdornment from '@mui/material/InputAdornment';
-import {BigBlueButton as CommonButton} from './BigBlueButton'
-import { AppTextField } from './TextField';
+import {BigBlueButton as CommonButton} from '../BigBlueButton'
+import { AppTextField } from '../TextField';
 import { useTheme } from '@mui/material/styles';
-import { BirthdayPicker } from './BirthdayPicker';
+import { BirthdayPicker } from '../BirthdayPicker';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
@@ -28,8 +28,8 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import zIndex from '@mui/material/styles/zIndex';
-import { ChatItems } from './ChatItem'
-import { Contacts } from './Contacts'
+import { ChatItems } from '../ChatItem'
+import { Contacts } from '../Contacts'
 import {useSelector, useDispatch} from 'react-redux';
 import SnackbarContent from '@mui/material/SnackbarContent';
 import SendIcon from '@mui/icons-material/Send';
@@ -37,12 +37,12 @@ import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import Avatar from '@mui/material/Avatar';
-import { authentificationContext } from './Routes';
+import { authentificationContext } from '../Routes';
 import { useContext, useRef } from "react";
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import { InView } from 'react-intersection-observer';
-import { exitFromDialog } from './databaseSubscriber';
-import Moment from "react-moment"
+import { exitFromDialog } from '../databaseSubscriber';
+import Moment from "react-moment";
 
 const MyMessageStyled = styled(SnackbarContent)(({theme})=>`
     background-color : ${theme.palette.primary.light};
@@ -186,9 +186,6 @@ const ObservedComponent = (MessageComponent, props) => {
         
     }
 
-    //const dispatch = useDispatch();
-    //const isReaded = useSelector(state=>state.messagesReducer.Messages[props.id].isReaded);
-
     return(<InView root={props.root} threshold={0.9} triggerOnce onChange={inView=>isReadedNotification(inView)}>
       {({ inView, ref}) => (
         <MessageComponent ref={ref} inView={inView} {...forwardedProps}/>
@@ -221,15 +218,18 @@ const MessagesContainer = React.forwardRef((props, ref)=>{
 
     const correctMessages = useSelector(state=>state.messagesReducer.Messages);
 
+    console.log(correctMessages);
+
     const transitions = useTransition(Object.values(correctMessages), 
         {
             from : { opacity: 0},
             enter : { opacity: 1},
             config: {duration: 300}
         })
-    
+
     useEffect(()=>{
         if (Object.keys(correctMessages).length) {
+            console.log("Mounted");
             if (ref.current.offsetHeight + ref.current.scrollTop >=
                 ref.current.scrollHeight - 2){
                 setisDialogFullyScrolled(true);
@@ -237,9 +237,6 @@ const MessagesContainer = React.forwardRef((props, ref)=>{
             if (isDialogFullyScrolled){
                 ref.current.scrollTo(0, ref.current.scrollHeight);
             }
-        }
-        else {
-            setisDialogFullyScrolled(true);
         }
     })
 
@@ -292,7 +289,7 @@ const MessagesContainer = React.forwardRef((props, ref)=>{
                     {NotReadedMessagesCount}
                 </div>
             </Grid> : null}
-            {!isDialogFullyScrolled ?
+            {!isDialogFullyScrolled && Object.keys(correctMessages).length ?
             <Grid item>
                 <IconButton
                 onClick={(e)=>{
@@ -411,7 +408,9 @@ export function Dialog(props){
     const {user : {login}, user : {token}} = useContext(authentificationContext);
 
     const dialogId = useSelector(state=>state.dialogsReducer.selectedDialog);
-    
+
+    window.addEventListener('close', exitFromDialog);
+
     function getMessages() {
         fetch("http://localhost:8090/dialog", {
         mode: "cors",
@@ -449,7 +448,10 @@ export function Dialog(props){
     function keydownHandler(event) {
         if (event.key === 'Enter') {
             event.preventDefault();
-            sendMessage();
+            if (event.target.value !== '') {
+                sendMessage();
+                event.target.value = '';
+            }
         }
     }
 

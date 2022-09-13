@@ -1,7 +1,7 @@
 const authentificationControl = require('../Middlewares/authenticationControl');
-const DialogModel = require('../models/DialogModel');
-const MessageModel = require('../models/MessageModel');
-const UserModel = require('../models/userModel');
+const DialogModel = require('../Models/DialogModel');
+const MessageModel = require('../Models/MessageModel');
+const UserModel = require('../Models/UserModel');
 
 async function messageWasReaded (response, requestPayment) {
   const message = await MessageModel.findOne({ _id: requestPayment.messageId });

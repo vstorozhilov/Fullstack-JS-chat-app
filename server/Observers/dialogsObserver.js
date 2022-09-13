@@ -1,5 +1,5 @@
-const DialogModel = require('../models/dialogModel');
-const MessageModel = require('../models/messageModel');
+const DialogModel = require('../Models/DialogModel');
+const MessageModel = require('../Models/MessageModel');
 const wholeRelatedMessageObserverCreator = require('./wholeRelatedMessagesObserver');
 
 function dialogsObserverCreator (socket, login, wholeRelatedMessageObserver) {

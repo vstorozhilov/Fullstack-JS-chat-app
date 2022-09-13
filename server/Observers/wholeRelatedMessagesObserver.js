@@ -1,5 +1,5 @@
-const MessageModel = require('../models/messageModel');
-const DialogModel = require('../models/dialogModel');
+const MessageModel = require('../Models/MessageModel');
+const DialogModel = require('../Models/DialogModel');
 
 async function wholeRelatedMessageObserverCreator (socket, login) {
   const dialogs = (await DialogModel.find({

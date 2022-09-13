@@ -1,6 +1,6 @@
-const UserModel = require('../models/UserModel');
-const DialogModel = require('../models/DialogModel');
-const MessageModel = require('../models/MessageModel');
+const UserModel = require('../Models/UserModel');
+const DialogModel = require('../Models/DialogModel');
+const MessageModel = require('../Models/MessageModel');
 const authentificationControl = require('../Middlewares/authenticationControl');
 
 async function updateAll (response, login) {

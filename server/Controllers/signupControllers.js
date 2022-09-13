@@ -1,5 +1,5 @@
 const generateToken = require('../Configs/generateToken');
-const UserModel = require('../models/userModel');
+const UserModel = require('../Models/UserModel');
 
 async function accountCreationHandler (request, response) {
   const [login, password] = request.headers.authorization.split(':');

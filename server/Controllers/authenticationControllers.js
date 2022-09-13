@@ -1,4 +1,4 @@
-const UserModel = require('../models/userModel');
+const UserModel = require('../Models/UserModel');
 const generateToken = require('../Configs/generateToken');
 
 async function authenticationHandler (request, response) {
