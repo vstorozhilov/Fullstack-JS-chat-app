@@ -38,7 +38,7 @@ export default function CreateAccount (props) {
   function sendAuthorizationForm () {
     setIsLoading(true);
 
-    fetch('http://localhost:8090/signup', {
+    fetch('http://localhost:8090/createaccount', {
       mode: 'cors',
       method: 'POST',
       headers: { Authorization: login + ':' + password },
@@ -60,7 +60,7 @@ export default function CreateAccount (props) {
       } else if (response.status === 401) {
         response.json().then(responsePayment => {
           alert(responsePayment);
-          setTimeout(() => navigate('/loginpassword'), 3000);
+          setTimeout(() => navigate('/signup'), 3000);
         });
       }
     });
@@ -96,7 +96,7 @@ export default function CreateAccount (props) {
               gap='5vw'
             >
               <Grid item>
-                <Link to='/loginpassword' onClick={() => { props.setReverseAnim(true); }}>
+                <Link to='/signup' onClick={() => { props.setReverseAnim(true); }}>
                   <IconButton size='large'>
                     <ArrowBack sx={{
                       color: '#000000'

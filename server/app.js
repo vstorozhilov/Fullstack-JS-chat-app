@@ -24,10 +24,10 @@ async function run () {
             case ('/login') :
               await authenticationHandler(req, res);
               break;
-            case ('/loginpassword') :
+            case ('/signup') :
               await signupHandler(req, res);
               break;
-            case ('/signup') :
+            case ('/createaccount') :
               await accountCreationHandler(req, res);
               break;
             case ('/main') :
@@ -50,10 +50,6 @@ async function run () {
     const socketioserver = new Server(httpserver, { cors: true });
 
     socketioserver.on('connection', connectionObserver);
-
-    // socketioserver.on('connection', socket=>{
-    //   socket._error.
-    // })
 
     console.log('Server has been started');
   } catch (connectionError) {

@@ -3,6 +3,10 @@
   font-family: 'Urbanist';
 }
 
+body {
+  margin : 0
+}
+
 .AppActionButton {
   display: flex;
   justify-content: center;

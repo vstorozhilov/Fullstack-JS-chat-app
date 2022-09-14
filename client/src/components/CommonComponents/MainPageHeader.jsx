@@ -1,11 +1,14 @@
 import React from 'react';
 import { useTheme, Tab, Tabs, Grid, IconButton } from '@mui/material';
-import { Search, DensityMedium } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import { DensityMedium } from '@mui/icons-material';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { useSelector } from 'react-redux';
 
 export default function MainPageHeader (props) {
   const theme = useTheme();
   const nickname = useSelector(state => state.userReducer.User.profile.nickname);
+  const navigate = useNavigate();
 
   const handleChange = (event, newValue) => {
     props.tabIndexer.setValue((prev) => { props.tabIndexer.setPrevValue(prev); return newValue; });
@@ -45,10 +48,16 @@ export default function MainPageHeader (props) {
         </Grid>
         <Grid container width='fit-content'>
           <Grid item>
-            <IconButton>
-              <Search
+            <IconButton onClick={() => {
+              props.setReverseAnim(true);
+              localStorage.removeItem('user');
+              navigate('/login');
+            }}
+            >
+              <LogoutIcon
                 sx={{
                   color: theme.palette.secondary.text,
+                  transform: 'scaleX(-1)',
                   marginTop: '1vh'
                 }} fontSize='large'
               />

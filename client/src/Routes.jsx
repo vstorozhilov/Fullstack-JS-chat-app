@@ -41,9 +41,9 @@ function MainContainer (props) {
           <Routes location={item}>
             <Route path='/login' element={<Login setReverseAnim={setReverseAnimation} />} />
             <Route path='/home' element={<Greet text='Click me now' />} />
-            <Route path='/loginpassword' element={<SignUp setReverseAnim={setReverseAnimation} />} />
-            <Route path='/signup' element={<CreateAccount setReverseAnim={setReverseAnimation} />} />
-            <Route path='/main' element={<Main />} />
+            <Route path='/signup' element={<SignUp setReverseAnim={setReverseAnimation} />} />
+            <Route path='/createaccount' element={<CreateAccount setReverseAnim={setReverseAnimation} />} />
+            <Route path='/main' element={<Main setReverseAnim={setReverseAnimation} />} />
             <Route path='/dialog' element={selectedDialog === undefined ? <Navigate to='/main' /> : <Dialog setReverseAnim={setReverseAnimation} />} />
           </Routes>
         </authentificationContext.Provider>

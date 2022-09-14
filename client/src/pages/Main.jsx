@@ -79,7 +79,7 @@ export default function Main (props) {
             setIsStartMessagingActive={setIsStartMessagingActive}
           />
         : null}
-      <MainPageHeader tabIndexer={{ value, setValue, setPrevValue }} />
+      <MainPageHeader tabIndexer={{ value, setValue, setPrevValue }} setReverseAnim={props.setReverseAnim}/>
       {transitions((styles, item) => {
         const Page = TabPages[item];
         return (

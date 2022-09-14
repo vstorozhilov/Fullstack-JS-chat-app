@@ -150,7 +150,7 @@ export default function Login (props) {
       </Grid>
       <Grid item sx={{ marginBottom: '5vh' }}>
         <span>Don't have an account?</span>
-        <span><Link to='/loginpassword' style={{ color: '#246bfd' }}>Sign Up</Link></span>
+        <span><Link to='/signup' style={{ color: '#246bfd' }}>Sign Up</Link></span>
       </Grid>
     </Grid>
   );

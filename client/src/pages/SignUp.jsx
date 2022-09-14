@@ -37,14 +37,14 @@ export default function SignUp (props) {
 
     setIsLoading(true);
 
-    fetch('http://localhost:8090/loginpassword', {
+    fetch('http://localhost:8090/signup', {
       mode: 'cors',
       method: 'POST',
       headers: { Authorization: login }
     }).then((response) => {
       if (response.status === 200) {
         setUser({ login, password });
-        navigate('/signup');
+        navigate('/createaccount');
       }
       if (response.status === 401) {
         setIsAuthDataCorrect(false);
@@ -200,7 +200,7 @@ export default function SignUp (props) {
         </Grid>
       </Grid>
       <Grid item sx={{ marginBottom: '5vh' }}>
-        <BigBlueButton text='Sign Up' onClick={sendAuthorizationForm} target='/signup' />
+        <BigBlueButton text='Sign Up' onClick={sendAuthorizationForm} target='/createaccount' />
       </Grid>
     </Grid>
   );
