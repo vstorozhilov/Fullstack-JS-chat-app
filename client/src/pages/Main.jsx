@@ -1,20 +1,20 @@
-import '../../App.css';
+import '../App.css';
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTransition } from '@react-spring/web';
 import { IconButton, useTheme } from '@mui/material';
-import DialogsListItems from '../DialogsListTabComponents/DialogsListItems';
-import ContactsListItems from '../ContactListTabComponents/ContactsListItems';
+import DialogsListItems from '../components/DialogsListTabComponents/DialogsListItems';
+import ContactsListItems from '../components/ContactListTabComponents/ContactsListItems';
 import { useSelector, useDispatch } from 'react-redux';
-import Profile from '../ProfileTabComponents/Profile';
-import { authentificationContext } from '../../Routes';
-import databaseSubscriber from '../../databaseSubscriber';
+import Profile from '../components/ProfileTabComponents/Profile';
+import { authentificationContext } from '../Routes';
+import databaseSubscriber from '../databaseSubscriber';
 import { BsFillChatDotsFill } from 'react-icons/bs';
-import MainPageHeader from './MainPageHeader';
-import StartNewDialog from '../DialogsListTabComponents/StartNewDialog';
-import TabPanel from './TabPanel';
+import MainPageHeader from '../components/CommonComponents/MainPageHeader';
+import StartNewDialog from '../components/DialogsListTabComponents/StartNewDialog';
+import TabPanel from '../components/CommonComponents/TabPanel';
 
-export default function MainPageTabs (props) {
+export default function Main (props) {
   const [isStartMessagingActive, setIsStartMessagingActive] = useState(false);
   const [value, setValue] = React.useState(0);
   const [prevValue, setPrevValue] = React.useState(-1);
@@ -148,7 +148,7 @@ export default function MainPageTabs (props) {
               color: `${theme.palette.primary.dark}`
             }}
           />
-          </IconButton>
+        </IconButton>
         : null}
     </>
   );

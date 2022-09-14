@@ -1,8 +1,8 @@
 import React from 'react';
-import {styled} from '@mui/material/styles';
-import {TextField} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { TextField } from '@mui/material';
 
-const StyledTextField = styled(TextField)(({width, height, theme})=>`
+const StyledTextField = styled(TextField)(({ width, height, theme }) => `
       width: ${width};
       & .MuiOutlinedInput-input {
             border-radius: 7vw;
@@ -25,15 +25,8 @@ const StyledTextField = styled(TextField)(({width, height, theme})=>`
       & .Mui-focused > .MuiOutlinedInput-input {
             background-color: ${theme.palette.action.focus};
       }
-`)
+`);
 
-export const AppTextField = React.forwardRef((props, ref)=>{
-      return <StyledTextField variant="outlined" ref={ref} {...props}/>
-})
-
-
-// export function AppTextField(props){
-//     return (
-//       <StyledTextField variant="outlined" {...props}/>
-//       )
-//   }
+export const AppTextField = React.forwardRef((props, ref) => {
+  return <StyledTextField variant='outlined' ref={ref} {...props} />;
+});
