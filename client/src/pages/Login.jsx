@@ -34,7 +34,7 @@ export default function Login (props) {
     const login = loginField.current.querySelector('.MuiOutlinedInput-input').value;
     const password = passwordField.current.querySelector('.MuiOutlinedInput-input').value;
 
-    fetch('http://localhost:8090/login', {
+    fetch('/api/login', {
       mode: 'cors',
       method: 'POST',
       headers: { Authorization: login + ':' + password }
@@ -64,7 +64,7 @@ export default function Login (props) {
     >
       <Grid container direction='column' alignItems='center' id='topAlignedContainer'>
         <Grid item sx={{ alignSelf: 'flex-start' }}>
-          <Link to='/home' onClick={() => { props.setReverseAnim(true); }}>
+          <Link to='/' onClick={() => { props.setReverseAnim(true); }}>
             <IconButton size='large'>
               <ArrowBack
                 sx={{

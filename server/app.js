@@ -6,6 +6,7 @@ const { accountCreationHandler, signupHandler } = require('./Controllers/signupC
 const messageHandler = require('./Controllers/dialogControllers');
 const authenticationHandler = require('./Controllers/authenticationControllers');
 const connectionObserver = require('./Observers/connectionObserver');
+const staticHandler = require('./Controllers/staticControllers');
 
 async function run () {
   try {
@@ -21,21 +22,23 @@ async function run () {
           res.end();
         } else {
           switch (req.url) {
-            case ('/login') :
+            case ('/api/login') :
               await authenticationHandler(req, res);
               break;
-            case ('/signup') :
+            case ('/api/signup') :
               await signupHandler(req, res);
               break;
-            case ('/createaccount') :
+            case ('/api/createaccount') :
               await accountCreationHandler(req, res);
               break;
-            case ('/main') :
+            case ('/api/main') :
               await mainTabHandler(req, res);
               break;
-            case ('/dialog') :
+            case ('/api/dialog') :
               await messageHandler(req, res);
               break;
+            default :
+              staticHandler(req, res);
           }
         }
       } catch (internalError) {

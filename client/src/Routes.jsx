@@ -55,7 +55,7 @@ function MainContainer (props) {
         <authentificationContext.Provider value={contextUser}>
           <Routes location={item}>
             <Route path='/login' element={<Login setReverseAnim={setReverseAnimation} />} />
-            <Route path='/home' element={<Greet text='Click me now' />} />
+            <Route path='/' element={<Greet text='Click me now' />} />
             <Route path='/signup' element={<SignUp setReverseAnim={setReverseAnimation} />} />
             <Route path='/createaccount' element={<CreateAccount setReverseAnim={setReverseAnimation} />} />
             <Route path='/main' element={<Main setReverseAnim={setReverseAnimation} />} />

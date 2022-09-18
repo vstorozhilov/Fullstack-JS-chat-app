@@ -14,7 +14,7 @@ export default function ContactsListItem (props) {
   const theme = useTheme();
 
   const handleClick = (e) => {
-    fetch('http://localhost:8090/main', {
+    fetch('/api/main', {
       mode: 'cors',
       method: 'POST',
       headers: { Authorization: token },

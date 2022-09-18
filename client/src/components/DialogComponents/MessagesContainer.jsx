@@ -8,6 +8,7 @@ import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrow
 import MyMessage from './MyMessage';
 import { RefPeerMessage, PeerMessage } from './PeerMessage';
 import { InView } from 'react-intersection-observer';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const ObservedComponent = (MessageComponent, props) => {
   const { messageId, ...forwardedProps } = props;
@@ -15,7 +16,7 @@ const ObservedComponent = (MessageComponent, props) => {
 
   function isReadedNotification (inView) {
     if (inView) {
-      fetch('http://localhost:8090/dialog', {
+      fetch('/api/dialog', {
         mode: 'cors',
         method: 'POST',
         headers: { Authorization: token },
@@ -36,7 +37,7 @@ const ObservedComponent = (MessageComponent, props) => {
   );
 };
 
-const MessagesContainer = React.forwardRef((__, ref) => {
+const MessagesContainer = React.forwardRef((props, ref) => {
   const { user: { login } } = useContext(authentificationContext);
   const [isDialogFullyScrolled, setisDialogFullyScrolled] = useState(false);
   const correctMessages = useSelector(state => state.messagesReducer.Messages);
@@ -62,6 +63,12 @@ const MessagesContainer = React.forwardRef((__, ref) => {
 
   const NotReadedMessagesCount = useSelector(state => (
     Object.values(state.messagesReducer.Messages).filter(item => (item.isReaded === false && item.author !== login))).length
+  );
+
+  const LoadingCircular = (props) => (
+    <Grid item alignSelf='center' sx={{ marginTop: '10vh' }}>
+      <CircularProgress {...props} />
+    </Grid>
   );
 
   return (
@@ -145,27 +152,29 @@ const MessagesContainer = React.forwardRef((__, ref) => {
           scrollBehavior: 'smooth'
         }}
       >
-        {transitions((styles, item) => {
-          return (login === item.author
-            ? <MyMessage
-                styles={item.isReaded ? {} : styles}
-                message={item.content}
-                isReaded={item.isReaded}
-                date={item.date}
-              />
-            : item.isReaded
-              ? <PeerMessage
+        {props.isLoadingUpdates
+          ? <LoadingCircular size='30vh' thickness='2.0' />
+          : transitions((styles, item) => {
+            return (login === item.author
+              ? <MyMessage
+                  styles={item.isReaded ? {} : styles}
                   message={item.content}
+                  isReaded={item.isReaded}
                   date={item.date}
                 />
-              : ObservedComponent(RefPeerMessage, {
-                root: ref.current,
-                styles,
-                message: item.content,
-                messageId: item._id,
-                date: item.date
-              }));
-        })}
+              : item.isReaded
+                ? <PeerMessage
+                    message={item.content}
+                    date={item.date}
+                  />
+                : ObservedComponent(RefPeerMessage, {
+                  root: ref.current,
+                  styles,
+                  message: item.content,
+                  messageId: item._id,
+                  date: item.date
+                }));
+          })}
       </Grid>
     </div>
   );

@@ -5,6 +5,7 @@ import { DensityMedium } from '@mui/icons-material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useSelector } from 'react-redux';
 import { disconnectFromDatabase } from '../../databaseSubscriber';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export default function MainPageHeader (props) {
   const theme = useTheme();
@@ -44,7 +45,7 @@ export default function MainPageHeader (props) {
               marginLeft: '5vw'
             }}
           >
-            {nickname}
+            {nickname ? nickname : <CircularProgress size='5vh' sx={{color : '#ffffff'}}/>}
           </Grid>
         </Grid>
         <Grid container width='fit-content'>

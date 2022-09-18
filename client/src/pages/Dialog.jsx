@@ -1,5 +1,5 @@
 import '../App.css';
-import React, { useEffect, useContext, useRef } from 'react';
+import React, { useEffect, useContext, useRef, useState } from 'react';
 import InputAdornment from '@mui/material/InputAdornment';
 import { AppTextField } from '../components/CommonComponents/TextField';
 import IconButton from '@mui/material/IconButton';
@@ -12,49 +12,47 @@ import { authentificationContext } from '../Routes';
 import MessagesContainer from '../components/DialogComponents/MessagesContainer';
 import DialogHeader from '../components/DialogComponents/DialogHeader';
 
-
 export function Dialog (props) {
+  const [isLoadingUpdates, setIsLoadingUpdates] = useState(false);
   const dialogContainerRef = useRef(null);
   const { user: { token } } = useContext(authentificationContext);
   const selectedDialog = useSelector(state => state.selectDialogReducer.selectedDialog);
   console.log(selectedDialog);
-  // const peerLogin = useSelector(state => {
-  //   const currentDialog = state.dialogsReducer.Dialogs[dialogId];
-  //   return login === currentDialog.peerOne ? currentDialog.peerTwo : currentDialog.peerOne;
-  // });
+  const [isOnceMounted, setIsOnceMounted] = useState(false);
   const messageField = useRef(null);
   const dispatch = useDispatch();
 
   function getMessages () {
-    fetch('http://localhost:8090/dialog', {
+    setIsLoadingUpdates(true);
+    fetch('/api/dialog', {
       mode: 'cors',
       method: 'POST',
       headers: { Authorization: token },
       body: JSON.stringify({
         action: 'fetch messages',
-        dialogId : selectedDialog
+        dialogId: selectedDialog
       })
     }).then((response) => {
+      setIsLoadingUpdates(false);
       if (response.status === 200) {
         response.json().then(data => {
           console.log(data[0]);
           dispatch({ type: 'SET_MESSAGES', value: data[0] });
           dispatch({ type: 'SET_PEER', value: data[1] });
-          // deleteUnnecessoryFromStore();
         });
       }
     });
   }
 
   function sendMessage () {
-    fetch('http://localhost:8090/dialog', {
+    fetch('/api/dialog', {
       mode: 'cors',
       method: 'POST',
       headers: { Authorization: token },
       body: JSON.stringify({
         action: 'message was sended',
         content: messageField.current.querySelector('.MuiOutlinedInput-input').value,
-        dialogId : selectedDialog
+        dialogId: selectedDialog
       })
     }).then((response) => {
       if (response.status === 200) {
@@ -75,9 +73,10 @@ export function Dialog (props) {
   }
 
   useEffect(() => {
-    getMessages();
-    // deleteUnnecessoryFromStore();
-    //return (exitFromDialog);
+    if (!isOnceMounted) {
+      getMessages();
+      setIsOnceMounted(true);
+    }
   });
 
   return (
@@ -96,8 +95,8 @@ export function Dialog (props) {
           flexWrap='nowrap'
           minHeight='0px'
         >
-          <DialogHeader setReverseAnim={props.setReverseAnim} />
-          <MessagesContainer ref={dialogContainerRef} />
+          <DialogHeader setReverseAnim={props.setReverseAnim} isLoadingUpdates={isLoadingUpdates} />
+          <MessagesContainer ref={dialogContainerRef} isLoadingUpdates={isLoadingUpdates} />
         </Grid>
         <Grid
           container

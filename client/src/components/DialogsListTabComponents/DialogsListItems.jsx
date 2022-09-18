@@ -4,10 +4,11 @@ import Grid from '@mui/material/Grid';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { authentificationContext } from '../../Routes';
-import { dialogPageSelect, dialogPageWillMount} from '../../databaseSubscriber';
+import { dialogPageSelect, dialogPageWillMount } from '../../databaseSubscriber';
 import { zip } from 'zip-array';
 import DialogListItem from './DialogsListItem';
 import NoDialogsYet from './noDialogsYet';
+import CircularProgress from '@mui/material/CircularProgress';
 
 function DialogListItemContainer ({ style, id, onClick, ...props }) {
   const itemPointDownAnimation = `animation-name : chatItemAnimationDown;
@@ -55,7 +56,7 @@ export default function DialogsListItems (props) {
     dialogPageSelect(e.currentTarget.id);
     dialogPageWillMount();
     // dispatch({ type: 'SET_SELECTED_DIALOG', value: [e.currentTarget.id, peerLogin] });
-    //dispatch({ type: 'SET_SELECTED_DIALOG', value: [e.currentTarget.id, peerLogin] });
+    // dispatch({ type: 'SET_SELECTED_DIALOG', value: [e.currentTarget.id, peerLogin] });
     navigate('/dialog');
   };
 
@@ -66,6 +67,12 @@ export default function DialogsListItems (props) {
     return -1 * (DateOne - DateTwo);
   };
 
+  const LoadingCircular = (props) => (
+    <Grid item alignSelf='center' sx={{ marginTop: '15vh' }}>
+      <CircularProgress {...props} />
+    </Grid>
+  );
+
   return (
     <Grid
       container
@@ -74,7 +81,7 @@ export default function DialogsListItems (props) {
       rowSpacing={3}
       height='100%'
     >
-      {dialogs.length
+      {props.isLoadingUpdates ?  <LoadingCircular size='30vh' thickness='2.0' /> : dialogs.length
         ? dialogAvaPair.filter(item => (item[0].lastMessage !== null))
           .sort((itemOne, itemTwo) =>
             compareDatesFunction(itemOne[0].lastMessage.date, itemTwo[0].lastMessage.date))

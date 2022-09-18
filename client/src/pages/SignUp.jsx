@@ -37,7 +37,7 @@ export default function SignUp (props) {
 
     setIsLoading(true);
 
-    fetch('http://localhost:8090/signup', {
+    fetch('/api/signup', {
       mode: 'cors',
       method: 'POST',
       headers: { Authorization: login }

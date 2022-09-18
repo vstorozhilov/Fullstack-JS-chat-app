@@ -3,6 +3,7 @@ import { ArrowBack, Search, DensityMedium } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { mainPageWillMount } from '../../databaseSubscriber';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export default function DialogHeader (props) {
   const theme = useTheme();
@@ -49,6 +50,9 @@ export default function DialogHeader (props) {
               <ArrowBack />
             </IconButton>
           </Grid>
+          {/* <CircularProgress size='5vh' sx={{color : '#ffffff'}}/> */}
+          {props.isLoadingUpdates ? <CircularProgress size='5vh' sx={{color : '#ffffff'}}/> :
+          <>
           <Grid
             item sx={{
               paddingRight: '2vw',
@@ -86,6 +90,8 @@ export default function DialogHeader (props) {
           >
             {peerNickname}
           </Grid>
+          </>
+          }
         </Grid>
         <Grid
           container

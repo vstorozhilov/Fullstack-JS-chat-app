@@ -48,7 +48,7 @@ export default function Profile (props) {
       about: about.current.querySelector('.MuiOutlinedInput-input').value
     };
 
-    fetch('http://localhost:8090/main', {
+    fetch('/main', {
       mode: 'cors',
       method: 'POST',
       headers: { Authorization: token },
@@ -100,8 +100,8 @@ export default function Profile (props) {
                 htmlFor='icon-button-file' style={{
                   position: 'absolute',
                   zIndex: '1',
-                  top: '15vh',
-                  left: '15vh',
+                  top: `${maxheightMatch ? '12vh' : '19vh'}`,
+                  left: `${maxheightMatch ? '12vh' : '19vh'}`,
                   width: '4vh',
                   height: '4vh'
                 }}
@@ -111,6 +111,9 @@ export default function Profile (props) {
                   id='icon-button-file'
                   type='file'
                   style={{ display: 'none' }}
+                  // sx={{
+                  //   //padding : '0'
+                  // }}
                   disabled={!isEditable}
                   onChange={(event) => { handleAvatarChange(event); }}
                 />
@@ -119,6 +122,9 @@ export default function Profile (props) {
                     color='primary'
                     aria-label='upload picture'
                     component='span'
+                    sx={{
+                      padding: '0'
+                    }}
                   >
                     <Mode sx={{
                       height: '4vh',

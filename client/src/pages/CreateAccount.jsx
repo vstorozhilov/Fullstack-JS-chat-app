@@ -39,7 +39,7 @@ export default function CreateAccount (props) {
   function sendAuthorizationForm () {
     setIsLoading(true);
 
-    fetch('http://localhost:8090/createaccount', {
+    fetch('/api/createaccount', {
       mode: 'cors',
       method: 'POST',
       headers: { Authorization: login + ':' + password },

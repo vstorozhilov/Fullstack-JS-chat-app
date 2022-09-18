@@ -14,8 +14,8 @@ import MainPageHeader from '../components/CommonComponents/MainPageHeader';
 import StartNewDialog from '../components/DialogsListTabComponents/StartNewDialog';
 import TabPanel from '../components/CommonComponents/TabPanel';
 
-
 export default function Main (props) {
+  const [isLoadingUpdates, setIsLoadingUpdates] = useState(false);
   const [isStartMessagingActive, setIsStartMessagingActive] = useState(false);
   const [value, setValue] = React.useState(0);
   const [prevValue, setPrevValue] = React.useState(-1);
@@ -28,12 +28,16 @@ export default function Main (props) {
   // console.log(useSelector(state => state.messagesReducer.Messages));
 
   function updateCredentials () {
-    fetch('http://localhost:8090/main', {
+
+    setIsLoadingUpdates(true);
+
+    fetch('/api/main', {
       mode: 'cors',
       method: 'POST',
       headers: { Authorization: token },
       body: JSON.stringify({ action: 'updateAll' })
     }).then((response) => {
+      setIsLoadingUpdates(false);
       if (response.status === 200) {
         response.json().then(([contacts, dialogs, user]) => {
           console.log(dialogs);
@@ -60,7 +64,7 @@ export default function Main (props) {
   }, []);
 
   const TabPages = [
-    ({ styles, value }) => <TabPanel style={styles} value={value} index={0}><DialogsListItems /></TabPanel>,
+    ({ styles, value }) => <TabPanel style={styles} value={value} index={0}><DialogsListItems isLoadingUpdates={isLoadingUpdates} /></TabPanel>,
     ({ styles, value, ...props }) => <TabPanel style={styles} value={value} index={1}><ContactsListItems isStartingNewDialogWindow={false} {...props} /></TabPanel>,
     ({ styles, value }) => <TabPanel style={styles} value={value} index={2}><Profile /></TabPanel>
   ];
