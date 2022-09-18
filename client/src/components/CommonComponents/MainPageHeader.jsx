@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { DensityMedium } from '@mui/icons-material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useSelector } from 'react-redux';
+import { disconnectFromDatabase } from '../../databaseSubscriber';
 
 export default function MainPageHeader (props) {
   const theme = useTheme();
@@ -51,6 +52,7 @@ export default function MainPageHeader (props) {
             <IconButton onClick={() => {
               props.setReverseAnim(true);
               localStorage.removeItem('user');
+              disconnectFromDatabase();
               navigate('/login');
             }}
             >

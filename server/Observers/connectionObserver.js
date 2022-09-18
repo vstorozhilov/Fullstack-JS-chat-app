@@ -7,6 +7,7 @@ const messageReadingObserverCreator = require('./messageReadingObserver');
 const messageSendingObserverCreator = require('./messageSendingObserver');
 const userObserverCreator = require('./userObserver');
 const wholeRelatedMessageObserverCreator = require('./wholeRelatedMessagesObserver');
+const peerObserverCreator = require('./peerObserver');
 
 async function connectionObserver (socket) {
   console.log('connected to socketio');
@@ -32,11 +33,13 @@ async function connectionObserver (socket) {
   let messageSendingObserver = null;
   let messageReadingObserver = null;
   let dialogid = null;
+  let peerObserver = null;
 
   const exitFromDialog = async (socket) => {
     console.log('exit from dialog');
     messageReadingObserver.close();
     messageSendingObserver.close();
+    peerObserver.close();
     if (await DialogModel.exists({ _id: dialogid, lastMessage: null })) {
       await DialogModel.deleteOne({ _id: dialogid });
     }
@@ -44,8 +47,10 @@ async function connectionObserver (socket) {
     dialogid = null;
   };
 
-  socket.on('dialog was selected', dialogId => {
+  socket.on('dialog was selected', async dialogId => {
     dialogid = dialogId;
+    console.log(dialogId)
+    peerObserver = await peerObserverCreator(socket, dialogid, login);
     messageSendingObserver = messageSendingObserverCreator(socket, dialogid);
     messageReadingObserver = messageReadingObserverCreator(socket, dialogid);
 

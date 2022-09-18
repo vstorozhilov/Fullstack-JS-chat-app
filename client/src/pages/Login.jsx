@@ -10,6 +10,7 @@ import { AppTextField } from '../components/CommonComponents/TextField';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { authentificationContext } from '../Routes';
 import { useDispatch } from 'react-redux';
+import { mainPageWillMount } from '../databaseSubscriber';
 
 export default function Login (props) {
   const { setUser } = useContext(authentificationContext);
@@ -43,6 +44,7 @@ export default function Login (props) {
           dispatch({ type: 'SET_USER', value: { login, profile } });
           localStorage.setItem('user', JSON.stringify({ login, token }));
           setUser({ login, token });
+          mainPageWillMount();
           navigate('/main');
         });
       } else if (response.status === 401) {

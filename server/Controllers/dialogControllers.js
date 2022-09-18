@@ -1,9 +1,11 @@
+const { default: mongoose } = require('mongoose');
 const authentificationControl = require('../Middlewares/authenticationControl');
 const DialogModel = require('../Models/DialogModel');
 const MessageModel = require('../Models/MessageModel');
 const UserModel = require('../Models/UserModel');
 
 async function messageWasReaded (response, requestPayment) {
+  console.log(requestPayment.messageId);
   const message = await MessageModel.findOne({ _id: requestPayment.messageId });
   message.isReaded = true;
   await message.save();
@@ -13,14 +15,17 @@ async function messageWasReaded (response, requestPayment) {
   response.end();
 }
 
-async function fetchAllMessages (response, requestPayment) {
+async function fetchAllMessages (response, login, requestPayment) {
   const messages = await MessageModel.find({ dialog: requestPayment.dialogId });
+  const dialog = await DialogModel.findById(mongoose.Types.ObjectId(requestPayment.dialogId));
+  const peerLogin = login === dialog.peerOne ? dialog.peerTwo : dialog.peerOne;
+  const peer = await UserModel.findOne({login : peerLogin});
   const dictMessages = Object.fromEntries(messages.map((item) => ([item._id, item])));
-  console.log(dictMessages);
+  console.log(peer);
   response.writeHead(200, headers = {
     'Access-Control-Allow-Origin': '*'
   });
-  response.write(JSON.stringify(dictMessages));
+  response.write(JSON.stringify([dictMessages, peer]));
   response.end();
 }
 
@@ -69,7 +74,7 @@ async function messageHandler (request, response) {
         messageWasReaded(response, requestPayment);
         break;
       case ('fetch messages') :
-        fetchAllMessages(response, requestPayment);
+        fetchAllMessages(response, login, requestPayment);
         break;
       case ('message was sended') :
         sendMessage(response, login, requestPayment);

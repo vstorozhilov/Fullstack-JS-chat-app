@@ -8,11 +8,12 @@ import ContactsListItems from '../components/ContactListTabComponents/ContactsLi
 import { useSelector, useDispatch } from 'react-redux';
 import Profile from '../components/ProfileTabComponents/Profile';
 import { authentificationContext } from '../Routes';
-import databaseSubscriber from '../databaseSubscriber';
+import { connectToDatabase , mainPageWillMount, mainPageRefreshSubscribers } from '../databaseSubscriber';
 import { BsFillChatDotsFill } from 'react-icons/bs';
 import MainPageHeader from '../components/CommonComponents/MainPageHeader';
 import StartNewDialog from '../components/DialogsListTabComponents/StartNewDialog';
 import TabPanel from '../components/CommonComponents/TabPanel';
+
 
 export default function Main (props) {
   const [isStartMessagingActive, setIsStartMessagingActive] = useState(false);
@@ -21,8 +22,10 @@ export default function Main (props) {
   const theme = useTheme();
   const { user: { token } } = useContext(authentificationContext);
   const navigate = useNavigate();
-  const isOnceRendered = useSelector(state => state.dialogsReducer.IsOnceRendered);
+  const isOnceRendered = useSelector(state => state.mainPageOnceRenderedReducer.isMainPageOnceRendered);
   const dispatch = useDispatch();
+
+  // console.log(useSelector(state => state.messagesReducer.Messages));
 
   function updateCredentials () {
     fetch('http://localhost:8090/main', {
@@ -37,7 +40,6 @@ export default function Main (props) {
           dispatch({ type: 'SET_CONTACTS', value: contacts });
           dispatch({ type: 'SET_DIALOGS', value: dialogs });
           dispatch({ type: 'SET_USER', value: user });
-          databaseSubscriber(token);
         });
       }
     });
@@ -47,14 +49,18 @@ export default function Main (props) {
     if (!token) {
       navigate('/login');
     }
+    console.log(isOnceRendered);
     if (isOnceRendered === false) {
-      dispatch({ type: 'SET_IS_DIALOG_PAGE_ONCE_RENDERED' });
-      updateCredentials();
+      mainPageWillMount();
+      dispatch({ type: 'SET_IS_MAIN_PAGE_ONCE_RENDERED' });
+      connectToDatabase(token);
     }
+    mainPageRefreshSubscribers();
+    updateCredentials();
   }, []);
 
   const TabPages = [
-    ({ styles, value }) => <TabPanel style={styles} value={value} index={0}><DialogsListItems isOnceRendered={isOnceRendered} /></TabPanel>,
+    ({ styles, value }) => <TabPanel style={styles} value={value} index={0}><DialogsListItems /></TabPanel>,
     ({ styles, value, ...props }) => <TabPanel style={styles} value={value} index={1}><ContactsListItems isStartingNewDialogWindow={false} {...props} /></TabPanel>,
     ({ styles, value }) => <TabPanel style={styles} value={value} index={2}><Profile /></TabPanel>
   ];
@@ -71,7 +77,7 @@ export default function Main (props) {
   const chatIconButtonAnimationDown = `animation-name : chatIconButtonAnimationDown; animation-duration: 0.25s; background-color : ${theme.palette.primary.dark};`;
   const chatIconButtonAnimationUp = 'animation-name : chatIconButtonAnimationUp; animation-duration: 0.25s; background-color : #ffffff;';
 
-  return (token &&
+  return (token && isOnceRendered &&
     <>
       {isStartMessagingActive
         ? <StartNewDialog
@@ -79,7 +85,7 @@ export default function Main (props) {
             setIsStartMessagingActive={setIsStartMessagingActive}
           />
         : null}
-      <MainPageHeader tabIndexer={{ value, setValue, setPrevValue }} setReverseAnim={props.setReverseAnim}/>
+      <MainPageHeader tabIndexer={{ value, setValue, setPrevValue }} setReverseAnim={props.setReverseAnim} />
       {transitions((styles, item) => {
         const Page = TabPages[item];
         return (
@@ -153,3 +159,11 @@ export default function Main (props) {
     </>
   );
 }
+
+// export default function WrappedMain (props) {
+//   return (
+//     <DynamicModuleLoader modules={[MainPageModule()]}>
+//       <Main {...props} />
+//     </DynamicModuleLoader>
+//   );
+// }

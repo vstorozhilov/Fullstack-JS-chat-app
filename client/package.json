@@ -31,6 +31,7 @@
     "react-spring": "^9.4.5",
     "react-use-measure": "^2.1.1",
     "redux": "^4.2.0",
+    "redux-dynamic-modules": "^5.2.3",
     "styled-components": "^5.3.5",
     "web-vitals": "^2.1.4",
     "zip-array": "^1.0.1"

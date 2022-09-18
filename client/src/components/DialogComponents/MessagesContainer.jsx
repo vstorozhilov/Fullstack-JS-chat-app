@@ -15,7 +15,6 @@ const ObservedComponent = (MessageComponent, props) => {
 
   function isReadedNotification (inView) {
     if (inView) {
-      console.log('notified');
       fetch('http://localhost:8090/dialog', {
         mode: 'cors',
         method: 'POST',
@@ -37,7 +36,7 @@ const ObservedComponent = (MessageComponent, props) => {
   );
 };
 
-const MessagesContainer = React.forwardRef((props, ref) => {
+const MessagesContainer = React.forwardRef((__, ref) => {
   const { user: { login } } = useContext(authentificationContext);
   const [isDialogFullyScrolled, setisDialogFullyScrolled] = useState(false);
   const correctMessages = useSelector(state => state.messagesReducer.Messages);
@@ -62,7 +61,7 @@ const MessagesContainer = React.forwardRef((props, ref) => {
   });
 
   const NotReadedMessagesCount = useSelector(state => (
-    Object.values(state.messagesReducer.Messages).filter(item => (item.isReaded === false && item.author === props.peerLogin))).length
+    Object.values(state.messagesReducer.Messages).filter(item => (item.isReaded === false && item.author !== login))).length
   );
 
   return (

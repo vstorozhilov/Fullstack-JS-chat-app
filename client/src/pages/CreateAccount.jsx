@@ -11,6 +11,7 @@ import { BigBlueButton } from '../components/CommonComponents/BigBlueButton';
 import { AppTextField } from '../components/CommonComponents/TextField';
 import { BirthdayPicker } from '../components/CommonComponents/BirthdayPicker';
 import { authentificationContext } from '../Routes';
+import { mainPageWillMount } from '../databaseSubscriber';
 
 export default function CreateAccount (props) {
   const theme = useTheme();
@@ -55,6 +56,7 @@ export default function CreateAccount (props) {
         response.json().then(token => {
           localStorage.setItem('user', JSON.stringify({ login, token }));
           setUser({ login, token });
+          mainPageWillMount();
           navigate('/main');
         });
       } else if (response.status === 401) {

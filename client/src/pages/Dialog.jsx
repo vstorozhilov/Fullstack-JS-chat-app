@@ -9,18 +9,19 @@ import SendIcon from '@mui/icons-material/Send';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { authentificationContext } from '../Routes';
-import { exitFromDialog } from '../databaseSubscriber';
 import MessagesContainer from '../components/DialogComponents/MessagesContainer';
 import DialogHeader from '../components/DialogComponents/DialogHeader';
 
+
 export function Dialog (props) {
   const dialogContainerRef = useRef(null);
-  const { user: { login }, user: { token } } = useContext(authentificationContext);
-  const dialogId = useSelector(state => state.dialogsReducer.selectedDialog);
-  const peerLogin = useSelector(state => {
-    const currentDialog = state.dialogsReducer.Dialogs[dialogId];
-    return login === currentDialog.peerOne ? currentDialog.peerTwo : currentDialog.peerOne;
-  });
+  const { user: { token } } = useContext(authentificationContext);
+  const selectedDialog = useSelector(state => state.selectDialogReducer.selectedDialog);
+  console.log(selectedDialog);
+  // const peerLogin = useSelector(state => {
+  //   const currentDialog = state.dialogsReducer.Dialogs[dialogId];
+  //   return login === currentDialog.peerOne ? currentDialog.peerTwo : currentDialog.peerOne;
+  // });
   const messageField = useRef(null);
   const dispatch = useDispatch();
 
@@ -31,13 +32,15 @@ export function Dialog (props) {
       headers: { Authorization: token },
       body: JSON.stringify({
         action: 'fetch messages',
-        dialogId
+        dialogId : selectedDialog
       })
     }).then((response) => {
       if (response.status === 200) {
         response.json().then(data => {
-          console.log(data);
-          dispatch({ type: 'SET_MESSAGES', value: data });
+          console.log(data[0]);
+          dispatch({ type: 'SET_MESSAGES', value: data[0] });
+          dispatch({ type: 'SET_PEER', value: data[1] });
+          // deleteUnnecessoryFromStore();
         });
       }
     });
@@ -51,7 +54,7 @@ export function Dialog (props) {
       body: JSON.stringify({
         action: 'message was sended',
         content: messageField.current.querySelector('.MuiOutlinedInput-input').value,
-        dialogId
+        dialogId : selectedDialog
       })
     }).then((response) => {
       if (response.status === 200) {
@@ -73,8 +76,9 @@ export function Dialog (props) {
 
   useEffect(() => {
     getMessages();
-    return (exitFromDialog);
-  }, []);
+    // deleteUnnecessoryFromStore();
+    //return (exitFromDialog);
+  });
 
   return (
     <>
@@ -92,8 +96,8 @@ export function Dialog (props) {
           flexWrap='nowrap'
           minHeight='0px'
         >
-          <DialogHeader setReverseAnim={props.setReverseAnim} peerLogin={peerLogin} />
-          <MessagesContainer ref={dialogContainerRef} peerLogin={peerLogin} />
+          <DialogHeader setReverseAnim={props.setReverseAnim} />
+          <MessagesContainer ref={dialogContainerRef} />
         </Grid>
         <Grid
           container

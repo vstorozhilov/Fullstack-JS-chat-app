@@ -9,6 +9,7 @@ import Login from './Pages/Login';
 import CreateAccount from './Pages/CreateAccount';
 import SignUp from './Pages/SignUp';
 import Greet from './Pages/Greet';
+import { mainPageWillUnmount, dialogPageWillUnmount } from './databaseSubscriber';
 
 function MainContainer (props) {
   const location = useLocation();
@@ -17,7 +18,9 @@ function MainContainer (props) {
 
   console.log(user);
 
-  const selectedDialog = useSelector(state => state.dialogsReducer.selectedDialog);
+  const selectedDialog = useSelector(state => state.selectDialogReducer.selectedDialog);
+
+  console.log(selectedDialog);
 
   const [reverseAnimation, setReverseAnimation] = useState(false);
   const transitions = useTransition(location, {
@@ -31,7 +34,19 @@ function MainContainer (props) {
       transform: reverseAnimation === true ? 'translateX(100%)' : 'translateX(-100%)'
     },
     config: { delay: 10, duration: 200, tension: 340 },
-    onRest: () => { if (reverseAnimation === true) { setReverseAnimation(false); } }
+    onDestroyed: (item) => {
+      if (reverseAnimation === true) {
+        setReverseAnimation(false);
+      }
+      if ((item.pathname === '/main') && (location.pathname !== '/main')) {
+        console.log('AAAAAAAAAAAAAAA');
+        mainPageWillUnmount();
+      }
+      if ((item.pathname === '/dialog') && (location.pathname !== '/dialog')) {
+        console.log('LLLLLLLLLLLLLL');
+        dialogPageWillUnmount();
+      }
+    }
   });
 
   return transitions((props, item) => {

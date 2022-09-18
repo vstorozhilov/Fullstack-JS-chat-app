@@ -4,7 +4,7 @@ import Grid from '@mui/material/Grid';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { authentificationContext } from '../../Routes';
-import { dialogIsSelected } from '../../databaseSubscriber';
+import { dialogPageSelect, dialogPageWillMount} from '../../databaseSubscriber';
 import { zip } from 'zip-array';
 import DialogListItem from './DialogsListItem';
 import NoDialogsYet from './noDialogsYet';
@@ -49,8 +49,13 @@ export default function DialogsListItems (props) {
   const dialogAvaPair = zip(dialogs, avatars);
 
   const handleClick = (e) => {
+    // // dispatch({ type: 'SET_SELECTED_DIALOG', value: e.currentTarget.id });
+    // navigate('/dialog');
     dispatch({ type: 'SET_SELECTED_DIALOG', value: e.currentTarget.id });
-    dialogIsSelected(e.currentTarget.id);
+    dialogPageSelect(e.currentTarget.id);
+    dialogPageWillMount();
+    // dispatch({ type: 'SET_SELECTED_DIALOG', value: [e.currentTarget.id, peerLogin] });
+    //dispatch({ type: 'SET_SELECTED_DIALOG', value: [e.currentTarget.id, peerLogin] });
     navigate('/dialog');
   };
 
@@ -79,7 +84,7 @@ export default function DialogsListItems (props) {
                 key={index}
                 id={item[0]._id}
                 src={item[1]}
-                onClick={handleClick}
+                onClick={(e) => handleClick(e)}
                 Login={login === item[0].peerOne ? item[0].peerTwo : item[0].peerOne}
               />
             )

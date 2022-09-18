@@ -1,13 +1,15 @@
 import { useTheme, Grid, IconButton, Avatar } from '@mui/material';
 import { ArrowBack, Search, DensityMedium } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { mainPageWillMount } from '../../databaseSubscriber';
 
 export default function DialogHeader (props) {
   const theme = useTheme();
-  const peerAvatar = useSelector(state => state.contactsReducer.Contacts[props.peerLogin].profile.avatar);
-  const isPeerOnline = useSelector(state => state.contactsReducer.Contacts[props.peerLogin].isOnline);
-  const peerNickname = useSelector(state => state.contactsReducer.Contacts[props.peerLogin].profile.nickname);
+  const peerAvatar = useSelector(state => state.peerReducer.Peer.profile.avatar);
+  const isPeerOnline = useSelector(state => state.peerReducer.Peer.isOnline);
+  const peerNickname = useSelector(state => state.peerReducer.Peer.profile.nickname);
+  const navigate = useNavigate();
 
   return (
     <header style={{
@@ -31,17 +33,21 @@ export default function DialogHeader (props) {
           flexWrap='nowrap'
         >
           <Grid item>
-            <Link to='/main' onClick={() => { props.setReverseAnim(true); }}>
-              <IconButton
-                size='large'
-                sx={{
-                  marginLeft: '1vw',
-                  color: theme.palette.secondary.text
-                }}
-              >
-                <ArrowBack />
-              </IconButton>
-            </Link>
+            <IconButton
+              onClick={() => {
+                props.setReverseAnim(true);
+                //exitFromDialog();
+                mainPageWillMount();
+                navigate('/main');
+              }}
+              size='large'
+              sx={{
+                marginLeft: '1vw',
+                color: theme.palette.secondary.text
+              }}
+            >
+              <ArrowBack />
+            </IconButton>
           </Grid>
           <Grid
             item sx={{

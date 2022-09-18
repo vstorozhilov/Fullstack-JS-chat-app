@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useContext } from 'react';
 import { useTheme, Grid } from '@mui/material';
 import { authentificationContext } from '../../Routes';
-import { dialogIsSelected } from '../../databaseSubscriber';
+import { dialogPageWillMount } from '../../databaseSubscriber';
 
 import Avatar from '@mui/material/Avatar';
 
@@ -27,7 +27,7 @@ export default function ContactsListItem (props) {
         response.json().then(([doesExist, dialog]) => {
           if (!doesExist) dispatch({ type: 'INSERT_DIALOG', value: dialog });
           dispatch({ type: 'SET_SELECTED_DIALOG', value: dialog._id });
-          dialogIsSelected(dialog._id);
+          dialogPageWillMount(dialog._id);
           navigate('/dialog');
         });
       }
