@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Route, Routes, useLocation, Navigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Route, Routes, useLocation, Navigate, useNavigate } from 'react-router-dom';
 import { animated, useTransition } from 'react-spring';
 import Main from './Pages/Main';
 import { Dialog } from './Pages/Dialog';
@@ -15,6 +15,7 @@ function MainContainer (props) {
   const location = useLocation();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || {});
   const contextUser = { user, setUser };
+  const navigate = useNavigate();
 
   console.log(user);
 
@@ -26,11 +27,9 @@ function MainContainer (props) {
   const transitions = useTransition(location, {
     enter: () => { return { opacity: 1, transform: 'translateX(0%)' }; },
     from: {
-      opacity: location.pathname === '/main' || location.pathname === '/dialog' ? 1 : 0,
       transform: reverseAnimation === true ? 'translateX(-100%)' : 'translateX(100%)'
     },
     leave: {
-      opacity: location.pathname === '/main' || location.pathname === '/dialog' ? 1 : 0,
       transform: reverseAnimation === true ? 'translateX(100%)' : 'translateX(-100%)'
     },
     config: { delay: 10, duration: 200, tension: 340 },
@@ -49,17 +48,33 @@ function MainContainer (props) {
     }
   });
 
-  return transitions((props, item) => {
+  useEffect(() => {
+    if (!Object.values(user).length) {
+      if (location.pathname === '/main') {
+        navigate('/login');
+      }
+    }
+    if (Object.values(user).length) {
+      if (location.pathname === '/login' || location.pathname === '/') {
+        navigate('/main');
+      }
+    }
+    if (selectedDialog === undefined && location.pathname === '/dialog') {
+      navigate('/main');
+    }
+  }, [location]);
+
+  return transitions((styles, item) => {
     return (
-      <animated.div style={Object.assign(props, { position: 'absolute', width: 'inherit', height: 'inherit', overflowX: 'hidden', overflowY: 'hidden' })}>
+      <animated.div style={Object.assign(styles, { position: 'absolute', width: 'inherit', height: 'inherit', overflowX: 'hidden', overflowY: 'hidden' })}>
         <authentificationContext.Provider value={contextUser}>
           <Routes location={item}>
-            <Route path='/login' element={<Login setReverseAnim={setReverseAnimation} />} />
-            <Route path='/' element={<Greet text='Click me now' />} />
+            <Route path='/login' element={Object.values(user).length ? null : <Login setReverseAnim={setReverseAnimation} />} />
+            <Route path='/' element={Object.values(user).length ? null : <Greet text='Click me now' />} />
             <Route path='/signup' element={<SignUp setReverseAnim={setReverseAnimation} />} />
             <Route path='/createaccount' element={<CreateAccount setReverseAnim={setReverseAnimation} />} />
-            <Route path='/main' element={<Main setReverseAnim={setReverseAnimation} />} />
-            <Route path='/dialog' element={selectedDialog === undefined ? <Navigate to='/main' /> : <Dialog setReverseAnim={setReverseAnimation} />} />
+            <Route path='/main' element={Object.values(user).length ? <Main setReverseAnim={setReverseAnimation} /> : null} />
+            <Route path='/dialog' element={selectedDialog === undefined ? null : <Dialog setReverseAnim={setReverseAnimation} />} />
           </Routes>
         </authentificationContext.Provider>
       </animated.div>

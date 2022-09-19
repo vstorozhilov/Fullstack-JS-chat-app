@@ -1,4 +1,4 @@
-import '../../App.css';
+
 import React, { useState, useRef, useContext } from 'react';
 import { Input, IconButton } from '@mui/material';
 import { Mode } from '@mui/icons-material';
@@ -48,7 +48,7 @@ export default function Profile (props) {
       about: about.current.querySelector('.MuiOutlinedInput-input').value
     };
 
-    fetch('/main', {
+    fetch('/api/main', {
       mode: 'cors',
       method: 'POST',
       headers: { Authorization: token },

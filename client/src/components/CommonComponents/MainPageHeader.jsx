@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useTheme, Tab, Tabs, Grid, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { DensityMedium } from '@mui/icons-material';
@@ -6,11 +6,13 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useSelector } from 'react-redux';
 import { disconnectFromDatabase } from '../../databaseSubscriber';
 import CircularProgress from '@mui/material/CircularProgress';
+import { authentificationContext } from '../../Routes';
 
 export default function MainPageHeader (props) {
   const theme = useTheme();
   const nickname = useSelector(state => state.userReducer.User.profile.nickname);
   const navigate = useNavigate();
+  const { setUser } = useContext(authentificationContext);
 
   const handleChange = (event, newValue) => {
     props.tabIndexer.setValue((prev) => { props.tabIndexer.setPrevValue(prev); return newValue; });
@@ -45,14 +47,15 @@ export default function MainPageHeader (props) {
               marginLeft: '5vw'
             }}
           >
-            {nickname ? nickname : <CircularProgress size='5vh' sx={{color : '#ffffff'}}/>}
+            {nickname ? nickname : <CircularProgress size='5vh' sx={{color : '#ffffff'}} thickness={2.0}/>}
           </Grid>
         </Grid>
         <Grid container width='fit-content'>
           <Grid item>
             <IconButton onClick={() => {
-              props.setReverseAnim(true);
               localStorage.removeItem('user');
+              props.setReverseAnim(true);
+              setUser({});
               disconnectFromDatabase();
               navigate('/login');
             }}

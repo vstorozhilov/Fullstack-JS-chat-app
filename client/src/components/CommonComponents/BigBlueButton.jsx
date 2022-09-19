@@ -3,7 +3,6 @@ import { styled } from '@mui/material/styles';
 import { Button } from '@mui/material';
 
 const StyledBlueButton = styled(Button)(({ theme }) => `
-      font-family: ${theme.typography.fontFamily};
       font-weight: ${theme.typography.fontWeightBold};
       text-transform: none;
       font-size: 2vh;

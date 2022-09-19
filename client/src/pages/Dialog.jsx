@@ -1,4 +1,4 @@
-import '../App.css';
+
 import React, { useEffect, useContext, useRef, useState } from 'react';
 import InputAdornment from '@mui/material/InputAdornment';
 import { AppTextField } from '../components/CommonComponents/TextField';
@@ -18,7 +18,6 @@ export function Dialog (props) {
   const { user: { token } } = useContext(authentificationContext);
   const selectedDialog = useSelector(state => state.selectDialogReducer.selectedDialog);
   console.log(selectedDialog);
-  const [isOnceMounted, setIsOnceMounted] = useState(false);
   const messageField = useRef(null);
   const dispatch = useDispatch();
 
@@ -33,12 +32,12 @@ export function Dialog (props) {
         dialogId: selectedDialog
       })
     }).then((response) => {
-      setIsLoadingUpdates(false);
       if (response.status === 200) {
         response.json().then(data => {
           console.log(data[0]);
           dispatch({ type: 'SET_MESSAGES', value: data[0] });
           dispatch({ type: 'SET_PEER', value: data[1] });
+          setIsLoadingUpdates(false);
         });
       }
     });
@@ -73,11 +72,8 @@ export function Dialog (props) {
   }
 
   useEffect(() => {
-    if (!isOnceMounted) {
-      getMessages();
-      setIsOnceMounted(true);
-    }
-  });
+    getMessages();
+  }, []);
 
   return (
     <>

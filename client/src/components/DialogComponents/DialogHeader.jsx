@@ -50,8 +50,7 @@ export default function DialogHeader (props) {
               <ArrowBack />
             </IconButton>
           </Grid>
-          {/* <CircularProgress size='5vh' sx={{color : '#ffffff'}}/> */}
-          {props.isLoadingUpdates ? <CircularProgress size='5vh' sx={{color : '#ffffff'}}/> :
+          {props.isLoadingUpdates ? <CircularProgress size='5vh' thickness={2.0} sx={{color : '#ffffff'}}/> :
           <>
           <Grid
             item sx={{

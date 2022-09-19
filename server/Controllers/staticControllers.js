@@ -1,13 +1,13 @@
 const fs = require('fs');
 
-const urlSearch = (url)=>{
-  return ((url.endsWith('/')) ||
-      (url.endsWith('/main')) ||
-      (url.endsWith('/login')) ||
-      (url.endsWith('/dialog')) ||
-      (url.endsWith('/createaccount')) ||
-      (url.endsWith('/signup')));
-}
+const urlSearch = (url) => (
+  (url.endsWith('/')) ||
+  (url.endsWith('/main')) ||
+  (url.endsWith('/login')) ||
+  (url.endsWith('/dialog')) ||
+  (url.endsWith('/createaccount')) ||
+  (url.endsWith('/signup'))
+);
 
 function staticHandler (request, response) {
   fs.readFile(`../client/build${urlSearch(request.url) ? '/index.html' : request.url}`, (err, data) => {
@@ -17,7 +17,6 @@ function staticHandler (request, response) {
     }
     response.writeHead(200, headers = {
       'Access-Control-Allow-Origin': '*',
-      'Content-type': 'text/html'
     });
     response.write(data);
     response.end();

@@ -4,19 +4,7 @@
 }
 
 body {
-  margin : 0
-}
-
-.AppActionButton {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 90vw;
-  height: 8vh;
-  border-radius: 40px;
-  background-color: blue;
-  color: white;
-  font-weight: 400;
+  margin : 0;
 }
 
 a, a:hover, a:focus, a:active {

@@ -1,4 +1,4 @@
-import '../../App.css';
+
 import React, { useContext } from 'react';
 import Grid from '@mui/material/Grid';
 import { useNavigate } from 'react-router-dom';
@@ -81,7 +81,7 @@ export default function DialogsListItems (props) {
       rowSpacing={3}
       height='100%'
     >
-      {props.isLoadingUpdates ?  <LoadingCircular size='30vh' thickness='2.0' /> : dialogs.length
+      {props.isLoadingUpdates ?  <LoadingCircular size='30vh' thickness={2.0} /> : dialogs.length
         ? dialogAvaPair.filter(item => (item[0].lastMessage !== null))
           .sort((itemOne, itemTwo) =>
             compareDatesFunction(itemOne[0].lastMessage.date, itemTwo[0].lastMessage.date))

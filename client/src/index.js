@@ -6,14 +6,14 @@ import { ThemeProvider } from '@mui/material/styles';
 import Theme from './contexts/Theme';
 import { Provider } from 'react-redux';
 import { store } from './reducers';
+import './app.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-
 root.render(
   <Provider store={store}>
     <BrowserRouter>
       <ThemeProvider theme={Theme}>
-        <MainContainer />
+        <MainContainer/>
       </ThemeProvider>
     </BrowserRouter>
   </Provider>

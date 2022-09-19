@@ -38,6 +38,7 @@ async function run () {
               await messageHandler(req, res);
               break;
             default :
+              console.log(req.url);
               staticHandler(req, res);
           }
         }

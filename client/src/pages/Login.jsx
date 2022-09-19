@@ -1,9 +1,9 @@
-import '../App.css';
+
 import React, { useState, useContext, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import loginImage from '../images/2.png';
 import { IconButton, Checkbox, useTheme, Grid } from '@mui/material';
-import { Visibility, VisibilityOff, ArrowBack, LocalConvenienceStoreOutlined } from '@mui/icons-material';
+import { Visibility, VisibilityOff, ArrowBack } from '@mui/icons-material';
 import InputAdornment from '@mui/material/InputAdornment';
 import { BigBlueButton } from '../components/CommonComponents/BigBlueButton';
 import { AppTextField } from '../components/CommonComponents/TextField';
@@ -14,6 +14,7 @@ import { mainPageWillMount } from '../databaseSubscriber';
 
 export default function Login (props) {
   const { setUser } = useContext(authentificationContext);
+  const [ rememberMe, setRememberMe ] = useState(false);
   // const [login, setLogin] = useState();
   // const [password, setPassword] = useState();
   const [isAuthDataCorrect, setIsAuthDataCorrect] = useState(true);
@@ -42,9 +43,10 @@ export default function Login (props) {
       if (response.status === 200) {
         response.json().then(([profile, token]) => {
           dispatch({ type: 'SET_USER', value: { login, profile } });
-          localStorage.setItem('user', JSON.stringify({ login, token }));
+          if (rememberMe) localStorage.setItem('user', JSON.stringify({ login, token }));
           setUser({ login, token });
           mainPageWillMount();
+          setIsLoading(false);
           navigate('/main');
         });
       } else if (response.status === 401) {
@@ -143,11 +145,11 @@ export default function Login (props) {
           alignItems='center'
           height='10vh'
         >
-          <Checkbox size='large' sx={{ color: '#256cfd' }} />
+          <Checkbox size='large' sx={{ color: '#256cfd' }} onChange={()=>setRememberMe(!rememberMe)} />
           <span style={{ fontWeight: theme.typography.fontWeightBold }}>Remember Me</span>
         </Grid>
         <Grid item>
-          <BigBlueButton onClick={sendAuthorizationForm} text='Sign In' target='/main' />
+          <BigBlueButton onClick={sendAuthorizationForm} text='Sign In' />
         </Grid>
       </Grid>
       <Grid item sx={{ marginBottom: '5vh' }}>

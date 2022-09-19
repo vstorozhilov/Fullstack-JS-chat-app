@@ -1,6 +1,6 @@
-import '../App.css';
+
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTransition } from '@react-spring/web';
 import { IconButton, useTheme } from '@mui/material';
 import DialogsListItems from '../components/DialogsListTabComponents/DialogsListItems';
@@ -8,7 +8,7 @@ import ContactsListItems from '../components/ContactListTabComponents/ContactsLi
 import { useSelector, useDispatch } from 'react-redux';
 import Profile from '../components/ProfileTabComponents/Profile';
 import { authentificationContext } from '../Routes';
-import { connectToDatabase , mainPageWillMount, mainPageRefreshSubscribers } from '../databaseSubscriber';
+import { connectToDatabase, mainPageWillMount, mainPageRefreshSubscribers } from '../databaseSubscriber';
 import { BsFillChatDotsFill } from 'react-icons/bs';
 import MainPageHeader from '../components/CommonComponents/MainPageHeader';
 import StartNewDialog from '../components/DialogsListTabComponents/StartNewDialog';
@@ -24,11 +24,11 @@ export default function Main (props) {
   const navigate = useNavigate();
   const isOnceRendered = useSelector(state => state.mainPageOnceRenderedReducer.isMainPageOnceRendered);
   const dispatch = useDispatch();
+  const location = useLocation();
 
   // console.log(useSelector(state => state.messagesReducer.Messages));
 
   function updateCredentials () {
-
     setIsLoadingUpdates(true);
 
     fetch('/api/main', {
@@ -37,14 +37,18 @@ export default function Main (props) {
       headers: { Authorization: token },
       body: JSON.stringify({ action: 'updateAll' })
     }).then((response) => {
-      setIsLoadingUpdates(false);
       if (response.status === 200) {
         response.json().then(([contacts, dialogs, user]) => {
           console.log(dialogs);
           dispatch({ type: 'SET_CONTACTS', value: contacts });
           dispatch({ type: 'SET_DIALOGS', value: dialogs });
           dispatch({ type: 'SET_USER', value: user });
+          setIsLoadingUpdates(false);
         });
+      }
+      if (response.status === 401) {
+        localStorage.removeItem('user');
+        navigate('/login');
       }
     });
   }
@@ -53,7 +57,6 @@ export default function Main (props) {
     if (!token) {
       navigate('/login');
     }
-    console.log(isOnceRendered);
     if (isOnceRendered === false) {
       mainPageWillMount();
       dispatch({ type: 'SET_IS_MAIN_PAGE_ONCE_RENDERED' });
@@ -158,7 +161,7 @@ export default function Main (props) {
               color: `${theme.palette.primary.dark}`
             }}
           />
-        </IconButton>
+          </IconButton>
         : null}
     </>
   );

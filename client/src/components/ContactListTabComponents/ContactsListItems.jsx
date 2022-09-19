@@ -1,4 +1,4 @@
-import '../../App.css';
+//import '../../App.css';
 import { useContext } from 'react';
 import authentificationContext from '../../contexts/authentificationContext';
 import { useSelector } from 'react-redux';
@@ -19,7 +19,7 @@ export default function ContactsListItems (props) {
       sx={{
         paddingLeft: `${props.isStartingNewDialogWindow ? '3vw' : '0'}`
       }}
-      overflowY='scroll'
+      overflowy='scroll'
     >
       {contacts.map((value, index) => {
         if (value.login !== login) {

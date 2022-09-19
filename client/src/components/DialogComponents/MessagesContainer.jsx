@@ -1,4 +1,4 @@
-import '../../App.css';
+
 import React, { useState, useEffect, useContext } from 'react';
 import { useTransition } from '@react-spring/web';
 import { IconButton, Grid } from '@mui/material';
@@ -59,7 +59,7 @@ const MessagesContainer = React.forwardRef((props, ref) => {
         ref.current.scrollTo(0, ref.current.scrollHeight);
       }
     }
-  });
+  }, [correctMessages]);
 
   const NotReadedMessagesCount = useSelector(state => (
     Object.values(state.messagesReducer.Messages).filter(item => (item.isReaded === false && item.author !== login))).length
@@ -153,7 +153,7 @@ const MessagesContainer = React.forwardRef((props, ref) => {
         }}
       >
         {props.isLoadingUpdates
-          ? <LoadingCircular size='30vh' thickness='2.0' />
+          ? <LoadingCircular size='30vh' thickness={2.0} />
           : transitions((styles, item) => {
             return (login === item.author
               ? <MyMessage

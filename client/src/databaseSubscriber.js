@@ -41,7 +41,7 @@ function dialogPageWillUnmount () {
   store.reducerManager.remove('messagesReducer');
   store.reducerManager.remove('peerReducer');
   store.dispatch({ type: 'COMPONENT_DESTROYED' });
-  socket.emit('exit from dialog');
+  if (socket) socket.emit('exit from dialog');
 }
 
 function dialogPageWillMount (dialogId) {

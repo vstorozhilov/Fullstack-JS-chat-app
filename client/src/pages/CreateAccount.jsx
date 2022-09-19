@@ -1,5 +1,5 @@
-import '../App.css';
-import React, { useState, useContext, useRef } from 'react';
+
+import React, { useState, useContext, useRef , useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import avatarImage from '../images/avatar.png';
 import { IconButton, Input, Grid } from '@mui/material';
@@ -12,6 +12,7 @@ import { AppTextField } from '../components/CommonComponents/TextField';
 import { BirthdayPicker } from '../components/CommonComponents/BirthdayPicker';
 import { authentificationContext } from '../Routes';
 import { mainPageWillMount } from '../databaseSubscriber';
+
 
 export default function CreateAccount (props) {
   const theme = useTheme();
@@ -68,7 +69,11 @@ export default function CreateAccount (props) {
     });
   }
 
-  return (
+  useEffect(() => {
+    if (!(login && password)) navigate('/signup');
+  }, [login, password]);
+
+  return (login && password &&
     <>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <Grid
