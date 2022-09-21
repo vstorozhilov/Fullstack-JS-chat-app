@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTransition } from '@react-spring/web';
-import { IconButton, useTheme, Grid, Box } from '@mui/material';
+import { IconButton, useTheme, Grid } from '@mui/material';
 import DialogsListItems from '../components/DialogsListTabComponents/DialogsListItems';
 import ContactsListItems from '../components/ContactListTabComponents/ContactsListItems';
 import { useSelector, useDispatch } from 'react-redux';
@@ -36,7 +36,6 @@ export default function Main (props) {
     }).then((response) => {
       if (response.status === 200) {
         response.json().then(([contacts, dialogs, user]) => {
-          console.log(dialogs);
           dispatch({ type: 'SET_CONTACTS', value: contacts });
           dispatch({ type: 'SET_DIALOGS', value: dialogs });
           dispatch({ type: 'SET_USER', value: user });
@@ -191,17 +190,9 @@ export default function Main (props) {
                 color: `${theme.palette.primary.dark}`
               }}
             />
-            </IconButton>
+          </IconButton>
           : null}
       </Grid>
     </Grid>
   );
 }
-
-// export default function WrappedMain (props) {
-//   return (
-//     <DynamicModuleLoader modules={[MainPageModule()]}>
-//       <Main {...props} />
-//     </DynamicModuleLoader>
-//   );
-// }

@@ -47,7 +47,7 @@ export default function MainPageHeader (props) {
               marginLeft: '5vw'
             }}
           >
-            {nickname ? nickname : <CircularProgress size='5vh' sx={{color : '#ffffff'}} thickness={2.0}/>}
+            {nickname || <CircularProgress size='5vh' sx={{ color: '#ffffff' }} thickness={2.0} />}
           </Grid>
         </Grid>
         <Grid container width='fit-content' flexWrap='nowrap'>
@@ -63,8 +63,7 @@ export default function MainPageHeader (props) {
               <LogoutIcon
                 sx={{
                   color: theme.palette.secondary.text,
-                  transform: 'scaleX(-1)',
-                  //marginTop: '10px'
+                  transform: 'scaleX(-1)'
                 }} fontSize='large'
               />
             </IconButton>
@@ -73,8 +72,7 @@ export default function MainPageHeader (props) {
             <IconButton>
               <DensityMedium
                 sx={{
-                  color: theme.palette.secondary.text,
-                  //marginTop: '10px'
+                  color: theme.palette.secondary.text
                 }} fontSize='large'
               />
             </IconButton>
@@ -101,8 +99,7 @@ export default function MainPageHeader (props) {
             },
             '& .MuiButtonBase-root': {
               textTransform: 'none',
-              width: '33%',
-              //fontSize: '2vh'
+              width: '33%'
             }
           }}
         >

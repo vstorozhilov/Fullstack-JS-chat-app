@@ -33,15 +33,10 @@ function DialogListItemContainer ({ style, id, onClick, ...props }) {
 
 export default function DialogsListItems (props) {
   const dispatch = useDispatch();
-  console.log('rendered');
-
   const navigate = useNavigate();
-
   const dialogs = useSelector(state => Object.values(state.dialogsReducer.Dialogs).filter(item => (item.lastMessage !== null)));
   const contacts = useSelector(state => state.contactsReducer.Contacts);
-
   const { user: { login } } = useContext(authentificationContext);
-
   const avatars = dialogs.map(item => {
     const peerLogin = (login === item.peerOne ? item.peerTwo : item.peerOne);
     return contacts[peerLogin].profile.avatar;
@@ -50,13 +45,9 @@ export default function DialogsListItems (props) {
   const dialogAvaPair = zip(dialogs, avatars);
 
   const handleClick = (e) => {
-    // // dispatch({ type: 'SET_SELECTED_DIALOG', value: e.currentTarget.id });
-    // navigate('/dialog');
     dispatch({ type: 'SET_SELECTED_DIALOG', value: e.currentTarget.id });
     dialogPageSelect(e.currentTarget.id);
     dialogPageWillMount();
-    // dispatch({ type: 'SET_SELECTED_DIALOG', value: [e.currentTarget.id, peerLogin] });
-    // dispatch({ type: 'SET_SELECTED_DIALOG', value: [e.currentTarget.id, peerLogin] });
     navigate('/dialog');
   };
 
@@ -81,23 +72,25 @@ export default function DialogsListItems (props) {
       rowSpacing={3}
       height='100%'
     >
-      {props.isLoadingUpdates ?  <LoadingCircular size='30vh' thickness={2.0} /> : dialogs.length
-        ? dialogAvaPair.filter(item => (item[0].lastMessage !== null))
-          .sort((itemOne, itemTwo) =>
-            compareDatesFunction(itemOne[0].lastMessage.date, itemTwo[0].lastMessage.date))
-          .map((item, index) => {
-            return (
-              <DialogListItemContainer
-                key={index}
-                id={item[0]._id}
-                src={item[1]}
-                onClick={(e) => handleClick(e)}
-                Login={login === item[0].peerOne ? item[0].peerTwo : item[0].peerOne}
-              />
-            )
-            ;
-          })
-        : <NoDialogsYet />}
+      {props.isLoadingUpdates
+        ? <LoadingCircular size='30vh' thickness={2.0} />
+        : dialogs.length
+          ? dialogAvaPair.filter(item => (item[0].lastMessage !== null))
+            .sort((itemOne, itemTwo) =>
+              compareDatesFunction(itemOne[0].lastMessage.date, itemTwo[0].lastMessage.date))
+            .map((item, index) => {
+              return (
+                <DialogListItemContainer
+                  key={index}
+                  id={item[0]._id}
+                  src={item[1]}
+                  onClick={(e) => handleClick(e)}
+                  Login={login === item[0].peerOne ? item[0].peerTwo : item[0].peerOne}
+                />
+              )
+              ;
+            })
+          : <NoDialogsYet />}
     </Grid>
   );
 }

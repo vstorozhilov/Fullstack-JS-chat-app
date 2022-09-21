@@ -20,7 +20,6 @@ export default function MyMessage (props) {
       item
       alignSelf='end'
       paddingRight='3vw'
-      //sx={{maxWidth : '60%'}}
     >
       <animated.div style={props.styles}>
         <Grid

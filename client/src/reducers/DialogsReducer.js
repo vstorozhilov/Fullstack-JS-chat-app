@@ -1,8 +1,7 @@
 const _ = require('lodash');
 
 const defaultState = {
-  Dialogs: {},
-  // IsOnceRendered: false
+  Dialogs: {}
 };
 
 export default function DialogsReducer (state = defaultState, action) {
@@ -13,12 +12,10 @@ export default function DialogsReducer (state = defaultState, action) {
     case 'INSERT_DIALOG':
       const { _id, ...dialog } = action.value;
       return { ...state, Dialogs: { ...state.Dialogs, [_id]: dialog } };
-    // case 'SET_IS_DIALOG_PAGE_ONCE_RENDERED':
-    //   return { ...state, IsOnceRendered: true };
     case 'SET_UNREADEDMESSAGESCOUNT':
       return { ...state, Dialogs: { ...state.Dialogs, [action.value[1]]: { ...state.Dialogs[action.value[1]], unreadedMessagesCount: action.value[0] } } };
     case 'SET_LASTMESSAGEWASREADED':
-      const updatedDialog = _.cloneDeep(state.Dialogs[action.value[0]]);
+      const updatedDialog = { ...state.Dialogs[action.value[0]] };
       updatedDialog.lastMessage.isReaded = action.value[1];
       return { ...state, Dialogs: { ...state.Dialogs, [action.value[0]]: updatedDialog } };
     default:

@@ -14,7 +14,7 @@ async function run () {
     const httpserver = http.createServer(async (req, res) => {
       try {
         if (req.method === 'OPTIONS') {
-          res.writeHead(200, headers = {
+          res.writeHead(200, {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Headers': 'authorization',
             'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'

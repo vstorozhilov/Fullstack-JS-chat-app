@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Routes, useLocation, Navigate, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { animated, useTransition } from 'react-spring';
 import Main from './Pages/Main';
 import { Dialog } from './Pages/Dialog';
@@ -11,22 +11,15 @@ import SignUp from './Pages/SignUp';
 import Greet from './Pages/Greet';
 import { mainPageWillUnmount, dialogPageWillUnmount } from './databaseSubscriber';
 import backgroundImage from './images/stock-vector-hand-drawn-pattern-with-social-media-elements-551854483.jpg';
-import { useMediaQuery, useTheme } from '@mui/material';
+import { useMediaQuery } from '@mui/material';
 
 function MainContainer (props) {
   const location = useLocation();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || {});
   const contextUser = { user, setUser };
   const navigate = useNavigate();
-  const theme = useTheme();
   const isTablet = useMediaQuery('(max-width: 740px)');
-
-  console.log(user);
-
   const selectedDialog = useSelector(state => state.selectDialogReducer.selectedDialog);
-
-  console.log(selectedDialog);
-
   const [reverseAnimation, setReverseAnimation] = useState(false);
   const transitions = useTransition(location, {
     enter: () => { return { opacity: 1, transform: 'translateX(0%)' }; },
@@ -42,11 +35,9 @@ function MainContainer (props) {
         setReverseAnimation(false);
       }
       if ((item.pathname === '/main') && (location.pathname !== '/main')) {
-        console.log('AAAAAAAAAAAAAAA');
         mainPageWillUnmount();
       }
       if ((item.pathname === '/dialog') && (location.pathname !== '/dialog')) {
-        console.log('LLLLLLLLLLLLLL');
         dialogPageWillUnmount();
       }
     }

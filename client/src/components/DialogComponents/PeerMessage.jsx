@@ -22,7 +22,6 @@ function PeerMessage (props) {
       item
       alignSelf='start'
       marginLeft='3vw'
-      //maxWidth='60%'
     >
       <animated.div style={props.styles}>
         <PeerMessageStyled
@@ -41,7 +40,6 @@ const RefPeerMessage = React.forwardRef((props, ref) => {
       ref={ref}
       alignSelf='start'
       marginLeft='3vw'
-      //maxWidth='60%'
     >
       <animated.div style={props.styles}>
         <Grid

@@ -13,7 +13,6 @@ export default function MessagesReducer (state = defaultState, action) {
       newmessage.isReaded = true;
       return {...state, Messages: { ...state.Messages, [action.value]: newmessage } };
     case 'CLEAR_MESSAGES':
-      console.log('called');
       return {...state, Messages: {} };
     default:
       return state;

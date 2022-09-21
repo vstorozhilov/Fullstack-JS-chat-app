@@ -11,13 +11,10 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { authentificationContext } from '../Routes';
 import { useDispatch } from 'react-redux';
 import { mainPageWillMount } from '../databaseSubscriber';
-import backgroundImage from '../images/stock-vector-hand-drawn-pattern-with-social-media-elements-551854483.jpg';
 
 export default function Login (props) {
   const { setUser } = useContext(authentificationContext);
   const [rememberMe, setRememberMe] = useState(false);
-  // const [login, setLogin] = useState();
-  // const [password, setPassword] = useState();
   const [isAuthDataCorrect, setIsAuthDataCorrect] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -26,8 +23,6 @@ export default function Login (props) {
   const handlePassword = () => setShowPassword(!showPassword);
   const dispatch = useDispatch();
   const maxheightMatch = useMediaQuery('(max-height: 700px)');
-  const isTablet = useMediaQuery(theme.breakpoints.up('tablet'));
-
   const loginField = useRef(null);
   const passwordField = useRef(null);
 
@@ -57,8 +52,6 @@ export default function Login (props) {
       }
     });
   }
-
-  console.log(backgroundImage);
 
   return (
     <Grid
@@ -100,6 +93,7 @@ export default function Login (props) {
         >
           <img
             src={loginImage}
+            alt='default login image'
             style={{
               height: '130px',
               width: '130px'

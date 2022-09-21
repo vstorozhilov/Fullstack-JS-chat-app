@@ -14,7 +14,7 @@ function connectToDatabase (token) {
   socket = io('http://localhost:8090', { auth: { token } });
 }
 
-function disconnectFromDatabase() {
+function disconnectFromDatabase () {
   socket.disconnect();
 }
 

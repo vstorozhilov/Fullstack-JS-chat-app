@@ -98,8 +98,7 @@ export default function DialogHeader (props) {
             <IconButton>
               <Search
                 sx={{
-                  color: theme.palette.secondary.text,
-                  //marginTop: '1rem'
+                  color: theme.palette.secondary.text
                 }} fontSize='large'
               />
             </IconButton>
@@ -108,8 +107,7 @@ export default function DialogHeader (props) {
             <IconButton>
               <DensityMedium
                 sx={{
-                  color: theme.palette.secondary.text,
-                  //marginTop: '1rem'
+                  color: theme.palette.secondary.text
                 }} fontSize='large'
               />
             </IconButton>

@@ -1,11 +1,10 @@
 import React from 'react';
 import greetImage from '../images/1.jpg';
-import { useTheme, Grid, useMediaQuery } from '@mui/material';
+import { useTheme, Grid } from '@mui/material';
 import { BigBlueButton } from '../components/CommonComponents/BigBlueButton';
 import { useNavigate } from 'react-router-dom';
 
 export default function Greet (props) {
-  const maxWidthMatch = useMediaQuery('(max-width: 350px)');
   const theme = useTheme();
   const navigate = useNavigate();
 
@@ -38,13 +37,12 @@ export default function Greet (props) {
             overflow: 'hidden'
           }}
         >
-          <img width='350px' src={greetImage} />
+          <img width='350px' src={greetImage} alt='' />
         </Grid>
         <Grid item>
           <p style={{
             fontWeight: theme.typography.fontWeightBold,
             fontSize: '1.5rem',
-            //lineHeight: '3vh',
             textAlign: 'center',
             color: theme.palette.secondary.main
           }}
@@ -54,7 +52,6 @@ export default function Greet (props) {
         <Grid item>
           <p style={{
             marginTop: 0,
-            //lineHeight: '3vh',
             fontWeight: theme.typography.fontWeightLight,
             textAlign: 'center'
           }}
@@ -80,7 +77,7 @@ export default function Greet (props) {
         <BigBlueButton
           onClick={() => navigate('/login')}
           text='Get Started'
-          sx={{ marginBottom: '5.5vh', width : '90%' }}
+          sx={{ marginBottom: '5.5vh', width: '90%' }}
         />
       </Grid>
     </Grid>

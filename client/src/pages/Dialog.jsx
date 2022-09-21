@@ -18,7 +18,6 @@ export function Dialog (props) {
   const dialogContainerRef = useRef(null);
   const { user: { token } } = useContext(authentificationContext);
   const selectedDialog = useSelector(state => state.selectDialogReducer.selectedDialog);
-  console.log(selectedDialog);
   const messageField = useRef(null);
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -36,7 +35,6 @@ export function Dialog (props) {
     }).then((response) => {
       if (response.status === 200) {
         response.json().then(data => {
-          console.log(data[0]);
           dispatch({ type: 'SET_MESSAGES', value: data[0] });
           dispatch({ type: 'SET_PEER', value: data[1] });
           setIsLoadingUpdates(false);
@@ -57,7 +55,6 @@ export function Dialog (props) {
       })
     }).then((response) => {
       if (response.status === 200) {
-        console.log(dialogContainerRef.current);
         dialogContainerRef.current.scrollTo(0, dialogContainerRef.current.scrollHeight);
       }
     });

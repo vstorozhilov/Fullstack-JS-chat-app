@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useTransition } from '@react-spring/web';
 import { IconButton, Grid } from '@mui/material';
 import { useSelector } from 'react-redux';
@@ -48,13 +48,10 @@ const MessagesContainer = React.forwardRef((props, ref) => {
       config: { duration: 300 }
     });
 
-  //console.log(isDialogFullyScrolled);
-
   useEffect(() => {
     if (Object.keys(correctMessages).length) {
       if (ref.current.offsetHeight + ref.current.scrollTop >=
               ref.current.scrollHeight - 2) {
-        //console.log(correctMessages);
         setisDialogFullyScrolled(true);
       }
       if (isDialogFullyScrolled) {
@@ -85,7 +82,6 @@ const MessagesContainer = React.forwardRef((props, ref) => {
       }}
       ref={ref}
       style={{
-        position: 'relative',
         flexGrow: '1',
         overflowY: 'scroll',
         scrollBehavior: 'smooth',
@@ -101,7 +97,7 @@ const MessagesContainer = React.forwardRef((props, ref) => {
             width='fit-content'
             spacing={1}
             sx={{
-              position: 'fixed',
+              position: 'absolute',
               zIndex: '10',
               bottom: '140px',
               right: '7vw'
@@ -121,7 +117,7 @@ const MessagesContainer = React.forwardRef((props, ref) => {
               >
                 {NotReadedMessagesCount}
               </div>
-              </Grid>
+            </Grid>
             : null}
           {!isDialogFullyScrolled && Object.keys(correctMessages).length
             ? <Grid item>
@@ -139,9 +135,9 @@ const MessagesContainer = React.forwardRef((props, ref) => {
               >
                 <KeyboardDoubleArrowDownIcon />
               </IconButton>
-            </Grid>
+              </Grid>
             : null}
-        </Grid>
+          </Grid>
         : null}
       <Grid
         container
@@ -150,7 +146,7 @@ const MessagesContainer = React.forwardRef((props, ref) => {
         paddingTop='15px'
         wrap='nowrap'
         sx={{
-          "> .MuiGrid-item" : {
+          '> .MuiGrid-item': {
             maxWidth: '60%'
           },
           marginTop: '0',

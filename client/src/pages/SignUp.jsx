@@ -27,7 +27,6 @@ export default function SignUp (props) {
   const passwordsMatchingHandler = (password, repeatPassword) => {
     setArePasswordsMatched(password === repeatPassword);
   };
-  console.log(setUser);
 
   function sendAuthorizationForm () {
     if (arePasswordsMatched === false ||
@@ -92,7 +91,7 @@ export default function SignUp (props) {
             height: maxheightMatch ? '175px' : '250px'
           }}
         >
-          <img src={LoginPasswordImage} width='100%' height='100%' />
+          <img src={LoginPasswordImage} alt='' width='100%' height='100%' />
         </Grid>
         <Grid item>
           <p style={{
@@ -235,7 +234,7 @@ export default function SignUp (props) {
           marginBottom: '5vh'
         }}
       >
-        <BigBlueButton text='Sign Up' onClick={sendAuthorizationForm} target='/createaccount' sx={{width : '90%'}} />
+        <BigBlueButton text='Sign Up' onClick={sendAuthorizationForm} target='/createaccount' sx={{ width: '90%' }} />
       </Grid>
     </Grid>
   );
