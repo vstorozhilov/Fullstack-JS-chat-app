@@ -69,100 +69,127 @@ export default function Profile (props) {
           container
           direction='column'
           alignItems='center'
+          spacing='2vh'
           height='100%'
-          justifyContent='space-between'
+          margin='0'
+          flexWrap='nowrap'
         >
           <Grid
-            container
-            direction='column'
-            alignItems='center'
-            spacing='2vh'
+            item sx={{
+              position: 'relative',
+              width: '130px',
+              height: '130px',
+              marginBottom: '5vh'
+            }}
           >
-            <Grid
-              item sx={{
-                position: 'relative',
-                width: `${maxheightMatch ? '15vh' : '22vh'}`,
-                height: `${maxheightMatch ? '15vh' : '22vh'}`,
-                marginBottom: '2vh'
+            <div style={{
+              height: '100%',
+              width: '100%',
+              borderRadius: '50%',
+              overflow: 'hidden',
+              position: 'absolute'
+            }}
+            >
+              <img src={profile.avatar} ref={avatar} style={{height: '130px', width: '130px'}}/>
+            </div>
+            <label
+              htmlFor='icon-button-file' style={{
+                position: 'absolute',
+                zIndex: '1',
+                top: '110px',
+                left: '110px',
+                width: '4vh',
+                height: '4vh'
               }}
             >
-              <div style={{
-                height: '100%',
-                width: '100%',
-                borderRadius: '50%',
-                overflow: 'hidden',
-                position: 'absolute'
-              }}
-              >
-                <img src={profile.avatar} ref={avatar} style={maxheightMatch ? { height: '15vh', width: '15vh' } : { height: '22vh', width: '22vh' }} />
-              </div>
-              <label
-                htmlFor='icon-button-file' style={{
-                  position: 'absolute',
-                  zIndex: '1',
-                  top: `${maxheightMatch ? '12vh' : '19vh'}`,
-                  left: `${maxheightMatch ? '12vh' : '19vh'}`,
-                  width: '4vh',
-                  height: '4vh'
-                }}
-              >
-                <Input
-                  accept='image/*'
-                  id='icon-button-file'
-                  type='file'
-                  style={{ display: 'none' }}
-                  // sx={{
-                  //   //padding : '0'
-                  // }}
-                  disabled={!isEditable}
-                  onChange={(event) => { handleAvatarChange(event); }}
-                />
-                {isEditable &&
-                  <IconButton
-                    color='primary'
-                    aria-label='upload picture'
-                    component='span'
-                    sx={{
-                      padding: '0'
-                    }}
-                  >
-                    <Mode sx={{
-                      height: '4vh',
-                      width: '4vh',
-                      color: 'white',
-                      backgroundColor: '#246bfd',
-                      borderRadius: '1.5vh'
-                    }}
-                    />
-                  </IconButton>}
-              </label>
-            </Grid>
-            <Grid item>
-              <AppTextField
+              <Input
+                accept='image/*'
+                id='icon-button-file'
+                type='file'
+                style={{ display: 'none' }}
                 disabled={!isEditable}
-                defaultValue={profile.fullname}
-                ref={fullname}
-                label='Full Name'
-                width='90vw'
-                height='4vh'
+                onChange={(event) => { handleAvatarChange(event); }}
               />
-            </Grid>
-            <Grid item>
-              <AppTextField disabled={!isEditable} ref={nickname} defaultValue={profile.nickname} label='Nickname' width='90vw' height='3vh' />
-            </Grid>
-            <Grid item>
-              <BirthdayPicker disabled={!isEditable} ref={birthdate} initValue={profile.birthdate} label='Birth Date' width='90vw' height='3vh' />
-            </Grid>
-            <Grid item>
-              <AppTextField disabled={!isEditable} ref={email} defaultValue={profile.email} label='Email' width='90vw' height='3vh' />
-            </Grid>
-            <Grid item>
-              <AppTextField disabled={!isEditable} ref={about} defaultValue={profile.about} label='About' width='90vw' height='3vh' />
-            </Grid>
-            <Grid item>
+              {isEditable &&
+                <IconButton
+                  color='primary'
+                  aria-label='upload picture'
+                  component='span'
+                  sx={{
+                    padding: '0'
+                  }}
+                >
+                  <Mode sx={{
+                    height: '4vh',
+                    width: '4vh',
+                    color: 'white',
+                    backgroundColor: '#246bfd',
+                    borderRadius: '1.5vh'
+                  }}
+                  />
+                </IconButton>}
+            </label>
+          </Grid>
+          <Grid
+            container
+            justifyContent='center'
+            width='100%'
+            paddingTop='1vh'
+          >
+            <AppTextField
+              disabled={!isEditable}
+              defaultValue={profile.fullname}
+              ref={fullname}
+              label='Full Name'
+              width='90%'
+              height='4vh'
+            />
+          </Grid>
+          <Grid
+            container
+            justifyContent='center'
+            width='100%'
+            paddingTop='1vh'
+          >
+            <AppTextField disabled={!isEditable} ref={nickname} defaultValue={profile.nickname} label='Nickname' sx={{ width: '90%' }} />
+          </Grid>
+          <Grid
+            container
+            justifyContent='center'
+            width='100%'
+            paddingTop='1vh'
+          >
+            <BirthdayPicker disabled={!isEditable} ref={birthdate} initValue={profile.birthdate} label='Birth Date' sx={{ width: '90%' }} />
+          </Grid>
+          <Grid
+            container
+            justifyContent='center'
+            width='100%'
+            paddingTop='1vh'
+          >
+            <AppTextField disabled={!isEditable} ref={email} defaultValue={profile.email} label='Email' sx={{ width: '90%' }} />
+          </Grid>
+          <Grid
+            container
+            justifyContent='center'
+            width='100%'
+            paddingTop='1vh'
+          >
+            <AppTextField disabled={!isEditable} ref={about} defaultValue={profile.about} label='About' sx={{ width: '90%' }} />
+          </Grid>
+          <Grid
+            container
+            justifyContent='center'
+            width='100%'
+            paddingTop='3vh'
+          >
+            <Grid item width='90%'>
               <CustomButton
                 variant='contained'
                 ref={button}
+                sx={{
+                  width: '100%'
+                }}
                 onClick={(e) => {
                   if (isEditable) changeProfile(e);
                   else {

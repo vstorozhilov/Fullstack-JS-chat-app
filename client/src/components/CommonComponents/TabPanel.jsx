@@ -13,7 +13,6 @@ function TabPanel (props) {
       style={Object.assign(style, {
         position: 'absolute',
         width: 'inherit',
-        overflowY: 'scroll',
         height: 'inherit'
       })}
       {...other}

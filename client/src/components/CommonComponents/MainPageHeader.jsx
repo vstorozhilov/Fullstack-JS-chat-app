@@ -36,21 +36,21 @@ export default function MainPageHeader (props) {
         width='100%'
         direction='row'
         justifyContent='space-between'
+        flexWrap='nowrap'
       >
         <Grid container width='fit-content'>
           <Grid
             item
             sx={{
               fontWeight: '600',
-              fontSize: '2.5vh',
-              marginTop: '2vh',
+              marginTop: '20px',
               marginLeft: '5vw'
             }}
           >
             {nickname ? nickname : <CircularProgress size='5vh' sx={{color : '#ffffff'}} thickness={2.0}/>}
           </Grid>
         </Grid>
-        <Grid container width='fit-content'>
+        <Grid container width='fit-content' flexWrap='nowrap'>
           <Grid item>
             <IconButton onClick={() => {
               localStorage.removeItem('user');
@@ -64,7 +64,7 @@ export default function MainPageHeader (props) {
                 sx={{
                   color: theme.palette.secondary.text,
                   transform: 'scaleX(-1)',
-                  marginTop: '1vh'
+                  //marginTop: '10px'
                 }} fontSize='large'
               />
             </IconButton>
@@ -74,7 +74,7 @@ export default function MainPageHeader (props) {
               <DensityMedium
                 sx={{
                   color: theme.palette.secondary.text,
-                  marginTop: '1vh'
+                  //marginTop: '10px'
                 }} fontSize='large'
               />
             </IconButton>
@@ -93,6 +93,7 @@ export default function MainPageHeader (props) {
           textColor='inherit'
           aria-label='basic tabs example'
           sx={{
+            width: '90%',
             '& .MuiTabs-indicator': {
               height: '0.65vh',
               backgroundColor: theme.palette.secondary.text,
@@ -100,8 +101,8 @@ export default function MainPageHeader (props) {
             },
             '& .MuiButtonBase-root': {
               textTransform: 'none',
-              width: '30vw',
-              fontSize: '2vh'
+              width: '33%',
+              //fontSize: '2vh'
             }
           }}
         >

@@ -27,8 +27,8 @@ export default function DialogsListItem (props) {
           src={props.src}
           sx={{
             bgcolor: 'red',
-            width: '7vh',
-            height: '7vh'
+            width: '50px',
+            height: '50px'
           }}
         >OP
         </Avatar>
@@ -39,10 +39,10 @@ export default function DialogsListItem (props) {
             position: 'absolute',
             backgroundColor: '#00ff00',
             borderRadius: '50%',
-            width: '2vh',
-            height: '2vh',
+            width: '13px',
+            height: '13px',
             bottom: '0',
-            left: '5vh'
+            left: '40px'
           }}
         />
       </Grid>
@@ -56,14 +56,14 @@ export default function DialogsListItem (props) {
           container
           direction='column'
           justifyContent='space-between'
+          width='fit-content'
         >
           <Grid
             item
             sx={{
               color: '#000000',
               paddingLeft: '10px',
-              fontWeight: theme.typography.fontWeightExtraBold,
-              fontSize: '2.5vh'
+              fontWeight: theme.typography.fontWeightExtraBold
             }}
           >{nickname}
           </Grid>
@@ -76,7 +76,6 @@ export default function DialogsListItem (props) {
               fontWeight: theme.typography.fontWeightRegular,
               bgcolor: `${!isReaded ? login === author ? theme.palette.secondary.contrastText : 'transparent' : 'transparent'}`,
               borderRadius: '2vw',
-              width: 'fit-content',
               color: '#616161'
             }}
           ><span
@@ -93,6 +92,7 @@ export default function DialogsListItem (props) {
           direction='column'
           justifyContent='space-between'
           alignItems='flex-end'
+          width='fit-content'
         >
           <Grid item>
             <div

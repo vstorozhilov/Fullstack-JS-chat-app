@@ -48,11 +48,13 @@ const MessagesContainer = React.forwardRef((props, ref) => {
       config: { duration: 300 }
     });
 
+  //console.log(isDialogFullyScrolled);
+
   useEffect(() => {
     if (Object.keys(correctMessages).length) {
-      console.log('Mounted');
       if (ref.current.offsetHeight + ref.current.scrollTop >=
               ref.current.scrollHeight - 2) {
+        //console.log(correctMessages);
         setisDialogFullyScrolled(true);
       }
       if (isDialogFullyScrolled) {
@@ -101,7 +103,7 @@ const MessagesContainer = React.forwardRef((props, ref) => {
             sx={{
               position: 'fixed',
               zIndex: '10',
-              bottom: '15vh',
+              bottom: '140px',
               right: '7vw'
             }}
           >
@@ -145,9 +147,12 @@ const MessagesContainer = React.forwardRef((props, ref) => {
         container
         spacing={2}
         direction='column'
-        paddingTop='2vh'
+        paddingTop='15px'
         wrap='nowrap'
         sx={{
+          "> .MuiGrid-item" : {
+            maxWidth: '60%'
+          },
           marginTop: '0',
           scrollBehavior: 'smooth'
         }}

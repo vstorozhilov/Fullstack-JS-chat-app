@@ -17,26 +17,34 @@ export default function Greet (props) {
       direction='column'
       justifyContent='space-between'
       height='100%'
-      sx={{
-        overflowY: 'scroll'
-      }}
     >
-      <Grid container alignItems='center' direction='column'>
+      <Grid
+        container
+        alignItems='center'
+        direction='column'
+        sx={{
+          [theme.breakpoints.up('tablet')]: {
+            width: '600px'
+          },
+          [theme.breakpoints.down('tablet')]: {
+            width: '100%'
+          }
+        }}
+      >
         <Grid
           item sx={{
             paddingTop: '5vh',
-            width: `${maxWidthMatch ? '100%' : '350px'}`,
             borderRadius: '50%',
             overflow: 'hidden'
           }}
         >
-          <img width='100%' height='100%' src={greetImage} />
+          <img width='350px' src={greetImage} />
         </Grid>
         <Grid item>
           <p style={{
             fontWeight: theme.typography.fontWeightBold,
-            fontSize: '4vh',
-            lineHeight: '3vh',
+            fontSize: '1.5rem',
+            //lineHeight: '3vh',
             textAlign: 'center',
             color: theme.palette.secondary.main
           }}
@@ -46,7 +54,7 @@ export default function Greet (props) {
         <Grid item>
           <p style={{
             marginTop: 0,
-            lineHeight: '3vh',
+            //lineHeight: '3vh',
             fontWeight: theme.typography.fontWeightLight,
             textAlign: 'center'
           }}
@@ -57,11 +65,22 @@ export default function Greet (props) {
         </Grid>
 
       </Grid>
-      <Grid item>
+      <Grid
+        container
+        justifyContent='center'
+        sx={{
+          [theme.breakpoints.up('tablet')]: {
+            width: '600px'
+          },
+          [theme.breakpoints.down('tablet')]: {
+            width: '100%'
+          }
+        }}
+      >
         <BigBlueButton
           onClick={() => navigate('/login')}
           text='Get Started'
-          sx={{ marginBottom: '5.5vh' }}
+          sx={{ marginBottom: '5.5vh', width : '90%' }}
         />
       </Grid>
     </Grid>

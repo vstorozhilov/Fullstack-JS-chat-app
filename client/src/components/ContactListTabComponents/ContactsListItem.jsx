@@ -63,21 +63,21 @@ export default function ContactsListItem (props) {
           src={props.contact.profile.avatar}
           sx={{
             bgcolor: 'red',
-            width: '7vh',
-            height: '7vh'
+            width: '50px',
+            height: '50px'
           }}
         >OP
         </Avatar>
         <div
           hidden={!props.contact.isOnline}
           style={{
-            heigth: '2vh',
+            height: '13px',
             position: 'absolute',
             backgroundColor: '#00ff00',
             borderRadius: '50%',
-            width: '2vh',
+            width: '13px',
             bottom: '0',
-            left: '5vh'
+            left: '40px'
           }}
         />
       </Grid>
@@ -96,8 +96,7 @@ export default function ContactsListItem (props) {
             item
             sx={{
               paddingLeft: '10px',
-              fontWeight: theme.typography.fontWeightExtraBold,
-              fontSize: '2.5vh'
+              fontWeight: theme.typography.fontWeightExtraBold
             }}
           >{props.contact.profile.nickname}
           </Grid>

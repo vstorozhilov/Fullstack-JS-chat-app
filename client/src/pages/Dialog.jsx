@@ -11,6 +11,7 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { authentificationContext } from '../Routes';
 import MessagesContainer from '../components/DialogComponents/MessagesContainer';
 import DialogHeader from '../components/DialogComponents/DialogHeader';
+import { useTheme } from '@mui/material';
 
 export function Dialog (props) {
   const [isLoadingUpdates, setIsLoadingUpdates] = useState(false);
@@ -20,6 +21,7 @@ export function Dialog (props) {
   console.log(selectedDialog);
   const messageField = useRef(null);
   const dispatch = useDispatch();
+  const theme = useTheme();
 
   function getMessages () {
     setIsLoadingUpdates(true);
@@ -79,71 +81,90 @@ export function Dialog (props) {
     <>
       <Grid
         container
-        direction='column'
-        justifyContent='space-between'
-        height='inherit'
-        flexWrap='nowrap'
+        justifyContent='center'
+        height='100%'
+        width='100%'
       >
         <Grid
-          container
-          direction='column'
-          flexGrow={1}
-          flexWrap='nowrap'
-          minHeight='0px'
-        >
-          <DialogHeader setReverseAnim={props.setReverseAnim} isLoadingUpdates={isLoadingUpdates} />
-          <MessagesContainer ref={dialogContainerRef} isLoadingUpdates={isLoadingUpdates} />
-        </Grid>
-        <Grid
-          container
-          direction='row'
-          justifyContent='center'
-          alignItems='center'
-          id='messageInputContainer'
+          item
+          height='100%'
           sx={{
-            width: 'inherit',
-            minHeight: '15vh'
+            overflowY: 'hidden',
+            [theme.breakpoints.up('tablet')]: {
+              width: '600px'
+            },
+            [theme.breakpoints.down('tablet')]: {
+              width: '100%'
+            },
+            position: 'relative',
+            backgroundColor: 'rgb(255, 255, 255, 0.7)',
+            overflowX: 'hidden'
           }}
         >
-          <AppTextField
-            ref={messageField}
-            id='input-with-text-message'
-            width='80vw'
-            height='8vh'
-            multiline
-            maxRows={4}
-            minRows={2}
-            onKeyDown={(event) => { keydownHandler(event); }}
-            sx={{
-              '& .MuiOutlinedInput-input': {
-                paddingLeft: '3vw',
-                paddingRight: '3vw',
-                paddingTop: '2vw',
-                paddingBottom: '2vw',
-                fontSize: '2.2vh'
-              },
-              '& .MuiOutlinedInput-input::-webkit-scrollbar': {
-                backgroundColor: 'transparent'
-              }
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position='end'>
-                  <IconButton>
-                    <PhotoCameraIcon />
-                  </IconButton>
-                  <IconButton>
-                    <AttachFileIcon />
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-          />
-          <IconButton onClick={() => { sendMessage(); }}>
-            <SendIcon
-              fontSize='large' color='primary'
-            />
-          </IconButton>
+          <Grid
+            container
+            direction='column'
+            justifyContent='space-between'
+            height='inherit'
+            flexWrap='nowrap'
+          >
+            <Grid
+              container
+              direction='column'
+              flexWrap='nowrap'
+              minHeight='0px'
+            >
+              <DialogHeader setReverseAnim={props.setReverseAnim} isLoadingUpdates={isLoadingUpdates} />
+              <MessagesContainer ref={dialogContainerRef} isLoadingUpdates={isLoadingUpdates} />
+            </Grid>
+            <Grid
+              container
+              direction='row'
+              justifyContent='center'
+              alignItems='center'
+              flexWrap='nowrap'
+              sx={{
+                width: 'inherit',
+                height: '140px',
+                marginBottom: '20px',
+                marginTop: '10px'
+              }}
+            >
+              <AppTextField
+                ref={messageField}
+                multiline
+                maxRows={4}
+                minRows={2}
+                onKeyDown={(event) => { keydownHandler(event); }}
+                sx={{
+                  width: '80%',
+                  '& .MuiOutlinedInput-input': {
+                    paddingLeft: '3vw',
+                    paddingRight: '3vw',
+                    paddingTop: '20px',
+                    paddingBottom: '20px'
+                  }
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton>
+                        <PhotoCameraIcon />
+                      </IconButton>
+                      <IconButton>
+                        <AttachFileIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
+              <IconButton onClick={() => { sendMessage(); }}>
+                <SendIcon
+                  fontSize='large' color='primary'
+                />
+              </IconButton>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </>

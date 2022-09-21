@@ -6,12 +6,10 @@ import { animated } from '@react-spring/web';
 
 const MyMessageStyled = styled(SnackbarContent)(({ theme }) => `
     background-color : ${theme.palette.primary.light};
-    border-radius : 3vmin;
-    max-width: 60vw;
+    border-radius : 10px;
     min-width: fit-content;
     box-shadow: none;
     word-break: break-all;
-    font-size : 2vh;
     flex-direction: column;
     flex-wrap: nowrap;
 `);
@@ -22,6 +20,7 @@ export default function MyMessage (props) {
       item
       alignSelf='end'
       paddingRight='3vw'
+      //sx={{maxWidth : '60%'}}
     >
       <animated.div style={props.styles}>
         <Grid
@@ -37,8 +36,8 @@ export default function MyMessage (props) {
               hidden={props.isReaded} style={{
                 backgroundColor: 'blue',
                 borderRadius: '50%',
-                width: '1vh',
-                height: '1vh'
+                width: '10px',
+                height: '10px'
               }}
             />
           </Grid>

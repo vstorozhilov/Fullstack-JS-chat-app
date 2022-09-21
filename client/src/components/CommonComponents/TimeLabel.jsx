@@ -4,7 +4,7 @@ import { Box } from '@mui/system';
 export default function TimeLabel (props) {
   return (
     <Box sx={{
-      fontSize: '1.4vh'
+      fontSize: '0.6rem'
     }}
     ><Moment format='D MMM HH:mm'>{props.date}</Moment>
     </Box>

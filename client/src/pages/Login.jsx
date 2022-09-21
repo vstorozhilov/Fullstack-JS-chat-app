@@ -11,10 +11,11 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { authentificationContext } from '../Routes';
 import { useDispatch } from 'react-redux';
 import { mainPageWillMount } from '../databaseSubscriber';
+import backgroundImage from '../images/stock-vector-hand-drawn-pattern-with-social-media-elements-551854483.jpg';
 
 export default function Login (props) {
   const { setUser } = useContext(authentificationContext);
-  const [ rememberMe, setRememberMe ] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   // const [login, setLogin] = useState();
   // const [password, setPassword] = useState();
   const [isAuthDataCorrect, setIsAuthDataCorrect] = useState(true);
@@ -25,6 +26,7 @@ export default function Login (props) {
   const handlePassword = () => setShowPassword(!showPassword);
   const dispatch = useDispatch();
   const maxheightMatch = useMediaQuery('(max-height: 700px)');
+  const isTablet = useMediaQuery(theme.breakpoints.up('tablet'));
 
   const loginField = useRef(null);
   const passwordField = useRef(null);
@@ -56,15 +58,29 @@ export default function Login (props) {
     });
   }
 
+  console.log(backgroundImage);
+
   return (
     <Grid
       container
       direction='column'
       justifyContent='space-between'
-      height='100%'
+      height='inherit'
+      width='inherit'
       alignItems='center'
+      flexWrap='nowrap'
     >
-      <Grid container direction='column' alignItems='center' id='topAlignedContainer'>
+      <Grid
+        container direction='column' alignItems='center' id='topAlignedContainer'
+        sx={{
+          [theme.breakpoints.up('tablet')]: {
+            width: '600px'
+          },
+          [theme.breakpoints.down('tablet')]: {
+            width: '100%'
+          }
+        }}
+      >
         <Grid item sx={{ alignSelf: 'flex-start' }}>
           <Link to='/' onClick={() => { props.setReverseAnim(true); }}>
             <IconButton size='large'>
@@ -93,7 +109,7 @@ export default function Login (props) {
         <Grid item>
           <p style={{
             fontWeight: theme.typography.fontWeightBold,
-            fontSize: '4vh',
+            fontSize: '1.8rem',
             textAlign: 'center',
             marginTop: '0',
             marginBottom: '8vh'
@@ -101,16 +117,25 @@ export default function Login (props) {
           >Login to Your Account
           </p>
         </Grid>
-        <Grid item>
-          <AppTextField ref={loginField} label='Your login' width='90vw' disabled={isLoading} />
+        <Grid
+          item sx={{
+            width: '90%'
+          }}
+        >
+          <AppTextField
+            ref={loginField}
+            label='Your login'
+            width='100%'
+            disabled={isLoading}
+          />
         </Grid>
         <Grid
           item
-          sx={{ paddingTop: '2vh' }}
+          sx={{ paddingTop: '2vh', width: '90%' }}
         >
           <AppTextField
             label='Your password'
-            width='90vw'
+            width='100%'
             ref={passwordField}
             disabled={isLoading}
             type={showPassword ? 'text' : 'password'}
@@ -143,16 +168,34 @@ export default function Login (props) {
           flexDirection='row'
           justifyContent='center'
           alignItems='center'
-          height='10vh'
+          flexWrap='nowrap'
+          sx={{
+            height: '3rem',
+            marginBottom: '1vh',
+            marginTop: '1vh'
+          }}
         >
-          <Checkbox size='large' sx={{ color: '#256cfd' }} onChange={()=>setRememberMe(!rememberMe)} />
+          <Checkbox size='large' sx={{ color: '#256cfd' }} onChange={() => setRememberMe(!rememberMe)} />
           <span style={{ fontWeight: theme.typography.fontWeightBold }}>Remember Me</span>
         </Grid>
-        <Grid item>
-          <BigBlueButton onClick={sendAuthorizationForm} text='Sign In' />
+        <Grid item sx={{ width: '90%' }}>
+          <BigBlueButton onClick={sendAuthorizationForm} text='Sign In' sx={{ width: '100%' }} />
         </Grid>
       </Grid>
-      <Grid item sx={{ marginBottom: '5vh' }}>
+      <Grid
+        container
+        direction='row'
+        justifyContent='center'
+        sx={{
+          [theme.breakpoints.up('tablet')]: {
+            width: '600px'
+          },
+          [theme.breakpoints.down('tablet')]: {
+            width: '100%'
+          },
+          marginBottom: '5vh'
+        }}
+      >
         <span>Don't have an account?</span>
         <span><Link to='/signup' style={{ color: '#246bfd' }}>Sign Up</Link></span>
       </Grid>

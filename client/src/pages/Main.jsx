@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTransition } from '@react-spring/web';
-import { IconButton, useTheme } from '@mui/material';
+import { IconButton, useTheme, Grid, Box } from '@mui/material';
 import DialogsListItems from '../components/DialogsListTabComponents/DialogsListItems';
 import ContactsListItems from '../components/ContactListTabComponents/ContactsListItems';
 import { useSelector, useDispatch } from 'react-redux';
@@ -24,9 +24,6 @@ export default function Main (props) {
   const navigate = useNavigate();
   const isOnceRendered = useSelector(state => state.mainPageOnceRenderedReducer.isMainPageOnceRendered);
   const dispatch = useDispatch();
-  const location = useLocation();
-
-  // console.log(useSelector(state => state.messagesReducer.Messages));
 
   function updateCredentials () {
     setIsLoadingUpdates(true);
@@ -85,85 +82,119 @@ export default function Main (props) {
   const chatIconButtonAnimationUp = 'animation-name : chatIconButtonAnimationUp; animation-duration: 0.25s; background-color : #ffffff;';
 
   return (token && isOnceRendered &&
-    <>
-      {isStartMessagingActive
-        ? <StartNewDialog
-            isStartMessagingActive={isStartMessagingActive}
-            setIsStartMessagingActive={setIsStartMessagingActive}
-          />
-        : null}
-      <MainPageHeader tabIndexer={{ value, setValue, setPrevValue }} setReverseAnim={props.setReverseAnim} />
-      {transitions((styles, item) => {
-        const Page = TabPages[item];
-        return (
-          <Page
-            styles={styles}
-            value={value}
-            {...props}
-          />
-        );
-      })}
-      {value === 0
-        ? <IconButton
-            onTouchStart={(e) => {
-              e.currentTarget.style = chatIconButtonAnimationDown;
-              if (e.currentTarget === e.target) {
-                e.currentTarget.querySelector('svg').style = chatIconAnimationDown;
-              }
-            }}
-            onMouseDown={(e) => {
-              e.currentTarget.style = chatIconButtonAnimationDown;
-              if (e.currentTarget === e.target) {
-                e.currentTarget.querySelector('svg').style = chatIconAnimationDown;
-              }
-            }}
-            onTouchEnd={(e) => {
-              e.currentTarget.style = chatIconButtonAnimationUp;
-              if (e.currentTarget === e.target) {
-                e.currentTarget.querySelector('svg').style = chatIconAnimationUp;
-              }
-            }}
-            onMouseUp={(e) => {
-              e.currentTarget.style = chatIconButtonAnimationUp;
-              if (e.currentTarget === e.target) {
-                e.currentTarget.querySelector('svg').style = chatIconAnimationUp;
-              }
-            }}
-            onClick={() => setIsStartMessagingActive(true)}
-            sx={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              position: 'absolute',
-              right: '5vw',
-              bottom: '5vw',
-              backgroundColor: '#ffffff',
-              borderRadius: '50%',
-              width: '7vh',
-              height: '7vh',
-              boxShadow: '#aca7a7 0px 0px 14px 0px',
-              ':hover': {
-                backgroundColor: '#ffffff'
-              },
-              '@media (hover : none)': {
+    <Grid
+      container
+      justifyContent='center'
+      height='100%'
+      width='100%'
+    >
+      <Grid
+        container
+        direction='column'
+        wrap='nowrap'
+        height='100%'
+        sx={{
+          overflowY: 'hidden',
+          [theme.breakpoints.up('tablet')]: {
+            width: '600px'
+          },
+          [theme.breakpoints.down('tablet')]: {
+            width: '100%'
+          },
+          position: 'relative',
+          backgroundColor: 'rgb(255, 255, 255, 0.7)',
+          overflowX: 'hidden'
+        }}
+      >
+        {isStartMessagingActive
+          ? <StartNewDialog
+              isStartMessagingActive={isStartMessagingActive}
+              setIsStartMessagingActive={setIsStartMessagingActive}
+            />
+          : null}
+        <MainPageHeader tabIndexer={{ value, setValue, setPrevValue }} setReverseAnim={props.setReverseAnim} />
+        <Grid
+          item
+          flexGrow='1'
+          sx={{
+            position: 'relative',
+            width: '100%',
+            overflowY: 'scroll'
+          }}
+        >
+          {transitions((styles, item) => {
+            const Page = TabPages[item];
+            return (
+              <Page
+                styles={styles}
+                value={value}
+                {...props}
+              />
+            );
+          })}
+        </Grid>
+        {value === 0
+          ? <IconButton
+              onTouchStart={(e) => {
+                e.currentTarget.style = chatIconButtonAnimationDown;
+                if (e.currentTarget === e.target) {
+                  e.currentTarget.querySelector('svg').style = chatIconAnimationDown;
+                }
+              }}
+              onMouseDown={(e) => {
+                e.currentTarget.style = chatIconButtonAnimationDown;
+                if (e.currentTarget === e.target) {
+                  e.currentTarget.querySelector('svg').style = chatIconAnimationDown;
+                }
+              }}
+              onTouchEnd={(e) => {
+                e.currentTarget.style = chatIconButtonAnimationUp;
+                if (e.currentTarget === e.target) {
+                  e.currentTarget.querySelector('svg').style = chatIconAnimationUp;
+                }
+              }}
+              onMouseUp={(e) => {
+                e.currentTarget.style = chatIconButtonAnimationUp;
+                if (e.currentTarget === e.target) {
+                  e.currentTarget.querySelector('svg').style = chatIconAnimationUp;
+                }
+              }}
+              onClick={() => setIsStartMessagingActive(true)}
+              sx={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                position: 'absolute',
+                right: '30px',
+                bottom: '30px',
+                backgroundColor: '#ffffff',
+                borderRadius: '50%',
+                width: '50px',
+                height: '50px',
+                boxShadow: '#aca7a7 0px 0px 14px 0px',
                 ':hover': {
                   backgroundColor: '#ffffff'
+                },
+                '@media (hover : none)': {
+                  ':hover': {
+                    backgroundColor: '#ffffff'
+                  }
                 }
-              }
-            }}
-          >
-          <BsFillChatDotsFill
-            onTouchStart={(e) => { e.currentTarget.style = chatIconAnimationDown; }}
-            onMouseDown={(e) => { e.currentTarget.style = chatIconAnimationDown; }}
-            onTouchEnd={(e) => { e.currentTarget.style = chatIconAnimationUp; }}
-            onMouseUp={(e) => { e.currentTarget.style = chatIconAnimationUp; }}
-            size='4vh'
-            style={{
-              color: `${theme.palette.primary.dark}`
-            }}
-          />
-          </IconButton>
-        : null}
-    </>
+              }}
+            >
+            <BsFillChatDotsFill
+              onTouchStart={(e) => { e.currentTarget.style = chatIconAnimationDown; }}
+              onMouseDown={(e) => { e.currentTarget.style = chatIconAnimationDown; }}
+              onTouchEnd={(e) => { e.currentTarget.style = chatIconAnimationUp; }}
+              onMouseUp={(e) => { e.currentTarget.style = chatIconAnimationUp; }}
+              size='25px'
+              style={{
+                color: `${theme.palette.primary.dark}`
+              }}
+            />
+            </IconButton>
+          : null}
+      </Grid>
+    </Grid>
   );
 }
 

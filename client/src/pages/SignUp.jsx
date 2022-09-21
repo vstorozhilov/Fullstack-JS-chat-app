@@ -60,11 +60,20 @@ export default function SignUp (props) {
       justifyContent='space-between'
       height='100%'
       alignItems='center'
+      flexWrap='nowrap'
     >
       <Grid
         container
         direction='column'
         alignItems='center'
+        sx={{
+          [theme.breakpoints.up('tablet')]: {
+            width: '600px'
+          },
+          [theme.breakpoints.down('tablet')]: {
+            width: '100%'
+          }
+        }}
       >
         <Grid item sx={{ alignSelf: 'flex-start' }}>
           <Link to='/login' onClick={() => { props.setReverseAnim(true); }}>
@@ -88,7 +97,7 @@ export default function SignUp (props) {
         <Grid item>
           <p style={{
             fontWeight: theme.typography.fontWeightBold,
-            fontSize: '5vh',
+            fontSize: '2.5rem',
             textAlign: 'center',
             marginTop: '0',
             marginBottom: '4vh'
@@ -100,12 +109,16 @@ export default function SignUp (props) {
           container
           direction='column'
           alignItems='center'
-          spacing='2vh'
         >
-          <Grid item>
+          <Grid
+            container
+            justifyContent='center'
+            width='100%'
+            paddingTop='1vh'
+          >
             <AppTextField
               label='Your login'
-              width='90vw'
+              width='90%'
               onChange={(e) => { setLogin(e.target.value); }}
               sx={login === ''
                 ? {
@@ -117,10 +130,15 @@ export default function SignUp (props) {
               disabled={isLoading}
             />
           </Grid>
-          <Grid item>
+          <Grid
+            container
+            paddingTop='1vh'
+            justifyContent='center'
+            width='100%'
+          >
             <AppTextField
               label='Your password'
-              width='90vw'
+              width='90%'
               type={showPassword ? 'text' : 'password'}
               disabled={isLoading}
               sx={password === ''
@@ -147,10 +165,15 @@ export default function SignUp (props) {
               }}
             />
           </Grid>
-          <Grid item>
+          <Grid
+            container
+            paddingTop='1vh'
+            justifyContent='center'
+            width='100%'
+          >
             <AppTextField
               label='Repeat password'
-              width='90vw'
+              width='90%'
               disabled={isLoading}
               type={showRepeatPassword ? 'text' : 'password'}
               sx={repeatPassword === ''
@@ -199,8 +222,20 @@ export default function SignUp (props) {
           </Grid>
         </Grid>
       </Grid>
-      <Grid item sx={{ marginBottom: '5vh' }}>
-        <BigBlueButton text='Sign Up' onClick={sendAuthorizationForm} target='/createaccount' />
+      <Grid
+        container
+        justifyContent='center'
+        sx={{
+          [theme.breakpoints.up('tablet')]: {
+            width: '600px'
+          },
+          [theme.breakpoints.down('tablet')]: {
+            width: '100%'
+          },
+          marginBottom: '5vh'
+        }}
+      >
+        <BigBlueButton text='Sign Up' onClick={sendAuthorizationForm} target='/createaccount' sx={{width : '90%'}} />
       </Grid>
     </Grid>
   );

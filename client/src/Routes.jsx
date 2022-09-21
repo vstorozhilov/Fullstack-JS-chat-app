@@ -10,12 +10,16 @@ import CreateAccount from './Pages/CreateAccount';
 import SignUp from './Pages/SignUp';
 import Greet from './Pages/Greet';
 import { mainPageWillUnmount, dialogPageWillUnmount } from './databaseSubscriber';
+import backgroundImage from './images/stock-vector-hand-drawn-pattern-with-social-media-elements-551854483.jpg';
+import { useMediaQuery, useTheme } from '@mui/material';
 
 function MainContainer (props) {
   const location = useLocation();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || {});
   const contextUser = { user, setUser };
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isTablet = useMediaQuery('(max-width: 740px)');
 
   console.log(user);
 
@@ -66,18 +70,33 @@ function MainContainer (props) {
 
   return transitions((styles, item) => {
     return (
-      <animated.div style={Object.assign(styles, { position: 'absolute', width: 'inherit', height: 'inherit', overflowX: 'hidden', overflowY: 'hidden' })}>
-        <authentificationContext.Provider value={contextUser}>
-          <Routes location={item}>
-            <Route path='/login' element={Object.values(user).length ? null : <Login setReverseAnim={setReverseAnimation} />} />
-            <Route path='/' element={Object.values(user).length ? null : <Greet text='Click me now' />} />
-            <Route path='/signup' element={<SignUp setReverseAnim={setReverseAnimation} />} />
-            <Route path='/createaccount' element={<CreateAccount setReverseAnim={setReverseAnimation} />} />
-            <Route path='/main' element={Object.values(user).length ? <Main setReverseAnim={setReverseAnimation} /> : null} />
-            <Route path='/dialog' element={selectedDialog === undefined ? null : <Dialog setReverseAnim={setReverseAnimation} />} />
-          </Routes>
-        </authentificationContext.Provider>
-      </animated.div>
+      <>
+        <div
+          hidden={isTablet}
+          style={{
+            zIndex: '-1',
+            position: 'absolute',
+            opacity: '0.3',
+            width: '100%',
+            height: '100%',
+            overflow: 'hidden'
+          }}
+        >
+          <img style={{ zIndex: '-10', width: '100%' }} src={backgroundImage} />
+        </div>
+        <animated.div style={Object.assign(styles, { position: 'absolute', width: 'inherit', height: 'inherit', overflowX: 'hidden' })}>
+          <authentificationContext.Provider value={contextUser}>
+            <Routes location={item}>
+              <Route path='/login' element={Object.values(user).length ? null : <Login setReverseAnim={setReverseAnimation} />} />
+              <Route path='/' element={Object.values(user).length ? null : <Greet text='Click me now' />} />
+              <Route path='/signup' element={<SignUp setReverseAnim={setReverseAnimation} />} />
+              <Route path='/createaccount' element={<CreateAccount setReverseAnim={setReverseAnimation} />} />
+              <Route path='/main' element={Object.values(user).length ? <Main setReverseAnim={setReverseAnimation} /> : null} />
+              <Route path='/dialog' element={selectedDialog === undefined ? null : <Dialog setReverseAnim={setReverseAnimation} />} />
+            </Routes>
+          </authentificationContext.Provider>
+        </animated.div>
+      </>
     );
   });
 }

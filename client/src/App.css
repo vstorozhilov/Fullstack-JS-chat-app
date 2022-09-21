@@ -1,6 +1,7 @@
 * {
   box-sizing: border-box;
   font-family: 'Urbanist';
+  scrollbar-width: none;
 }
 
 body {
@@ -10,6 +11,10 @@ body {
 a, a:hover, a:focus, a:active {
   text-decoration: none;
   background-color: transparent;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
 }
 
 @keyframes chatIconAnimationDown {

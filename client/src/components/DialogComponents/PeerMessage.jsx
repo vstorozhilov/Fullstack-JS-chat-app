@@ -9,11 +9,9 @@ const PeerMessageStyled = styled(SnackbarContent)(({ theme }) => `
     background-color : ${theme.palette.secondary.contrastText};
     border-radius : 3vmin;
     color: black;
-    max-width: 60vw;
     min-width: fit-content;
     box-shadow: none;
     word-break: break-all;
-    font-size : 2vh;
     flex-direction: column;
     flex-wrap: nowrap;
 `);
@@ -24,6 +22,7 @@ function PeerMessage (props) {
       item
       alignSelf='start'
       marginLeft='3vw'
+      //maxWidth='60%'
     >
       <animated.div style={props.styles}>
         <PeerMessageStyled
@@ -42,6 +41,7 @@ const RefPeerMessage = React.forwardRef((props, ref) => {
       ref={ref}
       alignSelf='start'
       marginLeft='3vw'
+      //maxWidth='60%'
     >
       <animated.div style={props.styles}>
         <Grid
@@ -61,8 +61,8 @@ const RefPeerMessage = React.forwardRef((props, ref) => {
             <div style={{
               backgroundColor: 'blue',
               borderRadius: '50%',
-              width: '1vh',
-              height: '1vh'
+              width: '10px',
+              height: '10px'
             }}
             />
           </Grid>

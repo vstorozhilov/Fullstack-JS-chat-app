@@ -1,4 +1,3 @@
-//import '../../App.css';
 import { useContext } from 'react';
 import authentificationContext from '../../contexts/authentificationContext';
 import { useSelector } from 'react-redux';

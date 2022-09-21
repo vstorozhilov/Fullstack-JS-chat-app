@@ -5,20 +5,11 @@ import { Button } from '@mui/material';
 const StyledBlueButton = styled(Button)(({ theme }) => `
       font-weight: ${theme.typography.fontWeightBold};
       text-transform: none;
-      font-size: 2vh;
-      width: 90vw;
-      height: 7vh;
+      font-size: 1rem;
+      height: 3.5rem;
       border-radius: 10vw;
       background-color: ${theme.palette.primary.dark};
 `);
-
-// export function BigBlueButton (props) {
-//   return (
-//     <StyledBlueButton variant='contained' {...props}>
-//       {props.text}
-//     </StyledBlueButton>
-//   );
-// }
 
 export const BigBlueButton = React.forwardRef((props, ref) => {
   return (

@@ -1,5 +1,5 @@
 
-import React, { useState, useContext, useRef , useEffect } from 'react';
+import React, { useState, useContext, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import avatarImage from '../images/avatar.png';
 import { IconButton, Input, Grid } from '@mui/material';
@@ -12,7 +12,6 @@ import { AppTextField } from '../components/CommonComponents/TextField';
 import { BirthdayPicker } from '../components/CommonComponents/BirthdayPicker';
 import { authentificationContext } from '../Routes';
 import { mainPageWillMount } from '../databaseSubscriber';
-
 
 export default function CreateAccount (props) {
   const theme = useTheme();
@@ -88,6 +87,14 @@ export default function CreateAccount (props) {
             direction='column'
             alignItems='center'
             spacing='2vh'
+            sx={{
+              [theme.breakpoints.up('tablet')]: {
+                width: '600px'
+              },
+              [theme.breakpoints.down('tablet')]: {
+                width: '100%'
+              }
+            }}
           >
             <Grid
               container
@@ -169,33 +176,71 @@ export default function CreateAccount (props) {
                 </IconButton>
               </label>
             </Grid>
-            <Grid item>
-              <AppTextField disabled={loading} label='Full Name' width='90vw' height='4vh' ref={fullname} />
+            <Grid
+              container
+              justifyContent='center'
+              width='100%'
+            >
+              <AppTextField disabled={loading} label='Full Name' sx={{ width: '90%' }} ref={fullname} />
             </Grid>
-            <Grid item>
-              <AppTextField disabled={loading} label='Nickname' width='90vw' height='4vh' ref={nickname} />
+            <Grid
+              container
+              justifyContent='center'
+              width='100%'
+              paddingTop='2vh'
+            >
+              <AppTextField disabled={loading} label='Nickname' sx={{ width: '90%' }} ref={nickname} />
             </Grid>
-            <Grid item>
-              <BirthdayPicker disabled={loading} initValue={new Date()} label='Birth Date' width='90vw' height='4vh' ref={birthdate} />
+            <Grid
+              container
+              justifyContent='center'
+              width='100%'
+              paddingTop='2vh'
+            >
+              <BirthdayPicker disabled={loading} initValue={new Date()} label='Birth Date' sx={{ width: '90%' }} ref={birthdate} />
             </Grid>
-            <Grid item>
-              <AppTextField disabled={loading} label='Email' width='90vw' height='4vh' ref={email} />
+            <Grid
+              container
+              justifyContent='center'
+              width='100%'
+              paddingTop='2vh'
+            >
+              <AppTextField disabled={loading} label='Email' sx={{ width: '90%' }} ref={email} />
             </Grid>
-            <Grid item>
-              <AppTextField disabled={loading} label='About' width='90vw' height='4vh' ref={about} />
+            <Grid
+              container
+              justifyContent='center'
+              width='100%'
+              paddingTop='2vh'
+            >
+              <AppTextField disabled={loading} label='About' sx={{ width: '90%' }} ref={about} />
             </Grid>
           </Grid>
           <Grid
-            item
+            container
+            justifyContent='center'
+            width='100%'
             sx={{
+              [theme.breakpoints.up('tablet')]: {
+                width: '600px'
+              },
+              [theme.breakpoints.down('tablet')]: {
+                width: '100%'
+              },
               paddingBottom: '2vh'
             }}
           >
             {loading
               ? <BigBlueButton
                   text='uploading...'
+                  sx={{
+                    width: '90%'
+                  }}
                 />
               : <BigBlueButton
+                  sx={{
+                    width: '90%'
+                  }}
                   text='Continue'
                   target='/main'
                   disabled={loading}

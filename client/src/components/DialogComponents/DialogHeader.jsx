@@ -16,7 +16,7 @@ export default function DialogHeader (props) {
     <header style={{
       background: 'linear-gradient(to right, #4f89ff, #2d71fd)',
       color: theme.palette.secondary.text,
-      minHeight: '10vh'
+      minHeight: '60px'
     }}
     >
       <Grid
@@ -37,7 +37,6 @@ export default function DialogHeader (props) {
             <IconButton
               onClick={() => {
                 props.setReverseAnim(true);
-                //exitFromDialog();
                 mainPageWillMount();
                 navigate('/main');
               }}
@@ -50,47 +49,45 @@ export default function DialogHeader (props) {
               <ArrowBack />
             </IconButton>
           </Grid>
-          {props.isLoadingUpdates ? <CircularProgress size='5vh' thickness={2.0} sx={{color : '#ffffff'}}/> :
-          <>
-          <Grid
-            item sx={{
-              paddingRight: '2vw',
-              position: 'relative'
-            }}
-          >
-            <Avatar
-              src={peerAvatar}
-              sx={{
-                bgcolor: 'red',
-                width: '7vh',
-                height: '7vh'
-              }}
-            />
-            <div
-              hidden={!isPeerOnline}
-              style={{
-                heigth: '2vh',
-                position: 'absolute',
-                backgroundColor: '#00ff00',
-                borderRadius: '50%',
-                width: '2vh',
-                height: '2vh',
-                bottom: '0',
-                left: '5vh'
-              }}
-            />
-          </Grid>
-          <Grid
-            item
-            sx={{
-              fontWeight: '600',
-              fontSize: '2.5vh'
-            }}
-          >
-            {peerNickname}
-          </Grid>
-          </>
-          }
+          {props.isLoadingUpdates
+            ? <CircularProgress size='5vh' thickness={2.0} sx={{ color: '#ffffff' }} />
+            : <>
+              <Grid
+                item sx={{
+                  paddingRight: '2vw',
+                  position: 'relative'
+                }}
+              >
+                <Avatar
+                  src={peerAvatar}
+                  sx={{
+                    bgcolor: 'red',
+                    width: '50px',
+                    height: '50px'
+                  }}
+                />
+                <div
+                  hidden={!isPeerOnline}
+                  style={{
+                    height: '13px',
+                    position: 'absolute',
+                    backgroundColor: '#00ff00',
+                    borderRadius: '50%',
+                    width: '13px',
+                    bottom: '0',
+                    left: '40px'
+                  }}
+                />
+              </Grid>
+              <Grid
+                item
+                sx={{
+                  fontWeight: theme.typography.fontWeightBold
+                }}
+              >
+                {peerNickname}
+              </Grid>
+              </>}
         </Grid>
         <Grid
           container
@@ -102,7 +99,7 @@ export default function DialogHeader (props) {
               <Search
                 sx={{
                   color: theme.palette.secondary.text,
-                  marginTop: '1vh'
+                  //marginTop: '1rem'
                 }} fontSize='large'
               />
             </IconButton>
@@ -112,7 +109,7 @@ export default function DialogHeader (props) {
               <DensityMedium
                 sx={{
                   color: theme.palette.secondary.text,
-                  marginTop: '1vh'
+                  //marginTop: '1rem'
                 }} fontSize='large'
               />
             </IconButton>
