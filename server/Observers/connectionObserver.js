@@ -10,8 +10,6 @@ const wholeRelatedMessageObserverCreator = require('./wholeRelatedMessagesObserv
 const peerObserverCreator = require('./peerObserver');
 
 async function connectionObserver (socket) {
-  console.log('connected to socketio');
-
   const { token } = socket.handshake.auth;
 
   const login = await authenticationControl(token);
@@ -36,7 +34,6 @@ async function connectionObserver (socket) {
   let peerObserver = null;
 
   const exitFromDialog = async (socket) => {
-    console.log('exit from dialog');
     messageReadingObserver.close();
     messageSendingObserver.close();
     peerObserver.close();
@@ -49,7 +46,6 @@ async function connectionObserver (socket) {
 
   socket.on('dialog was selected', async dialogId => {
     dialogid = dialogId;
-    console.log(dialogId)
     peerObserver = await peerObserverCreator(socket, dialogid, login);
     messageSendingObserver = messageSendingObserverCreator(socket, dialogid);
     messageReadingObserver = messageReadingObserverCreator(socket, dialogid);
@@ -70,7 +66,6 @@ async function connectionObserver (socket) {
     if (dialogid) await exitFromDialog(socket, dialogid);
     currentUser.isOnline = false;
     await currentUser.save();
-    console.log('connection closed');
   });
 }
 

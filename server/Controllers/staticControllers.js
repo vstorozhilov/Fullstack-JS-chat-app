@@ -15,7 +15,7 @@ function staticHandler (request, response) {
       console.error(err);
       return;
     }
-    response.writeHead(200, headers = {
+    response.writeHead(200, {
       'Access-Control-Allow-Origin': '*',
     });
     response.write(data);

@@ -31,7 +31,7 @@ async function updateAll (response, login) {
   );
 
   await Promise.all(unreadedMessagesCountingPromises);
-  response.writeHead(200, headers = {
+  response.writeHead(200, {
     'Access-Control-Allow-Origin': '*'
   });
   response.write(JSON.stringify([contacts, dialogs, user]));
@@ -45,7 +45,7 @@ async function changeOwnProfile (requestPayment, response, login) {
 
   await user.save();
 
-  response.writeHead(200, headers = {
+  response.writeHead(200, {
     'Access-Control-Allow-Origin': '*'
   });
 
@@ -62,7 +62,7 @@ async function startNewDialog (requestPayment, response, login) {
   );
 
   if (existingDialog) {
-    response.writeHead(200, headers = {
+    response.writeHead(200, {
       'Access-Control-Allow-Origin': '*'
     });
 
@@ -77,7 +77,7 @@ async function startNewDialog (requestPayment, response, login) {
 
     await newDialog.save();
 
-    response.writeHead(200, headers = {
+    response.writeHead(200, {
       'Access-Control-Allow-Origin': '*'
     });
 
@@ -100,7 +100,7 @@ async function mainTabHandler (request, response) {
     const login = await authentificationControl(token);
 
     if (login === null) {
-      response.writeHead(401, headers = {
+      response.writeHead(401, {
         'Access-Control-Allow-Origin': '*'
       });
       response.write('Unauthorized access');
@@ -112,15 +112,15 @@ async function mainTabHandler (request, response) {
 
     switch (action) {
       case ('updateAll'):
-        updateAll(response, login);
+        await updateAll(response, login);
         break;
 
       case ('changeMyProfile'):
-        changeOwnProfile(requestPayment, response, login);
+        await changeOwnProfile(requestPayment, response, login);
         break;
 
       case ('startNewDialog'):
-        startNewDialog(requestPayment, response, login);
+        await startNewDialog(requestPayment, response, login);
     }
   });
 }

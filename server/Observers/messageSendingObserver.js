@@ -9,7 +9,6 @@ function messageSendingObserverCreator (socket, dialogId) {
   { fullDocument: 'updateLookup' });
 
   messageSendingObserver.on('change', data => {
-    console.log('message sended');
     socket.emit('message sended', data.fullDocument);
   });
 

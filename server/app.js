@@ -38,12 +38,11 @@ async function run () {
               await messageHandler(req, res);
               break;
             default :
-              console.log(req.url);
               staticHandler(req, res);
           }
         }
       } catch (internalError) {
-        res.writeHead(500, headers = {
+        res.writeHead(500, {
           'Access-Control-Allow-Origin': '*'
         });
         res.write(internalError.message);
@@ -54,8 +53,6 @@ async function run () {
     const socketioserver = new Server(httpserver, { cors: true });
 
     socketioserver.on('connection', connectionObserver);
-
-    console.log('Server has been started');
   } catch (connectionError) {
     console.log(connectionError.message);
   }

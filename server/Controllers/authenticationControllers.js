@@ -5,7 +5,7 @@ async function authenticationHandler (request, response) {
   const [login, password] = request.headers.authorization.split(':');
   const user = await UserModel.findOne({ login, password });
   if (user !== null) {
-    response.writeHead(200, headers = {
+    response.writeHead(200, {
       'Access-Control-Allow-Origin': '*'
     });
     response.write(JSON.stringify([
@@ -13,7 +13,7 @@ async function authenticationHandler (request, response) {
       generateToken(user._id)
     ]));
   } else {
-    response.writeHead(401, headers = {
+    response.writeHead(401, {
       'Access-Control-Allow-Origin': '*'
     });
   }

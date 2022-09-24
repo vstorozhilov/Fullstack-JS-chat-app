@@ -1,15 +1,14 @@
-const { default: mongoose } = require('mongoose');
+const { mongoose } = require('mongoose');
 const authentificationControl = require('../Middlewares/authenticationControl');
 const DialogModel = require('../Models/DialogModel');
 const MessageModel = require('../Models/MessageModel');
 const UserModel = require('../Models/UserModel');
 
 async function messageWasReaded (response, requestPayment) {
-  console.log(requestPayment.messageId);
   const message = await MessageModel.findOne({ _id: requestPayment.messageId });
   message.isReaded = true;
   await message.save();
-  response.writeHead(200, headers = {
+  response.writeHead(200, {
     'Access-Control-Allow-Origin': '*'
   });
   response.end();
@@ -19,10 +18,9 @@ async function fetchAllMessages (response, login, requestPayment) {
   const messages = await MessageModel.find({ dialog: requestPayment.dialogId });
   const dialog = await DialogModel.findById(mongoose.Types.ObjectId(requestPayment.dialogId));
   const peerLogin = login === dialog.peerOne ? dialog.peerTwo : dialog.peerOne;
-  const peer = await UserModel.findOne({login : peerLogin});
+  const peer = await UserModel.findOne({ login: peerLogin });
   const dictMessages = Object.fromEntries(messages.map((item) => ([item._id, item])));
-  console.log(peer);
-  response.writeHead(200, headers = {
+  response.writeHead(200, {
     'Access-Control-Allow-Origin': '*'
   });
   response.write(JSON.stringify([dictMessages, peer]));
@@ -40,7 +38,7 @@ async function sendMessage (response, login, requestPayment) {
   const dialog = await DialogModel.findOne({ _id: requestPayment.dialogId });
   dialog.lastMessage = message._id;
   await dialog.save();
-  response.writeHead(200, headers = {
+  response.writeHead(200, {
     'Access-Control-Allow-Origin': '*'
   });
   response.end();
@@ -59,7 +57,7 @@ async function messageHandler (request, response) {
     const login = await authentificationControl(token, UserModel);
 
     if (login === null) {
-      response.writeHead(401, headers = {
+      response.writeHead(401, {
         'Access-Control-Allow-Origin': '*'
       });
       response.write('Unauthorized access');

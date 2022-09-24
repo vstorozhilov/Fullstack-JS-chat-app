@@ -90,7 +90,7 @@ export default function Profile (props) {
               position: 'absolute'
             }}
             >
-              <img src={profile.avatar} ref={avatar} style={{height: '130px', width: '130px'}}/>
+              <img src={profile.avatar} ref={avatar} style={{ height: '130px', width: '130px' }} />
             </div>
             <label
               htmlFor='icon-button-file' style={{
@@ -159,7 +159,7 @@ export default function Profile (props) {
             width='100%'
             paddingTop='1vh'
           >
-            <BirthdayPicker disabled={!isEditable} ref={birthdate} initValue={profile.birthdate} label='Birth Date' sx={{ width: '90%' }} />
+            <BirthdayPicker disabled={!isEditable} ref={birthdate} initValue={profile.birthdate} label='Birth Date' sx={{ width: '90%', '& .MuiOutlinedInput-root': { paddingRight: '14px' }, '& .MuiInputAdornment-root': { display: `${isEditable ? 'flex' : 'none'}` } }} />
           </Grid>
           <Grid
             container

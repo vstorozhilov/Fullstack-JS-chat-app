@@ -18,13 +18,13 @@ async function accountCreationHandler (request, response) {
         profile: JSON.parse(requestBody)
       });
       user.save();
-      response.writeHead(200, headers = {
+      response.writeHead(200, {
         'Access-Control-Allow-Origin': '*'
       });
       response.write(JSON.stringify(generateToken(user._id)));
       response.end();
     } else {
-      response.writeHead(401, headers = {
+      response.writeHead(401, {
         'Access-Control-Allow-Origin': '*'
       });
       response.write('Current login was already assigned recently');
@@ -36,11 +36,11 @@ async function accountCreationHandler (request, response) {
 async function signupHandler (request, response) {
   const login = request.headers.authorization;
   if (await UserModel.findOne({ login }) === null) {
-    response.writeHead(200, headers = {
+    response.writeHead(200, {
       'Access-Control-Allow-Origin': '*'
     });
   } else {
-    response.writeHead(401, headers = {
+    response.writeHead(401, {
       'Access-Control-Allow-Origin': '*'
     });
   }

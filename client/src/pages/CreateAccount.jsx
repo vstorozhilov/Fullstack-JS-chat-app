@@ -197,7 +197,7 @@ export default function CreateAccount (props) {
               width='100%'
               paddingTop='2vh'
             >
-              <BirthdayPicker disabled={loading} initValue={new Date()} label='Birth Date' sx={{ width: '90%' }} ref={birthdate} />
+              <BirthdayPicker disabled={loading} initValue={new Date()} label='Birth Date' sx={{ width: '90%', '& .MuiOutlinedInput-root': { paddingRight: '14px' } }} ref={birthdate} />
             </Grid>
             <Grid
               container
