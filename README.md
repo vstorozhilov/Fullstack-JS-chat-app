@@ -1,6 +1,6 @@
 # Fullstack-JS-chat-app
 
-###### Mobile-first web chat application
+## Mobile-first web chat application
 
 A simple realtime chat application which was made using React JS, Node JS and MongoDB.
 
@@ -13,7 +13,12 @@ Real time communication between client and server is provided by socket-io.
 This is a responsive web application for viewing in both Mobile and Desktop.
 
 ### Screenshots
-![This is an image](./screenshots/dialogpage.png)
+![login](./screenshots/login.png)
+![signup](./screenshots/signup.png)
+![mainpage](./screenshots/mainpage.png)
+![mainpagedialogstab](./screenshots/mainpagedialogstab.png)
+![dialogpage](./screenshots/dialogpage.png)
+![profile](./screenshots/profile.png)
 
 ### Meaningful features
 
