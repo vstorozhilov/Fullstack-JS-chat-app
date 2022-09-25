@@ -13,7 +13,7 @@ Real time communication between client and server is provided by socket-io.
 This is a responsive web application for viewing in both Mobile and Desktop.
 
 ### Screenshots
-!(./screenshots/dialogpage.png)
+![This is an image](./screenshots/dialogpage.png)
 
 ### Meaningful features
 
