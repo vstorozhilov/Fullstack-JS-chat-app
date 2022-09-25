@@ -53,6 +53,7 @@ export default function CreateAccount (props) {
       })
     }).then((response) => {
       if (response.status === 200) {
+        console.log('success');
         response.json().then(token => {
           localStorage.setItem('user', JSON.stringify({ login, token }));
           setUser({ login, token });
@@ -60,9 +61,10 @@ export default function CreateAccount (props) {
           navigate('/main');
         });
       } else if (response.status === 401) {
+        console.log('fail');
         response.json().then(responsePayment => {
           alert(responsePayment);
-          setTimeout(() => navigate('/signup'), 3000);
+          setTimeout(() => navigate('/signup'), 20000);
         });
       }
     });

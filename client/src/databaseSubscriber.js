@@ -7,11 +7,12 @@ import PeerReducer from './reducers/PeerReducer';
 import ContactsReducer from './reducers/ContactsReducer';
 import dialogPageSubscribers from './ComponentsSubscribers/DialogPageSubscribers';
 import mainPageSubscribers from './ComponentsSubscribers/MainPageSubscribers';
+import serverdata from './serverConf';
 
 let socket;
 
 function connectToDatabase (token) {
-  socket = io('http://localhost:8090', { auth: { token } });
+  socket = io(`http://${serverdata.serverhost}:${serverdata.serverport}`, { auth: { token } });
 }
 
 function disconnectFromDatabase () {
