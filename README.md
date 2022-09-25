@@ -13,12 +13,9 @@ Real time communication between client and server is provided by socket-io.
 This is a responsive web application for viewing in both Mobile and Desktop.
 
 ### Screenshots
-![login](./screenshots/login.png)
-![signup](./screenshots/signup.png)
-![mainpage](./screenshots/mainpage.png)
-![mainpagedialogstab](./screenshots/mainpagedialogstab.png)
-![dialogpage](./screenshots/dialogpage.png)
-![profile](./screenshots/profile.png)
+![login](./screenshots/login.png)![signup](./screenshots/signup.png)
+![mainpage](./screenshots/mainpage.png)![mainpagedialogstab](./screenshots/mainpagedialogstab.png)
+![dialogpage](./screenshots/dialogpage.png)![profile](./screenshots/profile.png)
 
 ### Meaningful features
 
