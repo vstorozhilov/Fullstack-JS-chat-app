@@ -7,10 +7,14 @@ const messageHandler = require('./Controllers/dialogControllers');
 const authenticationHandler = require('./Controllers/authenticationControllers');
 const connectionObserver = require('./Observers/connectionObserver');
 const staticHandler = require('./Controllers/staticControllers');
+const fs = require('fs');
 
 async function run () {
   try {
-    await mongoose.connect('mongodb://localhost:27017/backendDraft');
+    const { mongodbhost, mongodbport, mongodbdatabase } = JSON.parse(fs.readFileSync('server/Configs/mongodbConf.json'));
+    await mongoose.connect(`mongodb://${mongodbhost}:${mongodbport}/${mongodbdatabase}`);
+    const { serverhost, serverport } = JSON.parse(fs.readFileSync('server/Configs/serverConf.json'));
+    console.log(serverhost + ':' + serverport);
     const httpserver = http.createServer(async (req, res) => {
       try {
         if (req.method === 'OPTIONS') {
@@ -48,7 +52,7 @@ async function run () {
         res.write(internalError.message);
       }
     });
-    httpserver.listen(8090);
+    httpserver.listen(serverport, serverhost);
 
     const socketioserver = new Server(httpserver, { cors: true });
 

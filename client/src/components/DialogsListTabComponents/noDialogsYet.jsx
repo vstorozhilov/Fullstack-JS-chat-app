@@ -19,7 +19,7 @@ export default function NoDialogsYet (props) {
           fontSize: '3vh'
         }}
       >
-        <img src={NotDialogsYetImage} width={IsWidthMatch ? '100%' : '585px'} />
+        <img src={NotDialogsYetImage} width={IsWidthMatch ? '100%' : '585px'} alt='' />
       </Grid>
       <Grid
         item sx={{

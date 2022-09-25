@@ -10,6 +10,7 @@ const wholeRelatedMessageObserverCreator = require('./wholeRelatedMessagesObserv
 const peerObserverCreator = require('./peerObserver');
 
 async function connectionObserver (socket) {
+  console.log('connected');
   const { token } = socket.handshake.auth;
 
   const login = await authenticationControl(token);
@@ -34,6 +35,7 @@ async function connectionObserver (socket) {
   let peerObserver = null;
 
   const exitFromDialog = async (socket) => {
+    console.log('exited');
     messageReadingObserver.close();
     messageSendingObserver.close();
     peerObserver.close();
@@ -45,12 +47,13 @@ async function connectionObserver (socket) {
   };
 
   socket.on('dialog was selected', async dialogId => {
+    console.log(dialogId);
     dialogid = dialogId;
     peerObserver = await peerObserverCreator(socket, dialogid, login);
     messageSendingObserver = messageSendingObserverCreator(socket, dialogid);
     messageReadingObserver = messageReadingObserverCreator(socket, dialogid);
 
-    socket.on('exit from dialog', ()=>{exitFromDialog(socket);});
+    socket.on('exit from dialog', async () => { await exitFromDialog(socket); });
   });
 
   const userObserver = userObserverCreator(socket, login);
@@ -58,6 +61,7 @@ async function connectionObserver (socket) {
   const dialogsObserver = dialogsObserverCreator(socket, login, wholeRelatedMessageObserver);
 
   socket.on('disconnect', async () => {
+    console.log('disconnected');
     userObserver.close();
     dialogsObserver.close();
     if (wholeRelatedMessageObserver !== null) wholeRelatedMessageObserver.close();

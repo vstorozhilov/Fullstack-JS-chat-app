@@ -145,7 +145,7 @@ export default function CreateAccount (props) {
                 position: 'absolute'
               }}
               >
-                <img src={avatarImage} ref={avatar} style={{ height: '22vh', width: '22vh' }} id='ava' />
+                <img src={avatarImage} ref={avatar} style={{ height: '22vh', width: '22vh' }} id='ava' alt='' />
               </div>
               <label
                 htmlFor='icon-button-file' style={{

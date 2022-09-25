@@ -14,6 +14,7 @@ function messageReadingObserverCreator (socket, dialogId) {
   { fullDocument: 'updateLookup' });
 
   messageReadingObserver.on('change', data => {
+    console.log('message was readed');
     socket.emit('message was readed', data.documentKey._id);
   });
 

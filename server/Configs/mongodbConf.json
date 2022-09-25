@@ -1,0 +1,5 @@
+{
+  "mongodbhost" : "localhost",
+  "mongodbport" : 27017,
+  "mongodbdatabase" : "backendDraft"
+}

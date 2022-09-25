@@ -93,7 +93,7 @@ export default function Login (props) {
         >
           <img
             src={loginImage}
-            alt='default login image'
+            alt=''
             style={{
               height: '130px',
               width: '130px'

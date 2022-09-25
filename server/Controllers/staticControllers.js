@@ -10,13 +10,13 @@ const urlSearch = (url) => (
 );
 
 function staticHandler (request, response) {
-  fs.readFile(`../client/build${urlSearch(request.url) ? '/index.html' : request.url}`, (err, data) => {
+  fs.readFile(`./client/build${urlSearch(request.url) ? '/index.html' : request.url}`, (err, data) => {
     if (err) {
       console.error(err);
       return;
     }
     response.writeHead(200, {
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': '*'
     });
     response.write(data);
     response.end();

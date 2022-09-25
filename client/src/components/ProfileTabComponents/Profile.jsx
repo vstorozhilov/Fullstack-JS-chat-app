@@ -10,7 +10,6 @@ import Grid from '@mui/material/Grid';
 import { CustomButton } from '../CommonComponents/BigBlueButton';
 import { useSelector } from 'react-redux';
 import { authentificationContext } from '../../Routes';
-import useMediaQuery from '@mui/material/useMediaQuery';
 
 export default function Profile (props) {
   const [isEditable, setEditibility] = useState(false);
@@ -24,7 +23,6 @@ export default function Profile (props) {
   const birthdate = useRef(null);
   const about = useRef(null);
   const button = useRef(null);
-  const maxheightMatch = useMediaQuery('(max-height: 700px)');
 
   function handleAvatarChange (event) {
     const file = event.target.files[0];
@@ -90,7 +88,7 @@ export default function Profile (props) {
               position: 'absolute'
             }}
             >
-              <img src={profile.avatar} ref={avatar} style={{ height: '130px', width: '130px' }} />
+              <img src={profile.avatar} ref={avatar} style={{ height: '130px', width: '130px' }} alt='' />
             </div>
             <label
               htmlFor='icon-button-file' style={{

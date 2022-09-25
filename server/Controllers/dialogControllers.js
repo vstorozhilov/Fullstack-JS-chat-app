@@ -69,7 +69,7 @@ async function messageHandler (request, response) {
 
     switch (action) {
       case ('message was readed') :
-        messageWasReaded(response, requestPayment);
+        await messageWasReaded(response, requestPayment);
         break;
       case ('fetch messages') :
         fetchAllMessages(response, login, requestPayment);

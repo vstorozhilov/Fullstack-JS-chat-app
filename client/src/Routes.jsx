@@ -73,7 +73,7 @@ function MainContainer (props) {
             overflow: 'hidden'
           }}
         >
-          <img style={{ zIndex: '-10', width: '100%' }} src={backgroundImage} />
+          <img style={{ zIndex: '-10', width: '100%' }} src={backgroundImage} alt='' />
         </div>
         <animated.div style={Object.assign(styles, { position: 'absolute', width: 'inherit', height: 'inherit', overflowX: 'hidden' })}>
           <authentificationContext.Provider value={contextUser}>
