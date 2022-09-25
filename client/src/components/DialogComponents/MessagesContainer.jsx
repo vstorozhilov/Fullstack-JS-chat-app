@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useTransition } from '@react-spring/web';
 import { IconButton, Grid } from '@mui/material';
 import { useSelector } from 'react-redux';
@@ -47,13 +47,17 @@ const MessagesContainer = React.forwardRef((props, ref) => {
       config: { duration: 300 }
     });
 
-  useCallback(() => {
-    if (Object.keys(correctMessages).length) {
-      if (ref.current.offsetHeight + ref.current.scrollTop >=
+  useEffect(() => {
+    setTimeout(() => {
+      if (Object.keys(correctMessages).length) {
+        if (isDialogFullyScrolled === true) {
+          ref.current.scrollTo(0, ref.current.scrollHeight);
+        } else if (ref.current.offsetHeight + ref.current.scrollTop >=
               ref.current.scrollHeight - 2) {
-        setisDialogFullyScrolled(true);
+          setisDialogFullyScrolled(true);
+        }
       }
-    }
+    }, 50);
   }, [correctMessages]);
 
   const NotReadedMessagesCount = useSelector(state => (
@@ -113,7 +117,7 @@ const MessagesContainer = React.forwardRef((props, ref) => {
               >
                 {NotReadedMessagesCount}
               </div>
-              </Grid>
+            </Grid>
             : null}
           {!isDialogFullyScrolled && Object.keys(correctMessages).length
             ? <Grid item>
@@ -131,9 +135,9 @@ const MessagesContainer = React.forwardRef((props, ref) => {
               >
                 <KeyboardDoubleArrowDownIcon />
               </IconButton>
-            </Grid>
+              </Grid>
             : null}
-        </Grid>
+          </Grid>
         : null}
       <Grid
         container

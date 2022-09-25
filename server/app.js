@@ -14,7 +14,6 @@ async function run () {
     const { mongodbhost, mongodbport, mongodbdatabase } = JSON.parse(fs.readFileSync('server/Configs/mongodbConf.json'));
     await mongoose.connect(`mongodb://${mongodbhost}:${mongodbport}/${mongodbdatabase}`);
     const { serverhost, serverport } = JSON.parse(fs.readFileSync('server/Configs/serverConf.json'));
-    console.log(serverhost + ':' + serverport);
     const httpserver = http.createServer(async (req, res) => {
       try {
         if (req.method === 'OPTIONS') {

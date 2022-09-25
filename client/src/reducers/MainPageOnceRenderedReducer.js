@@ -5,7 +5,7 @@ const defaultState = {
 export default function MainPageOnceRenderedReducer (state = defaultState, action) {
   switch (action.type) {
     case 'SET_IS_MAIN_PAGE_ONCE_RENDERED':
-      return { ...state, isMainPageOnceRendered: true };
+      return { ...state, isMainPageOnceRendered: action.value };
     default:
       return state;
   }

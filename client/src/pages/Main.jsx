@@ -55,7 +55,7 @@ export default function Main (props) {
     }
     if (isOnceRendered === false) {
       mainPageWillMount();
-      dispatch({ type: 'SET_IS_MAIN_PAGE_ONCE_RENDERED' });
+      dispatch({ type: 'SET_IS_MAIN_PAGE_ONCE_RENDERED', value: true });
       connectToDatabase(token);
     }
     mainPageRefreshSubscribers();
@@ -190,7 +190,7 @@ export default function Main (props) {
                 color: `${theme.palette.primary.dark}`
               }}
             />
-            </IconButton>
+          </IconButton>
           : null}
       </Grid>
     </Grid>

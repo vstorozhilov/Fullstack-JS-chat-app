@@ -46,7 +46,6 @@ export default function DialogsListItems (props) {
 
   const handleClick = (e) => {
     dispatch({ type: 'SET_SELECTED_DIALOG', value: e.currentTarget.id });
-    console.log(e.currentTarget.id);
     dialogPageSelect(e.currentTarget.id);
     dialogPageWillMount();
     navigate('/dialog');

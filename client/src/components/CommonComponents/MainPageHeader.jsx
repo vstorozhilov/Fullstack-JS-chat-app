@@ -3,7 +3,7 @@ import { useTheme, Tab, Tabs, Grid, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { DensityMedium } from '@mui/icons-material';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { disconnectFromDatabase } from '../../databaseSubscriber';
 import CircularProgress from '@mui/material/CircularProgress';
 import { authentificationContext } from '../../Routes';
@@ -13,6 +13,7 @@ export default function MainPageHeader (props) {
   const nickname = useSelector(state => state.userReducer.User.profile.nickname);
   const navigate = useNavigate();
   const { setUser } = useContext(authentificationContext);
+  const dispatch = useDispatch();
 
   const handleChange = (event, newValue) => {
     props.tabIndexer.setValue((prev) => { props.tabIndexer.setPrevValue(prev); return newValue; });
@@ -57,6 +58,7 @@ export default function MainPageHeader (props) {
               props.setReverseAnim(true);
               setUser({});
               disconnectFromDatabase();
+              dispatch({ type: 'SET_IS_MAIN_PAGE_ONCE_RENDERED', value: false });
               navigate('/login');
             }}
             >
