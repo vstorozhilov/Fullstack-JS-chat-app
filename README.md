@@ -38,12 +38,13 @@ npm i
 
 ### How to config MongoDB
 
-You need one of an available mongodb software releases (Atlas or run MongoDB locally):
+You need one of an available mongodb software releases (Atlas or run MongoDB locally):  
 https://www.mongodb.com/docs/manual/.
-After you are necessory to create your own database with 3 named collections: Users, Dialogs and Messages. To complete configuration process adjust
-`server/Configs/mongodbConf.json`,
-`server/Configs/serverConf.json`,
-`client/src/serverConf.json`
+After you are necessory to create your own database with 3 named collections: Users, Dialogs and Messages.  
+To complete configuration process adjust  
+`server/Configs/mongodbConf.json`,  
+`server/Configs/serverConf.json`,  
+`client/src/serverConf.json`  
 files in accordance with you requirements.
 
 ### How to build client (frontend)
