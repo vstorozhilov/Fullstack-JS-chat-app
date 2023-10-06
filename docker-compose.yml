@@ -1,0 +1,15 @@
+
+services:
+
+  mongodb:
+    image: mongo:latest
+    # volumes:
+    #   - init_scripts:/docker-entrypoint-initdb.d
+
+  chat:
+    build: 
+      context: .
+    ports:
+      - 5000:5000
+    environment:
+      - PORT=$PORT
